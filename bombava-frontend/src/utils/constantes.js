@@ -1,0 +1,16 @@
+/*
+    Fichero con las constantes generales del proyecto.
+*/
+
+export const TAMANO_TABLERO = 15;
+
+export const TERRENO = {
+  AGUA: 'agua',     // Agua profunda 
+  ISLA: 'isla',   // Isla 
+};
+
+// Configuración visual temporal, mientras no haya imagenes para islas, ...
+export const COLORES_TERRENO = {
+  [TERRENO.AGUA]: '#1e88e5',    
+  [TERRENO.ISLA]: '#aed581',  
+};
