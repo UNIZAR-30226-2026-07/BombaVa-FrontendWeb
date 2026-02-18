@@ -11,9 +11,9 @@ function MenuInicio({ alClickJugar }) {
 
       {/* Botones principales */}
       <div className="grupo-botones">
-        <button className="menu-btn" onClick={() => alClickBoton('configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/} 
+        <button className="menu-btn" onClick={() => alClickJugar('configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/} 
         <button className="menu-btn">COMPETITIVO</button>
-        <button className="menu-btn" onClick={() => alClickBoton('juego')}>PRÁCTICA</button>
+        <button className="menu-btn" onClick={() => alClickJugar('juego')}>PRÁCTICA</button>
         <button className="menu-btn">UNIRSE</button>
       </div>
     </div>
