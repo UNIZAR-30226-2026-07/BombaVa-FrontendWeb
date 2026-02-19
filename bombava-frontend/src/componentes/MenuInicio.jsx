@@ -1,12 +1,12 @@
 import './MenuInicio.css';
 
-function MenuInicio({ alClickJugar }) {
+function MenuInicio({ alClickJugar }) {//Cojo de los props del padre la funcion que me pasa llamada alClickJugar
   return (
     <div className="menu-container">
       {/* Iconos superiores */}
       <div className="header-icons">
-        <button className="icon-btn">🛠️</button>
-        <button className="icon-btn">👤</button>
+        <button className="icon-btn" >🛠️</button>
+        <button className="icon-btn" onClick={() => alClickJugar('perfil')}>👤</button>
       </div>
 
       {/* Botones principales */}
