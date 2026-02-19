@@ -1,12 +1,14 @@
 // App.jsx
 import { useState } from 'react';
 import Menu from './componentes/MenuInicio';
+import Perfil from './componentes/Perfil';
+
 
 function App() {
   const [pantalla, setPantalla] = useState('inicio');
 
   const [usuario, setUsuario] = useState({
-    nombre: "Capitán Simulador",
+    nombre: "Capitán Pruebas",
     rango: "Grumete de Agua Dulce",
     partidas: 42,
     victorias: 15,

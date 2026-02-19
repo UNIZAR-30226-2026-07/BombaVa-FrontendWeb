@@ -1,7 +1,91 @@
-.contenedor_perfil {
+.contenedor_perfil {    
+    position: relative; /* Esto permite que el botón se mueva respecto a este contenedor */
     background-color: #0a1f33;
+    display:flex;
+    flex-direction: column; /* Pongo esto para que los elementos esten uno debajo de otro*/
+    justify-content: center;
+    align-items: center;
 }
 
 .titulo_perfil {
-    font-size: 40px
+    font-size: 40px;
+    text-align: center;
+    color:#7a3b0b;
+    padding: 20px;
+}
+
+.circulo_perfil {
+    text-align: center;
+    background-color: #8b4513; /* Marrón */
+    width: 240px;             
+    height: 240px;            
+    border-radius: 50%;       /* Esto lo hace redondo */
+
+    /* Para centrar el emoji dentro del círculo */
+    display: flex;           /* Para poder cambiar posicion elementos del circulo*/
+    justify-content: center; /* Centra de izquierda a derecha */
+    align-items: center;     /* Centra de arriba a abajo*/
+    
+    font-size: 160px;          /* Tamaño del emoji */
+    margin-top: 10px;         /* Separación con el título */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Sombra para que resalte */
+    border: 5px solid #4a2508; /*Color frontera para que resalte*/
+
+}
+
+.info_capitan {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+}
+
+.info_capitan h2 {
+    color: #d2b48c;  
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.rango {
+    font-style: italic;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.estats {
+    background: rgba(0, 0, 0, 0.3); /* Un fondo oscuro semitransparente */
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #4a2508;
+}
+
+.boton_volver {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #743506;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.boton_volver:hover {
+    background-color: #552909;
+}
+
+.boton_cerrar {
+    position: absolute; 
+    top: 20px;          /* Distancia desde arriba */
+    right: 20px;        /* Distancia desde la derecha */
+    
+    background-color: #ff4d4d; /* Rojo llamativo */
+    color: white;
+    border: none;
+    border-radius: 5px; /* O 50% si lo quieres circular */
+    padding: 10px 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.boton_cerrar:hover {
+    background-color: #cc0000; /* Rojo más oscuro al pasar el ratón */
 }
