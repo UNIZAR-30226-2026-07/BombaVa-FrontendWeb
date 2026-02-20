@@ -21,7 +21,7 @@
 }
 
 .barco-entidad.seleccionado .barco-visual {
-  border-color: rgb(234, 247, 121); 
+  border-color: rgb(228, 235, 164); 
   box-shadow: 0 0 20px rgba(96, 96, 55, 0.5);
   transform: scale(1.05); 
 }
