@@ -6,6 +6,6 @@
 }
 
 .celda:hover {
-  filter: brightness(1.2); /* Aumenta el brillo del terreno */
+  filter: brightness(1.15); /* Aumenta el brillo de la celda */
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4); /* Añade un brillo interior blanco*/
 }
