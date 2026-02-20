@@ -1,0 +1,27 @@
+.barco-entidad {
+  position: absolute;
+  /*pointer-events: none; Igual hay que ponerlo si queremos gestionar todos los cliks a traves de las celdas*/
+
+  /*Animación*/
+  /*transition: 1s;*/
+}
+
+.barco-visual {
+  position: absolute;
+  top: 6px;
+  bottom: 3px;
+  left: 6px;
+  right: 3px;
+  background-color: rgba(70, 70, 70,1);
+  border: 2px solid rgba(10, 10,10,1);;
+  border-radius: 10px;
+
+  /*Animaciones:*/
+  transition: all 1s;
+}
+
+.barco-entidad.seleccionado .barco-visual {
+  border-color: rgb(233, 244, 142); 
+  box-shadow: 0 0 12px rgba(255, 255, 0, 0.2);
+  transform: scale(1.05); 
+}

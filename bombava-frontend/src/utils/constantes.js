@@ -3,6 +3,7 @@
 */
 
 export const TAMANO_TABLERO = 15;
+export const TAMANO_CELDA = 40;
 
 export const TERRENO = {
   AGUA: 'agua',     // Agua profunda 
