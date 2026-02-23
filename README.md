@@ -1,2 +1,2 @@
-n# BombaVa-FrontendWeb
+# BombaVa-FrontendWeb
 Frontend Web para el juego Bomba Va

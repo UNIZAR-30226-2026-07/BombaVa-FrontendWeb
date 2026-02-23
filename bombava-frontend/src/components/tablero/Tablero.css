@@ -1,0 +1,7 @@
+
+.tablero {
+  display: grid;
+  background-color: rgb(30, 136, 229);
+  border: 2px solid rgb(0, 0, 0);
+  width: fit-content; 
+}

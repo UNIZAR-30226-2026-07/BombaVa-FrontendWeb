@@ -7,8 +7,6 @@ import InfoCard from './componentes/BoatInfoCard'
 
 
 function App() {
-  const [pantalla, setPantalla] = useState('inicio');
-
   return (
     <>
       <Routes>
