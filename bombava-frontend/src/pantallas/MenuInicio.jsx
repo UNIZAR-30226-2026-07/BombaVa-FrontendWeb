@@ -1,4 +1,4 @@
-import './MenuInicio.css';
+import '../styles/MenuInicio.css';
 
 function MenuInicio({ alClickJugar }) {//Cojo de los props del padre la funcion que me pasa llamada alClickJugar
   return (

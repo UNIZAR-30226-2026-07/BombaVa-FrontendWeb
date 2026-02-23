@@ -1,4 +1,4 @@
-import './Perfil.css';
+import '../styles/Perfil.css';
 
 function Perfil({ datos, alVolver }) {
   return ( 
