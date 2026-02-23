@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Menu alClickJugar={(destino) => setPantalla(destino)} />} />
         <Route path="/info" element={<InfoCard boatId={1} />} />
-        <Route path="/profile" element={<Perfil datos={usuario} />} />
+        <Route path="/profile" element={<Perfil />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
