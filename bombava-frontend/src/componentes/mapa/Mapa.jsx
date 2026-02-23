@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Tablero from '../tablero/Tablero';
+import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
 import { useMovimientosBarco} from '../barco/movimientosBarco.js';
-import './Mapa.css';
+import '../../styles/Mapa.css';
 
 /*El mapa es la clase que engloba a todo el tablero de juego, para ello 
 incluye varias capas(de abajo a arriba sería):

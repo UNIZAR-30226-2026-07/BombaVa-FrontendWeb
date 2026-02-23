@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Celda from './Celda';
+import Celda from './Celda.jsx';
 import { TAMANO_TABLERO, TERRENO, TAMANO_CELDA } from '../../utils/constantes.js';
-import './Tablero.css';
+import '../../styles/Tablero.css';
 
 // Función para generar un mapa inicial de ejemplo
 const generarMapaInicial = () => {
