@@ -17,7 +17,6 @@ function App() {
 
   // Variable para guardar lo que se genera
   let contenido;
-  // Aquí guardamos los datos del usuario (el "Estado")
 
   // Depende de la pantalla en la que estés cambias el estado a otra
   if (pantalla === 'inicio') {
@@ -25,6 +24,13 @@ function App() {
   }
   else if (pantalla == 'perfil'){
     // Tengo que pasar 2 cosas: los datos del perfil y para volver
+    contenido = (
+      <Perfil datos={usuario} 
+        alVolver={() => setPantalla('inicio')} 
+      />
+    );
+  }
+  else if (pantalla == 'configurar'){
     contenido = (
       <Perfil datos={usuario} 
         alVolver={() => setPantalla('inicio')} 
