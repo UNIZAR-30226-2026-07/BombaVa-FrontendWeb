@@ -1,35 +1,58 @@
-.contenedor_perfil {    
-    position: relative; /* Esto permite que el botón se mueva respecto a este contenedor */
+.contenedor_perfil {
+    height: 100vh;
+    width: 100vw;
+
     background-color: #0a1f33;
     display:flex;
-    flex-direction: column; /* Pongo esto para que los elementos esten uno debajo de otro*/
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+
+    overflow: scroll;
+    scrollbar-color: #021324 transparent;
+    scrollbar-width: thin;
 }
 
 .titulo_perfil {
     font-size: 40px;
-    text-align: center;
     color:#7a3b0b;
-    padding: 20px;
+    text-shadow: 2px 4px rgba(0,0,0,0.5);
+    text-align: center;
+
+    min-width:1000px;
+    overflow: hidden;
+    
+    position: absolute;
+    top: 7%;
+}
+
+.contenedor_perfil .main-content {
+    width: 50%;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 800px;
 }
 
 .circulo_perfil {
     text-align: center;
-    background-color: #8b4513; /* Marrón */
+    background-color: #8b4513;
     width: 240px;             
     height: 240px;            
-    border-radius: 50%;       /* Esto lo hace redondo */
+    border-radius: 50%;
 
-    /* Para centrar el emoji dentro del círculo */
-    display: flex;           /* Para poder cambiar posicion elementos del circulo*/
-    justify-content: center; /* Centra de izquierda a derecha */
-    align-items: center;     /* Centra de arriba a abajo*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
-    font-size: 160px;          /* Tamaño del emoji */
-    margin-top: 10px;         /* Separación con el título */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Sombra para que resalte */
-    border: 5px solid #4a2508; /*Color frontera para que resalte*/
+    font-size: 160px;
+    margin-top: 20%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    border: 5px solid #4a2508;
 
 }
 
