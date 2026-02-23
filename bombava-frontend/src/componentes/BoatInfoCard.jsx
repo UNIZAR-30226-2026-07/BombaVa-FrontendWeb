@@ -94,6 +94,7 @@ function BoatInfoCard({ boatId }) {
             </div>
         )
     }
+    
     // Caso de barco seleccionado.
     return (
         <div className='boat-info-card'>

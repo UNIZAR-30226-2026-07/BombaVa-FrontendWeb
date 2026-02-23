@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Menu from './componentes/MenuInicio';
 import Perfil from './componentes/Perfil';
+import InfoCard from './componentes/BoatInfoCard'
 
 
 function App() {
@@ -35,14 +36,6 @@ function App() {
   return (
     <div className="main-container">
       <InfoCard boatId={1} id='app-infoCard' />
-      <HealthBar maxHealth={100} currentHealth={75} />
-      <ModuleInfo 
-        moduleName="Motor"
-        moduleImg="https://www.pngmart.com/files/23/Navy-Boat-PNG.png"
-        moduleAlt="Imagen del motor"
-        moduleMaxHealth={100}
-        moduleHealth={50}
-      />
     </div>
   );
 }

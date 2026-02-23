@@ -106,6 +106,7 @@
     width: auto;
     height: 30%;
     margin-bottom: 1px;
+    max-width: 100%;
 }
 
 .boat-info-card .info-card-content ul {
