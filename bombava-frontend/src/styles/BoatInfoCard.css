@@ -117,3 +117,17 @@
     overflow: auto;
     scrollbar-color: rgb(66, 32, 0) transparent;
 }
+
+/* Separadores entre elementos de la lista: usan el mismo color que el texto */
+.boat-info-card .info-card-content ul li {
+    padding: 0.5rem 0;
+    border-top: 1px solid currentColor;
+    margin: 0;
+    border-color: rgb(66, 32, 0);
+    border-radius: 5%;
+}
+
+.boat-info-card .info-card-content ul li:first-child {
+    border-top: none;
+}
+

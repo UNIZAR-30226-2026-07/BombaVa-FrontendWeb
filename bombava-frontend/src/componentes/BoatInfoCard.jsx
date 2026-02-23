@@ -76,6 +76,22 @@ function BoatInfoCard({ boatId }) {
                     moduleAlt: "Imagen de las Velas",
                     moduleMaxHealth: 20,
                     moduleHealth: 10
+                },
+                {
+                    moduleId: 4,
+                    moduleName: "Cañones",
+                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
+                    moduleAlt: "Imagen de los Cañones",
+                    moduleMaxHealth: 40,
+                    moduleHealth: 35
+                },
+                {
+                    moduleId: 5,   
+                    moduleName: "Bodega de Provisiones",
+                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
+                    moduleAlt: "Imagen de la Bodega de Provisiones",
+                    moduleMaxHealth: 25,
+                    moduleHealth: 20
                 }
             ]
         };
