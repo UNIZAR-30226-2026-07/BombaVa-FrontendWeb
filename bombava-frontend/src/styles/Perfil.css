@@ -10,6 +10,8 @@
     overflow: scroll;
     scrollbar-color: #021324 transparent;
     scrollbar-width: thin;
+
+    position: relative;
 }
 
 .titulo_perfil {
@@ -20,15 +22,12 @@
 
     min-width:1000px;
     overflow: hidden;
-    
-    position: absolute;
-    top: 7%;
+
 }
 
 .contenedor_perfil .main-content {
     width: 50%;
 
-    position: relative;
 
     display: flex;
     flex-direction: column;
@@ -42,7 +41,8 @@
     text-align: center;
     background-color: #8b4513;
     width: 240px;             
-    height: 240px;            
+    height: 240px;     
+    min-height: 240px;       
     border-radius: 50%;
 
     display: flex;
@@ -50,7 +50,6 @@
     align-items: center;
     
     font-size: 160px;
-    margin-top: 20%;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     border: 5px solid #4a2508;
 
@@ -59,7 +58,6 @@
 .info_capitan {
     text-align: center;
     color: white;
-    margin-top: 20px;
 }
 
 .info_capitan h2 {
@@ -75,7 +73,7 @@
 }
 
 .estats {
-    background: rgba(0, 0, 0, 0.3); /* Un fondo oscuro semitransparente */
+    background: rgba(0, 0, 0, 0.3);
     padding: 15px;
     border-radius: 10px;
     border: 1px solid #4a2508;
@@ -96,19 +94,19 @@
 }
 
 .boton_cerrar {
-    position: absolute; 
-    top: 20px;          /* Distancia desde arriba */
-    right: 20px;        /* Distancia desde la derecha */
+    position: fixed; 
+    top: 20px;
+    right: 20px;
     
-    background-color: #ff4d4d; /* Rojo llamativo */
+    background-color: #ff4d4d;
     color: white;
     border: none;
-    border-radius: 5px; /* O 50% si lo quieres circular */
+    border-radius: 5px;
     padding: 10px 15px;
     font-weight: bold;
     cursor: pointer;
 }
 
 .boton_cerrar:hover {
-    background-color: #cc0000; /* Rojo más oscuro al pasar el ratón */
+    background-color: #cc0000;
 }
