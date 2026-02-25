@@ -1,0 +1,133 @@
+.health-bar-container {
+    position: relative;
+    width: 100%;
+    background-color: black;
+    border-radius: 5px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.health-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: red;
+    border-radius: 5px;
+    transition: width 0.3s ease-in-out;
+}
+
+.health-bar-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    margin: 0;
+    font-size: 12px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.module-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.module-info h4 {
+    margin-left: 5%;
+    font-size: 1rem;
+    color: rgb(12, 6, 0);
+}
+
+.module-info img {
+    width: 20%;
+    height: 20%;
+    object-fit: fill;
+}
+
+.module-info .module-display {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.module-info .health-bar-container {
+    width: 80%;
+    margin-left: 5%;
+}
+
+.boat-info-card {
+    background: linear-gradient(to bottom, #b68d68, #8b5e3c);
+    border: 2px solid #5d4037;
+    border-radius: 5%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 3px 0px #3e2723;
+    width: 15%;
+    height: 80%;
+    position: absolute;
+    top: 10%;
+    left: 80%;
+    z-index: 1;
+}
+
+.boat-info-card .info-card-content {
+    text-align: center;
+    height: 90%;
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.boat-info-card .info-card-content > p {
+    width: 90%;
+    font-size: 1.2em;
+    color: rgb(66, 32, 0);
+    font-style: oblique;
+    font-weight: bold;
+}
+
+.boat-info-card .info-card-content h2 {
+    margin: 0;
+    color: rgb(12, 6, 0);
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.boat-info-card .info-card-content .boat-image {
+    width: auto;
+    height: 30%;
+    margin-bottom: 1px;
+    max-width: 100%;
+}
+
+.boat-info-card .info-card-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow: auto;
+    scrollbar-color: rgb(66, 32, 0) transparent;
+}
+
+/* Separadores entre elementos de la lista: usan el mismo color que el texto */
+.boat-info-card .info-card-content ul li {
+    padding: 0.5rem 0;
+    border-top: 1px solid currentColor;
+    margin: 0;
+    border-color: rgb(66, 32, 0);
+    border-radius: 5%;
+}
+
+.boat-info-card .info-card-content ul li:first-child {
+    border-top: none;
+}
+

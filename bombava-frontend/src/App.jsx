@@ -1,47 +1,21 @@
 // App.jsx
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState } from 'react';
-import Menu from './componentes/MenuInicio';
-import Perfil from './componentes/Perfil';
+import Menu from './pantallas/MenuInicio';
+import Perfil from './pantallas/Perfil';
+import InfoCard from './componentes/BoatInfoCard'
 
 
 function App() {
-  const [pantalla, setPantalla] = useState('inicio');
-
-  const [usuario, setUsuario] = useState({
-    nombre: "Capitán Pruebas",
-    rango: "Grumete de Agua Dulce",
-    partidas: 42,
-    victorias: 15,
-    precision: "68%"
-  });
-
-  // Variable para guardar lo que se genera
-  let contenido;
-
-  // Depende de la pantalla en la que estés cambias el estado a otra
-  if (pantalla === 'inicio') {
-    contenido = <Menu alClickJugar={(destino) => setPantalla(destino)} />;//Le paso al componente hijo (MenuInicio) una funcion que espera recibir un argumento destino
-  }
-  else if (pantalla == 'perfil'){
-    // Tengo que pasar 2 cosas: los datos del perfil y para volver
-    contenido = (
-      <Perfil datos={usuario} 
-        alVolver={() => setPantalla('inicio')} 
-      />
-    );
-  }
-  else if (pantalla == 'configurar'){
-    contenido = (
-      <Perfil datos={usuario} 
-        alVolver={() => setPantalla('inicio')} 
-      />
-    );
-  }
-
   return (
-    <div className="main-container">
-      {contenido}
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Menu alClickJugar={(destino) => setPantalla(destino)} />} />
+        <Route path="/info" element={<InfoCard boatId={1} />} />
+        <Route path="/profile" element={<Perfil />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
 }
 
