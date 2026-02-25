@@ -1,5 +1,5 @@
-import './Celda.css'; 
 import { TAMANO_CELDA,COLORES_TERRENO } from '../../utils/constantes.js';
+import '../../styles/Celda.css'; 
 
 const Celda = ({ x, y, tipo_terreno, onClick }) => {
   
