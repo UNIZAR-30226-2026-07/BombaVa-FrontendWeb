@@ -1,0 +1,39 @@
+/* Contenedor principal de la pantalla de configuración */
+.mapa_config {
+  position: relative; /* Para que los barcos usen este origen (0,0) */
+  display: inline-block; /* Para que el fondo oscuro solo ocupe el tamaño del tablero */
+  padding: 10px;
+  background-color: #1a1a1a; /* Un color oscuro de fondo */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  margin: 20px;
+}
+
+/* Contenedor de los botones de selección de barco */
+.botones_barco_config {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* Estilo para los botones */
+.ponerBarco-btn {
+  padding: 12px 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.ponerBarco-btn:hover {
+  background-color: #3498db;
+}
+
+.ponerBarco-btn:active {
+  transform: scale(0.95);
+}
