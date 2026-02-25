@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Tablero from '../tablero/Tablero';
 import Barco from '../barco/Barco.jsx';
-import { useMovimientosBarco} from '../barco/movimientosBarco.js';
+import { useMovimientosBarco, anadirBarco} from '../barco/movimientosBarco.js';
 import './ConfigFlota.css';
 import { BARCO1x1, BARCO1x3, BARCO1x5 } from '../utils/constantes.js'; 
 
@@ -49,9 +49,9 @@ const ConfigFlota = () => {
             const nuevoBarco = {
                 id: nombre,
                 posicion: { x, y },
-                orientacion: 'S',
+                orientacion: 'N',
                 tamano: barcoAPoner,
-                tipo: `barco-${barcoAPoner}`,
+                tipo: `Barco 1x-${barcoAPoner}`,
                 vida: 100
             };
             anadirBarco(nuevoBarco);
@@ -79,4 +79,4 @@ const ConfigFlota = () => {
     );
 };
 
-export default Mapa;
+export default ConfigFlota;

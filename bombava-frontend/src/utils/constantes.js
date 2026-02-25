@@ -20,5 +20,5 @@ export const COLORES_TERRENO = {
 };
 
 export const BARCO1x1 = 1;
-export const BARCO1x3 = 2;
-export const BARCO1x5 = 3;
+export const BARCO1x3 = 3;
+export const BARCO1x5 = 5;

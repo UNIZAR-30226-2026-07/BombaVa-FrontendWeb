@@ -94,11 +94,17 @@ export const useMovimientosBarco = (barcosIniciales) => {
     ));
   };
 
+  const anadirBarco = (nuevoBarco) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/ 
+        // Como no puedo modificar la lista de barcos creo otra con todos los que hay más el nuevo
+        setBarcos([...barcos, nuevoBarco]);
+  }
+
   return {
     barcos,
     barcoSeleccionado,
     setBarcoSeleccionado,
     rotarBarco,
-    moverBarco
+    moverBarco,
+    anadirBarco
   };
 };
