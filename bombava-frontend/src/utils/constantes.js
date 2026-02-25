@@ -18,3 +18,7 @@ export const COLORES_TERRENO = {
   [TERRENO.AGUA_NO_PROFUNDA]: '#a6cff3'
 , 
 };
+
+export const BARCO1x1 = 1;
+export const BARCO1x3 = 2;
+export const BARCO1x5 = 3;
