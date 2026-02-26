@@ -35,6 +35,7 @@ const ConfigFlota = () => {
 
     // Función para poner un barco, la celda en la que haces click te devuelve su x e y
     const gestionarClickMapa = (x, y) => {
+        
         if(barcoAPoner != 0 && barcosPuestos[barcoAPoner] == 0){
             let nombreTipo = ""; // Declaramos la variable
             
