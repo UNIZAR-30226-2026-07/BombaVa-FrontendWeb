@@ -14,7 +14,7 @@ incluye varias capas(de abajo a arriba sería):
 */
 const ConfigFlota = () => {
     const [barcoAPoner, setBarcoAPoner] = useState(0); // 0 significa que no hay ninguno seleccionado
-
+    const [barcosPuestos, setbarcosPuestos] = useState([0,0,0,0,0,0]) //Barcos puestos de cada tipo, realmente por ahora solo uso los indices 1, 3 y 5
     const { 
         barcos, 
         barcoSeleccionado, 
@@ -35,7 +35,7 @@ const ConfigFlota = () => {
 
     // Función para poner un barco, la celda en la que haces click te devuelve su x e y
     const gestionarClickMapa = (x, y) => {
-        if(barcoAPoner != 0){
+        if(barcoAPoner != 0 && barcosPuestos[barcoAPoner] == 0){
             let nombreTipo = ""; // Declaramos la variable
             
             switch (barcoAPoner){
@@ -46,7 +46,7 @@ const ConfigFlota = () => {
             }
 
             const nuevoBarco = {
-                id: nombre,
+                id: nombreTipo,
                 posicion: { x, y },
                 orientacion: 'N',
                 tamano: barcoAPoner,
@@ -54,6 +54,9 @@ const ConfigFlota = () => {
                 vida: 100
             };
             anadirBarco(nuevoBarco);
+            const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
+            nuevosBarcosPuestos[barcoAPoner] = 1; // Modifica la copia
+            setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
             setBarcoAPoner(0)
         }
     };
