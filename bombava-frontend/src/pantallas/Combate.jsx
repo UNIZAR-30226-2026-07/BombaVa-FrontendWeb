@@ -1,8 +1,8 @@
 import BarraProgreso from "../componentes/barras/Barras.jsx";
 import { useState } from 'react';
 
-function InterfazJuego() {
-    // Estos valores vendrían del estado de tu juego
+function Combate() {
+    //Valores de prueba
     const [barras, setBarras] = useState({
         municion: 45,
         maxMunicion: 60,
@@ -12,13 +12,14 @@ function InterfazJuego() {
 
     return (
         <div style={{ padding: '20px' }}>
+            {/*Barra de combustible*/}
             <BarraProgreso 
                 etiqueta="Combustible"
                 tipo="combustible"
                 valorActual={barras.combustible}
                 maxValor={barras.maxCombustible}
             />
-
+            {/*Barra de munición*/}
             <BarraProgreso 
                 etiqueta="Munición"
                 tipo="municion"
@@ -29,4 +30,4 @@ function InterfazJuego() {
     );
 }
 
-export default InterfazJuego;
+export default Combate;

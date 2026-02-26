@@ -7,13 +7,14 @@ const BarraProgreso = ({ etiqueta, maxValor = 100, valorActual = 0, tipo }) => {
     return (
         <div className="barra-wrapper">
             <div className={`barra-container ${tipo}`}>
+                {/*Nombre que se ve*/}
                 <span className="barra-nombre">{etiqueta}</span>
                 
                 <div 
                     className="barra-contenido" 
                     style={{ width: `${porcentaje}%` }} 
                 />
-                
+                {/*Barra con los numeros*/}
                 <span className="barra-resumen">
                     {valorActual} / {maxValor}
                 </span>
