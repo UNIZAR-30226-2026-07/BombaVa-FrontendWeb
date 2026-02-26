@@ -60,7 +60,7 @@ const ConfigFlota = () => {
 
     return (
     <div className="mapa_config">
-        <Tablero onCellClick={gestionarClickMapa} />
+        <Tablero onCellClick={gestionarClickMapa} configurar={true} />
         
         {barcos.map((barco) => (/*Transforma la lista de barcos en elementos visuales*/
         <Barco 
