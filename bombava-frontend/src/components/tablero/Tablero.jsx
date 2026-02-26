@@ -24,10 +24,40 @@ const generarMapaInicial = () => {
   return map;
 };
 
+const generarMapaConfiguracion = () => {
+  const map = [];
+  for (let y = 0; y < TAMANO_TABLERO; y++) {
+    const fila = [];
+    for (let x = 0; x < TAMANO_TABLERO; x++) {
+      //Mapa con todo agua y una isla central
+      let tipoterreno = TERRENO.AGUA;
+
+      // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
+      if ( y >= 10){
+        tipoterreno = TERRENO.AGUA;
+      }else{
+        tipoterreno = TERRENO.NO_VISION;
+      }
+
+      fila.push({ x, y, tipoterreno });
+    }
+    map.push(fila);
+  }
+  return map;
+};
+
 // Recibe la función onClick desde Mapa.jsx
-const Tablero = ({ onCellClick }) => {
-   // Generar mapa
-  const [mapa] = useState(generarMapaInicial());
+const Tablero = ({ onCellClick, configurar }) => {
+  let mapaInicial;
+
+  //Decidimos que mapa generar
+  if (configurar == false) {
+    mapaInicial = generarMapaInicial();
+  } else {
+    mapaInicial = generarMapaConfiguracion();
+  }
+
+  const [mapa, setMapa] = useState(mapaInicial);
 
   return (
     <div className="tablero"
