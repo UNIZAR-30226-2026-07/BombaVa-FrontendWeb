@@ -1,7 +1,7 @@
 .barco-entidad {
   position: absolute;
   /*pointer-events: none; Igual hay que ponerlo si queremos gestionar todos los cliks a traves de las celdas*/
-
+  z-index: 3;
   /*Animación*/
   transition: 1s;
 }
