@@ -1,12 +1,12 @@
 /* Contenedor principal de la pantalla de configuración */
 .mapa_config {
   position: relative; /* Para que los barcos usen este origen (0,0) */
-  display: inline-block; /* Para que el fondo oscuro solo ocupe el tamaño del tablero */
+  display: flex; 
+  flex-direction: column; /* Alinea los hijos (Tablero, Barcos, Botones) en vertical */
+  align-items: center;    /* Centra todo horizontalmente */
   padding: 10px;
-  background-color: #1a1a1a; /* Un color oscuro de fondo */
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  margin: 20px;
+  margin: 0px;
 }
 
 /* Contenedor de los botones de selección de barco */
