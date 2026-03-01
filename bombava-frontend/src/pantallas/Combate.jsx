@@ -1,12 +1,12 @@
-import BarraProgreso from "../componentes/barras/Barras.jsx";
+import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
 import { useState } from 'react';
 
 function Combate() {
     //Valores de prueba
     const [barras, setBarras] = useState({
-        municion: 45,
-        maxMunicion: 60,
-        combustible: 80,
+        municion: 10,
+        maxMunicion: 100,
+        combustible: 100,
         maxCombustible: 100
     });
 

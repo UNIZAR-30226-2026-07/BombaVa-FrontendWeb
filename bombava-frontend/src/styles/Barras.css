@@ -1,15 +1,25 @@
 .barra-wrapper {
     margin-bottom: 1%;
     width: 30%;
-    font-family: 'Georgia'; 
+    font-family: 'Georgia';
+    display: flex; 
+    align-items: center;
+    gap: 10px;
+}
+
+.barra-icono {
+    width: 25px;  
+    height: 25px;
 }
 
 .barra-container {
     height: 15px;
-    background-color: #4a2b1a; 
+    background-color: #5c5755; 
     border: 3px solid #b38b6d; 
     position: relative;
     border-radius: 20px; 
+    flex-grow: 1;
+    overflow: hidden;
 }
 
 .barra-contenido {
@@ -21,21 +31,13 @@
 
 .combustible .barra-contenido {
     background: linear-gradient(to bottom, #e3bbbb 0%, #c26d6d 50%, #892b2b 100%);
-    border-right: 1px solid #5a1e1e;
 }
 
 .municion .barra-contenido {
     background: linear-gradient(to bottom, #c8efef 0%, #66b2b2 50%, #226e6e 100%);
-    border-right: 1px solid #1a3d3d;
 }
 
 .barra-resumen {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     color: #ffffff;
     font-size: 0.9rem;
     font-weight: bold;
@@ -43,12 +45,11 @@
 
 .barra-nombre {
     position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 5%;
+    transform: translateY(-7%);
     color: #ffffff; 
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     z-index: 10; 
 }
 
