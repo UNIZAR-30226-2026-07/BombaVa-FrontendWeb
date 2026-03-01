@@ -24,3 +24,7 @@ export const COLORES_TERRENO = {
 export const BARCO1x1 = 1;
 export const BARCO1x3 = 3;
 export const BARCO1x5 = 5;
+
+export const Metralleta = 1;
+export const Misiles = 2;
+export const Torpedos = 3;

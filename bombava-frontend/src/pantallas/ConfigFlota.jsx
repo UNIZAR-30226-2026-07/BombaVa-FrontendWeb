@@ -3,7 +3,7 @@ import Tablero from '../components/tablero/Tablero';
 import Barco from '../components/barco/Barco.jsx';
 import { useMovimientosBarco} from '../components/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5 } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos } from '../utils/constantes.js'; 
 
 /*El mapa es la clase que engloba a todo el tablero de juego, para ello 
 incluye varias capas(de abajo a arriba sería):
@@ -64,16 +64,33 @@ const ConfigFlota = () => {
 
     return (
     <div className="mapa_config">
+    <div className="contenedor-horizontal">
+      {/* Zona del Tablero */}
+      <div className="tablero-contenedor">
         <Tablero onCellClick={gestionarClickMapa} configurar={true} />
-        
-        {barcos.map((barco) => (/*Transforma la lista de barcos en elementos visuales*/
-        <Barco 
+        {barcos.map((barco) => (
+          <Barco 
             key={barco.id} 
             barco={barco} 
             estaSeleccionado={barcoSeleccionado === barco.id}
             onClick={() => gestionarClickBarco(barco.id)}
-        />
+          />
         ))}
+      </div>
+
+      {/* Panel Lateral Derecho (Solo se ve si hay un barco seleccionado) */}
+      {barcoSeleccionado && (
+        <div className="panel-lateral">
+          <h3>EQUIPAR ARMAS</h3>
+          <p>BARCO: {barcoSeleccionado}</p>
+          <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Metralleta)}>Metralleta</button>
+          <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
+          <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
+          <button className="eliminarBarco-btn" onClick={() => borrarBarco()}>Eliminar Barco</button>
+          {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
+        </div>
+      )}
+    </div>
         <div className="botones_barco_config">
             <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x1)}>PONER BARCO 1x1</button>
             <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x3)}>PONER BARCO 1x3</button>

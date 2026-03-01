@@ -9,6 +9,33 @@
   margin: 0px;
 }
 
+.contenedor-horizontal {
+  display: flex;
+  flex-direction: row; /* Alinea tablero y panel de lado a lado */
+  align-items: flex-start;
+  gap: 20px; /* Espacio entre el tablero y los botones */
+  margin-bottom: 20px;
+}
+
+.panel-lateral {
+  background-color: #2c3e50;
+  color: white;
+  right: -200px; /* Lo pone fuera del tablero, a la derecha */
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.tablero-contenedor {
+    position: relative; /* Los barcos ahora usarán ESTE div como (0,0) */
+    width: fit-content; /* Se ajusta al tamaño del tablero */
+    margin: 0 auto;    /* Lo mantiene centrado si es necesario */
+}
+
 /* Contenedor de los botones de selección de barco */
 .botones_barco_config {
   margin-top: 20px;
@@ -35,5 +62,26 @@
 }
 
 .ponerBarco-btn:active {
+  transform: scale(0.95);
+}
+
+/*Lo hago para que el boton de eliminar sea de otro color*/
+.eliminarBarco-btn{
+  padding: 12px 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: #b92929;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.eliminarBarco-btn:hover {
+  background-color: #e04848;
+}
+
+.eliminarBarco-btn:active {
   transform: scale(0.95);
 }
