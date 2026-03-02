@@ -20,7 +20,9 @@ const ConfigFlota = () => {
         barcoSeleccionado, 
         setBarcoSeleccionado, 
         rotarBarco, 
-        anadirBarco 
+        anadirBarco, 
+        setArmas,
+        borrarBarco
     } = useMovimientosBarco([]); // Empezamos con tablero vacío
 
     // Si pulsamos un barco podremos cambiar sus armas y sale un panel con sus datos 
@@ -38,11 +40,20 @@ const ConfigFlota = () => {
         
         if(barcoAPoner != 0 && barcosPuestos[barcoAPoner] == 0){
             let nombreTipo = ""; // Declaramos la variable
-            
+            let numArmas = 0; //Para saber cuántas armas puede tener según el tamaño del barco
             switch (barcoAPoner){
-                case BARCO1x1: nombreTipo = "Barco1x1"; break;
-                case BARCO1x3: nombreTipo = "Barco1x3"; break;
-                case BARCO1x5: nombreTipo = "Barco1x5"; break;
+                case BARCO1x1: 
+                    nombreTipo = "Barco1x1"; 
+                    numArmas = 1;
+                    break;
+                case BARCO1x3: 
+                    nombreTipo = "Barco1x3"; 
+                    numArmas = 2;
+                    break;
+                case BARCO1x5: 
+                    nombreTipo = "Barco1x5";
+                    numArmas = 3; 
+                    break;
                 default: nombreTipo = "BarcoRaro";
             }
 
@@ -52,7 +63,8 @@ const ConfigFlota = () => {
                 orientacion: 'N',
                 tamano: barcoAPoner,
                 tipo: `Barco 1x-${barcoAPoner}`,
-                vida: 100
+                vida: 100,
+                armas: Array(numArmas).fill(0)
             };
             anadirBarco(nuevoBarco);
             const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
@@ -86,7 +98,7 @@ const ConfigFlota = () => {
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Metralleta)}>Metralleta</button>
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
-          <button className="eliminarBarco-btn" onClick={() => borrarBarco()}>Eliminar Barco</button>
+          <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado)}>Eliminar Barco</button>
           {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
         </div>
       )}

@@ -99,12 +99,35 @@ export const useMovimientosBarco = (barcosIniciales) => {
         setBarcos([...barcos, nuevoBarco]);
   }
 
+  const setArmas = (barcoSeleccionado,arma) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/ 
+    const encontrado = barcos.find(b => b.id === barcoSeleccionado);/*Barco seleccionado ya contiene la id del que está seleccionado*/ 
+    if (encontrado) {
+        //Hay que revisar que se pueda meter el arma en este barco
+        
+    } 
+        
+  }
+
+  const borrarBarco = (barcoSeleccionado) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/ 
+    // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
+    const nuevosBarcos = barcos.filter(barcoSeleccionado => barcoSeleccionado.id !== id);
+    
+    setBarcos(nuevosBarcos);
+
+    // Si ya no está no lo estamos seleccionando
+    if (barcoSeleccionado?.id === id) {
+        setBarcoSeleccionado(null);
+    }
+  }
+
   return {
     barcos,
     barcoSeleccionado,
     setBarcoSeleccionado,
     rotarBarco,
     moverBarco,
-    anadirBarco
+    anadirBarco,
+    setArmas,
+    borrarBarco
   };
 };
