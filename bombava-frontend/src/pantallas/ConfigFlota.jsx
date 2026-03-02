@@ -98,7 +98,7 @@ const ConfigFlota = () => {
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Metralleta)}>Metralleta</button>
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
           <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
-          <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado)}>Eliminar Barco</button>
+          <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado, setbarcosPuestos, barcosPuestos)}>Eliminar Barco</button>
           {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
         </div>
       )}

@@ -40,13 +40,28 @@ export const useMovimientosBarco = (barcosIniciales) => {
         const nuevoY = nuevoEsHorizontal ? pivoteY : pivoteY - pivoteIdx;
         console.log(`Rotación en sentido: ${nuevaOrientacion}`);
 
+        let numArmas = 0; //Para saber cuántas armas puede tener según el tamaño del barco
+        switch (b.tamano){
+            case BARCO1x1: 
+                numArmas = 1;
+                break;
+            case BARCO1x3: 
+                numArmas = 2;
+                break;
+            case BARCO1x5: 
+                numArmas = 3; 
+                break;
+            default: nombreTipo = "BarcoRaro";
+        }
+
         return {
             id: b.id,
             orientacion: nuevaOrientacion, // Nueva orientación
             tamano: b.tamano,
             tipo: b.tipo,
             vida: b.vida,
-            posicion: { x: nuevoX, y: nuevoY } //Nueva posicion
+            posicion: { x: nuevoX, y: nuevoY }, //Nueva posicion
+            armas: Array(numArmas).fill(0)
         };
         }));
   };
@@ -88,7 +103,8 @@ export const useMovimientosBarco = (barcosIniciales) => {
             tamano: b.tamano,
             tipo: b.tipo,
             vida: b.vida,
-            posicion: { x: nuevaPosicionX, y: nuevaPosicionY } //Nueva posicion
+            posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
+            armas: b.armas
         };
     }
     ));
@@ -103,21 +119,41 @@ export const useMovimientosBarco = (barcosIniciales) => {
     const encontrado = barcos.find(b => b.id === barcoSeleccionado);/*Barco seleccionado ya contiene la id del que está seleccionado*/ 
     if (encontrado) {
         //Hay que revisar que se pueda meter el arma en este barco
-        
+        let numArmas; //Pone en esta variable el max de armas de este arbol
+    
+        setBarcos(barcos.map(b => {
+
+            // Buscamos el primer hueco libre (donde haya un 0)
+            const indiceLibre = b.armas.indexOf(0);
+
+            // Si hay hueco (el índice no es -1), añadimos el arma
+            if (indiceLibre !== -1) {
+                const nuevasArmas = [...b.armas]; 
+                nuevasArmas[indiceLibre] = arma;  // Insertamos el arma
+                
+                return { ...b, armas: nuevasArmas };
+            }
+
+            return b; // Si está lleno, devolvemos el barco sin cambios
+        }));
     } 
         
   }
 
-  const borrarBarco = (barcoSeleccionado) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/ 
+  const borrarBarco = (barcoSeleccionado, setbarcosPuestos, barcosPuestos) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/ 
     // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
-    const nuevosBarcos = barcos.filter(barcoSeleccionado => barcoSeleccionado.id !== id);
+    const nuevosBarcos = barcos.filter(b => b.id !== barcoSeleccionado);
     
     setBarcos(nuevosBarcos);
 
     // Si ya no está no lo estamos seleccionando
-    if (barcoSeleccionado?.id === id) {
-        setBarcoSeleccionado(null);
-    }
+    setBarcoSeleccionado(null);
+    const encontrado = barcos.find(b => b.id === barcoSeleccionado);
+    const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
+    nuevosBarcosPuestos[encontrado.tamano] = 0; // Modifica la copia para que sepa que se puede poner otro de este tipo
+    setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
+    
+    
   }
 
   return {
