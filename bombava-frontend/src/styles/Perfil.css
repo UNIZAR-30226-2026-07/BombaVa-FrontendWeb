@@ -1,42 +1,63 @@
-.contenedor_perfil {    
-    position: relative; /* Esto permite que el botón se mueva respecto a este contenedor */
+.contenedor_perfil {
+    height: 100vh;
+    width: 100vw;
+
     background-color: #0a1f33;
     display:flex;
-    flex-direction: column; /* Pongo esto para que los elementos esten uno debajo de otro*/
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+
+    overflow: scroll;
+    scrollbar-color: #021324 transparent;
+    scrollbar-width: thin;
+
+    position: relative;
 }
 
 .titulo_perfil {
     font-size: 40px;
-    text-align: center;
     color:#7a3b0b;
-    padding: 20px;
+    text-shadow: 2px 4px rgba(0,0,0,0.5);
+    text-align: center;
+
+    min-width:1000px;
+    overflow: hidden;
+
+}
+
+.contenedor_perfil .main-content {
+    width: 50%;
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 800px;
 }
 
 .circulo_perfil {
     text-align: center;
-    background-color: #8b4513; /* Marrón */
+    background-color: #8b4513;
     width: 240px;             
-    height: 240px;            
-    border-radius: 50%;       /* Esto lo hace redondo */
+    height: 240px;     
+    min-height: 240px;       
+    border-radius: 50%;
 
-    /* Para centrar el emoji dentro del círculo */
-    display: flex;           /* Para poder cambiar posicion elementos del circulo*/
-    justify-content: center; /* Centra de izquierda a derecha */
-    align-items: center;     /* Centra de arriba a abajo*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
-    font-size: 160px;          /* Tamaño del emoji */
-    margin-top: 10px;         /* Separación con el título */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Sombra para que resalte */
-    border: 5px solid #4a2508; /*Color frontera para que resalte*/
+    font-size: 160px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    border: 5px solid #4a2508;
 
 }
 
 .info_capitan {
     text-align: center;
     color: white;
-    margin-top: 20px;
 }
 
 .info_capitan h2 {
@@ -52,7 +73,7 @@
 }
 
 .estats {
-    background: rgba(0, 0, 0, 0.3); /* Un fondo oscuro semitransparente */
+    background: rgba(0, 0, 0, 0.3);
     padding: 15px;
     border-radius: 10px;
     border: 1px solid #4a2508;
@@ -73,19 +94,19 @@
 }
 
 .boton_cerrar {
-    position: absolute; 
-    top: 20px;          /* Distancia desde arriba */
-    right: 20px;        /* Distancia desde la derecha */
+    position: fixed; 
+    top: 20px;
+    right: 20px;
     
-    background-color: #ff4d4d; /* Rojo llamativo */
+    background-color: #ff4d4d;
     color: white;
     border: none;
-    border-radius: 5px; /* O 50% si lo quieres circular */
+    border-radius: 5px;
     padding: 10px 15px;
     font-weight: bold;
     cursor: pointer;
 }
 
 .boton_cerrar:hover {
-    background-color: #cc0000; /* Rojo más oscuro al pasar el ratón */
+    background-color: #cc0000;
 }

@@ -1,5 +1,5 @@
 import { TAMANO_CELDA } from '../../utils/constantes.js';
-import './Barco.css';
+import '../../styles/Barco.css';
 
 /* Estructura de 'barco':
 > id: identificador, 
