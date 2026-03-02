@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Tablero from '../components/tablero/Tablero';
-import Barco from '../components/barco/Barco.jsx';
-import { useMovimientosBarco} from '../components/barco/movimientosBarco.js';
+import Tablero from '../componentes/tablero/Tablero';
+import Barco from '../componentes/barco/Barco.jsx';
+import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
 import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos } from '../utils/constantes.js'; 
 
