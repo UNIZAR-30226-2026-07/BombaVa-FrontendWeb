@@ -1,7 +1,6 @@
 .barco-entidad {
   position: relative;
   /*pointer-events: none; Igual hay que ponerlo si queremos gestionar todos los cliks a traves de las celdas*/
-
   /*Animación*/
   /*transition: 1s;*/
 }
@@ -15,7 +14,6 @@
   background-color: rgba(70, 70, 70,1);
   border: 2px solid rgba(10, 10,10,1);;
   border-radius: 10px;
-
   /*Animaciones:*/
   transition: all 1s;
 }
