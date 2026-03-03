@@ -5,6 +5,7 @@ import Menu from './pantallas/MenuInicio';
 import Perfil from './pantallas/Perfil';
 import InfoCard from './componentes/BoatInfoCard'
 import ConfigFlota from './pantallas/ConfigFlota'
+import Combate from "./pantallas/Combate";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/info" element={<InfoCard boatId={1} />} />
         <Route path="/profile" element={<Perfil />} />
         <Route path="/configurar" element={<ConfigFlota/>}/>
+        <Route path="/combate" element={<Combate/>}/>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

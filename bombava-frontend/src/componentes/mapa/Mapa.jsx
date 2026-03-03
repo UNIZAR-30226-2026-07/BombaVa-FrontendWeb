@@ -48,7 +48,7 @@ const Mapa = () => {
 
   return (
     <div className="mapa">
-      <Tablero onCellClick={gestionarClickMapa} />
+      <Tablero onCellClick={gestionarClickMapa} configurar={false}/>
       
       {barcos.map((barco) => (
         <Barco 

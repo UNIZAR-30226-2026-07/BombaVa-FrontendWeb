@@ -1,6 +1,6 @@
 .barra-wrapper {
     margin-bottom: 1%;
-    width: 30%;
+    width: 100%;
     font-family: 'Georgia';
     display: flex; /*Para alinear el icono y la barra en una fila*/
     align-items: center; 
