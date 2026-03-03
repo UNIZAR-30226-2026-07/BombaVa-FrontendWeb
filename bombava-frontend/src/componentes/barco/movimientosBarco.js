@@ -40,28 +40,11 @@ export const useMovimientosBarco = (barcosIniciales) => {
         const nuevoY = nuevoEsHorizontal ? pivoteY : pivoteY - pivoteIdx;
         console.log(`Rotación en sentido: ${nuevaOrientacion}`);
 
-        let numArmas = 0; //Para saber cuántas armas puede tener según el tamaño del barco
-        switch (b.tamano){
-            case BARCO1x1: 
-                numArmas = 1;
-                break;
-            case BARCO1x3: 
-                numArmas = 2;
-                break;
-            case BARCO1x5: 
-                numArmas = 3; 
-                break;
-            default: nombreTipo = "BarcoRaro";
-        }
 
         return {
-            id: b.id,
+            ...b, // Copia el resto de propiedades del barco sin cambios
             orientacion: nuevaOrientacion, // Nueva orientación
-            tamano: b.tamano,
-            tipo: b.tipo,
-            vida: b.vida,
             posicion: { x: nuevoX, y: nuevoY }, //Nueva posicion
-            armas: Array(numArmas).fill(0)
         };
         }));
   };
@@ -98,13 +81,8 @@ export const useMovimientosBarco = (barcosIniciales) => {
         }
 
         return {
-            id: b.id,
-            orientacion: b.orientacion,
-            tamano: b.tamano,
-            tipo: b.tipo,
-            vida: b.vida,
+            ...b,// Copia el resto de propiedades del barco sin cambios
             posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
-            armas: b.armas
         };
     }
     ));

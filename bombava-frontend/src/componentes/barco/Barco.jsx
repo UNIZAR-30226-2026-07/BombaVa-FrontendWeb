@@ -28,7 +28,11 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
     alto = TAMANO_CELDA * barco.tamano;
   }
 
-  const nombreClase = (estaSeleccionado)? `barco-entidad seleccionado` : `barco-entidad`;
+  //Nombre de la clase basado en el estado y tipo del barco
+  let nombreClase = 'barco-entidad';
+  if (estaSeleccionado) nombreClase += ' seleccionado';
+  if (barco.esEnemigo) nombreClase += ' enemigo';
+  else nombreClase += ' aliado';
 
   return (
     <div 
@@ -44,6 +48,9 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
         Para introducir la imagen del barco sería aquí*/ }
       <div className="barco-visual"
         onClick={() => {onClick();}}
+        style={{/*Color de fondo diferente para barcos enemigos y aliados*/
+          backgroundColor: barco.esEnemigo ? 'rgba(253, 2, 2, 1)' : 'rgb(12, 26, 54)',
+        }}
       ></div>
     </div>
   );
