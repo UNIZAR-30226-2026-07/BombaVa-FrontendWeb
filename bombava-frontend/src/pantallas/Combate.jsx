@@ -2,6 +2,7 @@ import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
 import { useState } from 'react';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
+import MenuPausa from "../componentes/menuPausa/MenuPausa.jsx";
 import '../styles/Combate.css'; 
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -31,6 +32,9 @@ function Combate() {
                 > COLUMNA DERECHA: Información del barco seleccionado
             */
             }
+            
+            {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
+            <MenuPausa /> 
             {/*COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) */}
             <div className="combate-columna-izquierda">
                 {/* Barras de recursos */}
