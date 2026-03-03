@@ -45,8 +45,8 @@
 
 /* El recuadro de menu central */
 .menu-pausa {
-    background-color: #16213e;
-    border: 3px solid #0f3460;
+    background:  linear-gradient(to bottom, #8b5e3c,  #b68d68); 
+    border: 3px solid #433605;
     padding: 3%;
     border-radius: 15px;
     text-align: center;
