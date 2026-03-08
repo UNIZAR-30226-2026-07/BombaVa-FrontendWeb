@@ -20,8 +20,29 @@ function Combate() {
         maxCombustible: 100
     });
 
+    // Función para actualizar la munición, restando el coste de munición al valor actual
+    const actualizarMunicion = (coste) => {
+        setBarras(prev => ({
+            ...prev,
+            // Evitamos que pueda ser negativo el valor de la munición
+            municion: Math.max(0, prev.municion - coste)
+        }));
+    };
+
+    // Función para actualizar el combustible, restando el coste de combustible al valor actual.
+    const actualizarCombustible= (coste) => {
+        setBarras(prev => ({
+            ...prev,
+             // Evitamos que pueda ser negativo el valor del combustible
+            combustible: Math.max(0, prev.combustible - coste)
+        }));
+    };
+
    // Estado para seleccionar un barco (ID = 1 para pruebas)
     const [selectedBoatId, setSelectedBoatId] = useState(1);
+
+    // Estado para saber si estamos en modo ataque
+    const [modoAtaque, setModoAtaque] = useState(false);
 
     return (
         <div className="combate-contenedor">

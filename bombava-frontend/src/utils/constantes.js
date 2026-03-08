@@ -28,3 +28,10 @@ export const BARCO1x5 = 5;
 export const Metralleta = 1;
 export const Misiles = 2;
 export const Torpedos = 3;
+
+// Configuración de ataque base
+export const ATAQUE_BASE = {
+  COSTE: 2,
+  DANO: 10,
+  RANGO: 4
+};

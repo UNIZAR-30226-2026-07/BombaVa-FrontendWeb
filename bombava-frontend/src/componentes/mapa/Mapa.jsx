@@ -19,12 +19,12 @@ const Mapa = () => {
     rotarBarco,
     moverBarco 
   } = useMovimientosBarco([ 
-    //BARCOS ALIADOS (Jugador):
+    //BARCOS ALIADOS:
     { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },
     { id: 'aliado_2', posicion: { x: 6, y: 11 }, orientacion: 'N', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: false },
     { id: 'aliado_3', posicion: { x: 10, y: 9 }, orientacion: 'N', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: false },
 
-    // BARCOS ENEMIGOS (Rival):
+    // BARCOS ENEMIGOS:
     { id: 'enemigo_1', posicion: { x: 2, y: 2 }, orientacion: 'S', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: true },
     { id: 'enemigo_2', posicion: { x: 6, y: 2 }, orientacion: 'S', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: true },
     { id: 'enemigo_3', posicion: { x: 10, y: 0 }, orientacion: 'S', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: true }

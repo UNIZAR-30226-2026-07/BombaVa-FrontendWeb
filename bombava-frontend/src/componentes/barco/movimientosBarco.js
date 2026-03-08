@@ -134,6 +134,66 @@ export const useMovimientosBarco = (barcosIniciales) => {
     
   }
 
+  // Comprueba si un barco ocupa una coordenada (x, y), 
+  // teniendo en cuenta su posición, orientación y tamaño
+    const ocupaCasilla = (barco, objetivoX, objetivoY) => {
+        const esHorizontal = barco.orientacion === 'E' || barco.orientacion === 'O';
+        
+        if (esHorizontal) {
+            // El barco se extiende en el eje X
+            return objetivoY == barco.posicion.y && 
+                   objetivoX >= barco.posicion.x && 
+                   objetivoX < barco.posicion.x + barco.tamano;
+        } else {
+            // El barco se extiende en el eje Y
+            return objetivoX == barco.posicion.x && 
+                   objetivoY >= barco.posicion.y && 
+                   objetivoY < barco.posicion.y + barco.tamano;
+        }
+    };
+
+    // Función para atacar una celda con un barco atacante (identificado por su ID) 
+    // a una coordenada (targetX, targetY) con un daño específico y un rango máximo.
+    const atacarCelda = (atacanteId, targetX, targetY, dano, rangoMaximo) => {
+        const atacante = barcos.find(b => b.id == atacanteId);
+        if (!atacante) return { exito: false, mensaje: "Atacante no encontrado" };
+
+        // Comprobamos el rango usando Distancia Manhattan (distancia en línea recta).
+        const distancia = Math.abs(atacante.posicion.x - targetX) + Math.abs(atacante.posicion.y - targetY);
+        if (distancia > rangoMaximo) {
+            alert("Fuera de rango");
+            return false;
+        }
+
+        let impacto = false;
+
+        //Buscamos si algún barco enemigo ocupa esa casilla y le restamos la vida
+        const nuevosBarcos = barcos.map(b => {
+            if (b.id != atacanteId && ocupaCasilla(b, targetX, targetY)) {
+                impacto = true;
+                // Reducimos la vida del barco atacado, asegurándonos de que no sea negativa
+                const nuevaVida = Math.max(0, b.vida - dano);
+                
+                if (nuevaVida === 0) {
+                    alert(`Barco ${b.id} hundido`);
+                } else {
+                    alert(`Barco ${b.id} impactado, vida restante: ${nuevaVida}`);
+                }
+
+                return { ...b, vida: nuevaVida };
+            }
+            return b;
+        });
+
+        if (impacto) {
+            setBarcos(nuevosBarcos);
+        } else {
+            alert("Ataque fallido, no hay barcos en esa posición");
+        }
+
+        return true; // El ataque se realizó, aunque haya impactado o no.
+    };
+
   return {
     barcos,
     barcoSeleccionado,
@@ -142,6 +202,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
     moverBarco,
     anadirBarco,
     setArmas,
-    borrarBarco
+    borrarBarco,
+    atacarCelda
   };
 };
