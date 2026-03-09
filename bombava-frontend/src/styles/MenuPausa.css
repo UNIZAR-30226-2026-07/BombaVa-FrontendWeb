@@ -1,0 +1,107 @@
+/* --- Estilos del Botón de Pausa (Esquina) --- */
+.pausa-contenedor {
+    position: absolute;
+    top: 1.5%;
+    right: 1.5%;
+    z-index: 100; /* Asegura que esté por encima del resto de elementos de la pantalla*/
+}
+
+/*==BOTÓN DE PAUSA==*/
+
+.btn-pausa {
+    background:  linear-gradient(to bottom, #b68d68, #8b5e3c); 
+    border: 2px solid #543924;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+}
+
+.btn-pausa:hover {
+    background-color: #1a1a2e;
+    transform: scale(1.05);
+}
+
+/*==CUADRO DE PAUSA==*/
+
+/* Fondo oscuro que cubre toda la pantalla */
+.menu-pausa-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente muy oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 101; /* Para que esté por encima del botón de pausa */
+}
+
+/* El recuadro de menu central */
+.menu-pausa {
+    background:  linear-gradient(to bottom, #8b5e3c,  #b68d68); 
+    border: 3px solid #433605;
+    padding: 3%;
+    border-radius: 15px;
+    text-align: center;
+    animation: Aparecer 1s ease;   /* Animación de aparición*/
+}
+
+.menu-pausa h2 {
+    color: white;
+    font-family: Georgia;
+    font-size: 2rem;
+    margin-bottom: 10%;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Contenedor de los botones */
+.menu-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Estilo base para los botones del menú */
+.btn-menu {
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    color: white;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.btn-continuar {
+    background-color: #1f8c4c;
+}
+.btn-continuar:hover {
+    background-color: #2ecc71;
+}
+
+.btn-abandonar {
+    background-color: #6a2119;
+}
+.btn-abandonar:hover {
+    background-color: #e74c3c;
+}
+
+.btn-guardar {
+    background-color: #0f3460; 
+}
+.btn-guardar:hover {
+    background-color: #1d65bc;
+}
+
+
+@keyframes Aparecer {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
