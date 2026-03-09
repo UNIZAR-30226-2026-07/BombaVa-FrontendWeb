@@ -90,10 +90,12 @@ function ActionButtons({ boatId }) {
 
             <div className="movement-buttons">
 
-                <button onClick={() => moveFoward(boatId)} alt='Adelante'>↑</button>
-                <button onClick={() => turnLeft(boatId)} alt='Girar Izquierda'>↰</button>
-                <button onClick={() => turnRight(boatId)} alt='Girar Derecha'>↱</button>
-                <img src="/assets/boattopview.png" alt="" className="" />
+                <button onClick={() => turnLeft(boatId)} alt='Girar Izquierda' className='Izquierda'>↰</button>
+                <div className="middle">
+                    <button onClick={() => moveFoward(boatId)} alt='Adelante' className='Adelante'>↥</button>
+                    <img src="/public/topview.png" alt="" className="" />
+                </div>
+                <button onClick={() => turnRight(boatId)} alt='Girar Derecha' className='Derecha'>↱</button>
 
             </div>
 
