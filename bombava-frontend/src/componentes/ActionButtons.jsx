@@ -42,9 +42,16 @@ function ActionButtons({ boatId }) {
         { id: 3, label: '' },
         { id: 4, label: '' },
     ]);
+    const [currentIndex, setCurrentIndex] = React.useState(0);
     const [action, setAction] = React.useState(buttonList[0]);
 
-    let current_action = 0;
+    React.useEffect(() => {
+        if (!buttonList || buttonList.length === 0) {
+            setAction({ id: null, label: '' });
+            return;
+        }
+        setAction(buttonList[(currentIndex % buttonList.length)]);
+    }, [currentIndex, buttonList]);
 
     // API: obtener la lista de acciones posibles
 
@@ -55,27 +62,23 @@ function ActionButtons({ boatId }) {
 
                 <div className="attack-display" >
 
-                    <button className="change-left" 
-                    onClick={
-                        () => {
-                            current_action = (current_action + buttonList.length - 1) % buttonList.length;
-                            setAction(buttonList[current_action]);
+                    <button type="button" aria-label="Anterior" className="change-left"
+                        onClick={() => {
+                            setCurrentIndex(i => (i + buttonList.length - 1) % buttonList.length);
                             console.log('Previous action');
-                        }
-                    }/>
+                        }}>
+                    </button>
 
                     <div className="attack-label" onClick={() => attack(boatId, action.id)}>
                         <img src={labelToImage(action.label)} alt={action.label} className="attack-icon" />
                     </div>
 
-                    <button className="change-right" 
-                    onClick={
-                        () => {
-                            current_action = (current_action + 1) % buttonList.length;
-                            setAction(buttonList[current_action]);
+                    <button type="button" aria-label="Siguiente" className="change-right"
+                        onClick={() => {
+                            setCurrentIndex(i => (i + 1) % buttonList.length);
                             console.log('Next action');
-                        }
-                    }/>
+                        }}>
+                    </button>
 
                 </div>
 
