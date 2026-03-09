@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/ActionButtons.css';
 
 function moveFoward(boatId) {
     // API: mover el barco hacia adelante
@@ -52,29 +53,33 @@ function ActionButtons({ boatId }) {
 
             <div className="attack-buttons">
 
-                <div className="attack-button" >
+                <div className="attack-display" >
 
                     <button className="change-left" 
                     onClick={
                         () => {
                             current_action = (current_action + buttonList.length - 1) % buttonList.length;
                             setAction(buttonList[current_action]);
+                            console.log('Previous action');
                         }
                     }/>
 
-                    <div className="attack-label" onClick={() => attack(boatId, action.id)}>{labelToImage(action.label)}</div>
+                    <div className="attack-label" onClick={() => attack(boatId, action.id)}>
+                        <img src={labelToImage(action.label)} alt={action.label} className="attack-icon" />
+                    </div>
 
                     <button className="change-right" 
                     onClick={
                         () => {
                             current_action = (current_action + 1) % buttonList.length;
                             setAction(buttonList[current_action]);
+                            console.log('Next action');
                         }
                     }/>
 
                 </div>
 
-                <button className="fire-button" onClick={() => attack(boatId, 2)}>
+                <button className="fire-button" onClick={() => attack(boatId, action.id)}>
                     Fuego
                 </button>
 
@@ -82,10 +87,10 @@ function ActionButtons({ boatId }) {
 
             <div className="movement-buttons">
 
-                <button onClick={() => moveFoward(boatId)}>Adelante</button>
-                <button onClick={() => turnLeft(boatId)}>Girar Izquierda</button>
-                <button onClick={() => turnRight(boatId)}>Girar Derecha</button>
-                <img src="/assets/attack-icon.png" alt="" className="mov-icon" />
+                <button onClick={() => moveFoward(boatId)} alt='Adelante'>↑</button>
+                <button onClick={() => turnLeft(boatId)} alt='Girar Izquierda'>↰</button>
+                <button onClick={() => turnRight(boatId)} alt='Girar Derecha'>↱</button>
+                <img src="/assets/boattopview.png" alt="" className="" />
 
             </div>
 
