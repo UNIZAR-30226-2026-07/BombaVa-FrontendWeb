@@ -4,6 +4,7 @@
     background-color: black;
     border-radius: 5px;
     height: 20px;
+    min-height: 20px;
     overflow: hidden;
 }
 
@@ -87,7 +88,7 @@
     flex-direction: column;
 }
 
-.boat-info-card .info-card-content > p {
+.boat-info-card .info-card-content>p {
     width: 90%;
     font-size: 1.2em;
     color: rgb(66, 32, 0);
@@ -130,4 +131,3 @@
 .boat-info-card .info-card-content ul li:first-child {
     border-top: none;
 }
-

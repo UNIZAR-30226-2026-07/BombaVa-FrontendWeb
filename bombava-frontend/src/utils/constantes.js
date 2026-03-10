@@ -9,16 +9,16 @@ export const TERRENO = {
   AGUA: 'agua',     // Agua profunda
   ISLA: 'isla',   // Isla 
   AGUA_NO_PROFUNDA: 'agua_no_profunda',
-  NO_VISION: 'zona_sin_vision' 
+  NO_VISION: 'zona_sin_vision'
 };
 
 // Configuración visual temporal, mientras no haya imagenes para islas, ...
 export const COLORES_TERRENO = {
-  [TERRENO.AGUA]: '#1e88e5',    
+  [TERRENO.AGUA]: '#1e88e5',
   [TERRENO.ISLA]: '#aed581',
   [TERRENO.AGUA_NO_PROFUNDA]: '#a6cff3',
   [TERRENO.NO_VISION]: '#6c8092'
-, 
+  ,
 };
 
 export const BARCO1x1 = 1;
@@ -32,6 +32,25 @@ export const Torpedos = 3;
 // Configuración de ataque base
 export const ATAQUE_BASE = {
   COSTE: 2,
-  DANO: 10,
-  RANGO: 4
+  DANO: 50,
+  RANGO: 8
+};
+
+// Configuración de los módulos según tamaño del barco
+export const MODULOS_BARCO = {
+  [BARCO1x1]: [
+    { id: 0, nombre: "Núcleo", vidaMax: 100 }
+  ],
+  [BARCO1x3]: [
+    { id: 0, nombre: "Sistema de Armas", vidaMax: 80 },
+    { id: 1, nombre: "Puente de Mando", vidaMax: 100 },
+    { id: 2, nombre: "Motor", vidaMax: 80 }
+  ],
+  [BARCO1x5]: [
+    { id: 0, nombre: "Sistema de Armas", vidaMax: 80 },
+    { id: 1, nombre: "Casco", vidaMax: 120 },
+    { id: 2, nombre: "Puente de Mando", vidaMax: 150 },
+    { id: 3, nombre: "Casco", vidaMax: 120 },
+    { id: 4, nombre: "Motor", vidaMax: 80 }
+  ]
 };

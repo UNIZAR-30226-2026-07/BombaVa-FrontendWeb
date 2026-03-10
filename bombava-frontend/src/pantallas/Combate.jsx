@@ -2,8 +2,10 @@ import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
 import { useState } from 'react';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
-import MenuPausa from "../componentes/menuPausa/MenuPausa.jsx";
-import '../styles/Combate.css'; 
+import MenuPausa from "../componentes/botones/MenuPausa.jsx";
+import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
+import { ATAQUE_BASE } from "../utils/constantes.js";
+import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
     > COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) 
@@ -30,53 +32,86 @@ function Combate() {
     };
 
     // Función para actualizar el combustible, restando el coste de combustible al valor actual.
-    const actualizarCombustible= (coste) => {
+    const actualizarCombustible = (coste) => {
         setBarras(prev => ({
             ...prev,
-             // Evitamos que pueda ser negativo el valor del combustible
+            // Evitamos que pueda ser negativo el valor del combustible
             combustible: Math.max(0, prev.combustible - coste)
         }));
     };
 
-   // Estado para seleccionar un barco (ID = 1 para pruebas)
-    const [selectedBoatId, setSelectedBoatId] = useState(1);
+    // Estado para seleccionar un barco
+    const [selectedBoat, setSelectedBoat] = useState(null);
 
     // Estado para saber si estamos en modo ataque
     const [modoAtaque, setModoAtaque] = useState(false);
 
+    // Función que se ejecutará al realizar un ataque en el mapa
+    const handleAtaqueRealizado = () => {
+        actualizarMunicion(ATAQUE_BASE.COSTE);
+        setModoAtaque(false); // Desactivamos el modo ataque tras realizarlo
+    };
+
+    // Función que se activa al pulsar en atacar en el panel de control
+    const activarModoAtaque = () => {
+        if (modoAtaque) {
+            // Si estas en modo ataque y vuelves a pulsar en atacar, 
+            // se desactiva el modo ataque
+            setModoAtaque(false);
+            return;
+        }
+        if (barras.municion < ATAQUE_BASE.COSTE) {
+            alert("No hay suficiente munición para atacar");
+            return;
+        }
+        setModoAtaque(true);
+    };
+
+    const handlePasarTurno = () => {
+        alert("Turno pasado");
+        // CUIDADO!!! -> Completar con el backend la lógica de pasar el turno
+    };
+
     return (
         <div className="combate-contenedor">
             {
-            /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
-                > COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) 
-                > COLUMNA CENTRAL: Hueco para los botones de movimiento/ataque
-                > COLUMNA DERECHA: Información del barco seleccionado
-            */
+                /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
+                    > COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) 
+                    > COLUMNA CENTRAL: Hueco para los botones de movimiento/ataque
+                    > COLUMNA DERECHA: Información del barco seleccionado
+                */
             }
-            
+
+            {/*Botón para pasar el turno*/}
+            <BtnPasarTurno onPasarTurno={handlePasarTurno} />
+
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
-            <MenuPausa /> 
+            <MenuPausa />
             {/*COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) */}
             <div className="combate-columna-izquierda">
                 {/* Barras de recursos */}
                 <div className="recursos-contendor">
-                    <BarraProgreso 
+                    <BarraProgreso
                         etiqueta="Combustible"
                         tipo="combustible"
                         valorActual={barras.combustible}
                         maxValor={barras.maxCombustible}
                     />
-                    <BarraProgreso 
+                    <BarraProgreso
                         etiqueta="Munición"
                         tipo="municion"
                         valorActual={barras.municion}
                         maxValor={barras.maxMunicion}
                     />
                 </div>
-                
+
                 {/* Contenedor del Mapa (Incluye tablero y barcos) */}
                 <div className="mapa-contendor">
-                    <Mapa />
+                    <Mapa
+                        modoAtaque={modoAtaque}
+                        onAtaqueRealizado={handleAtaqueRealizado}
+                        onSeleccionarBarco={setSelectedBoat}
+                    />
                 </div>
             </div>
 
@@ -85,18 +120,23 @@ function Combate() {
                 <h3 className="titulo-acciones">Panel de control</h3>
                 <div className="acciones">
                     {/* Botones temporales-> HABRÁ QUE CAMBIARLO */}
-                    <button className="boton-temporal">
+                    <button className="boton-temporal"
+                        onClick={() => setModoAtaque(false)}
+                    >
                         Mover
                     </button>
-                    <button className="boton-temporal">
-                        Atacar
+                    <button className={`boton-temporal ${modoAtaque ? 'activo' : ''}`}
+                        onClick={activarModoAtaque}
+                        style={{ backgroundColor: modoAtaque ? 'red' : '' }}
+                    >
+                        {modoAtaque ? 'Selecciona objetivo' : 'Atacar'}
                     </button>
                 </div>
             </div>
 
             {/* COLUMNA DERECHA: Información del barco seleccionado */}
             <div className="combate-columna-derecha">
-                <BoatInfoCard boatId={selectedBoatId} />
+                <BoatInfoCard boat={selectedBoat} />
             </div>
         </div>
     );
