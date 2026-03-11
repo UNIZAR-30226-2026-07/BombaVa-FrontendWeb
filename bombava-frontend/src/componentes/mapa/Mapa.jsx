@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
-import { useMovimientosBarco } from '../barco/movimientosBarco.js';
-import { ATAQUE_BASE } from '../../utils/constantes.js';
+import { useMovimientosBarco, calcularCentroBarco } from '../barco/movimientosBarco.js';
+import { ATAQUE_BASE, TAMANO_TABLERO } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
 
 /*El mapa es la clase que engloba a todo el tablero de juego, para ello 
@@ -108,9 +108,31 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
     }
   };
 
+  // Calcular celdas en rango
+  const calcularCeldasEnRango = () => {
+    if (!barcoSeleccionado) return new Set();
+    const atacante = barcos.find(b => b.id == barcoSeleccionado);
+    if (!atacante) return new Set();
+
+    const { centroX, centroY } = calcularCentroBarco(atacante);
+
+    const celdas = new Set();
+    for (let x = 0; x < TAMANO_TABLERO; x++) {
+      for (let y = 0; y < TAMANO_TABLERO; y++) {
+        const distancia = Math.abs(centroX - x) + Math.abs(centroY - y);
+        if (distancia <= ATAQUE_BASE.RANGO) {
+          celdas.add(`${x},${y}`);
+        }
+      }
+    }
+    return celdas;
+  };
+
+  const celdasEnRango = calcularCeldasEnRango();
+
   return (
     <div className="mapa">
-      <Tablero onCellClick={gestionarClickMapa} configurar={false} />
+      <Tablero onCellClick={gestionarClickMapa} configurar={false} celdasEnRango={celdasEnRango} />
 
       {barcos.map((barco) => (
         <Barco

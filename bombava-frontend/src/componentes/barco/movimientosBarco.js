@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import { MODULOS_BARCO } from '../../utils/constantes';
 
+export const calcularCentroBarco = (barco) => {
+    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+    const medioTamano = Math.floor(barco.tamano / 2);
+
+    const centroX = esHorizontal ? barco.posicion.x + medioTamano : barco.posicion.x;
+    const centroY = esHorizontal ? barco.posicion.y : barco.posicion.y + medioTamano;
+
+    return { centroX, centroY };
+};
+
 export const useMovimientosBarco = (barcosIniciales) => {
 
     // Función para inicializar un barco con módulos
@@ -192,11 +202,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
         if (!atacante) return false;
 
         // Calculamos el centro del barco atacante para medir la distancia desde ahí
-        const esHorizontal = atacante.orientacion == 'E' || atacante.orientacion == 'O';
-        const medioTamano = Math.floor(atacante.tamano / 2);
-
-        const centroX = esHorizontal ? atacante.posicion.x + medioTamano : atacante.posicion.x;
-        const centroY = esHorizontal ? atacante.posicion.y : atacante.posicion.y + medioTamano;
+        const { centroX, centroY } = calcularCentroBarco(atacante);
 
         // Comprobamos el rango usando la distancia Manhattan (distancia en línea recta).
         const distancia = Math.abs(centroX - targetX) + Math.abs(centroY - targetY);

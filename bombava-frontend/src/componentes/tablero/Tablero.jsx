@@ -13,9 +13,9 @@ const generarMapaInicial = () => {
       let tipoterreno = TERRENO.AGUA;
 
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
-      if (x >= 6 && x < 9 && y >= 6 && y < 9){
+      if (x >= 6 && x < 9 && y >= 6 && y < 9) {
         tipoterreno = TERRENO.ISLA;
-      } 
+      }
 
       fila.push({ x, y, tipoterreno });
     }
@@ -33,9 +33,9 @@ const generarMapaConfiguracion = () => {
       let tipoterreno = TERRENO.AGUA;
 
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
-      if ( y >= 10){
+      if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
-      }else{
+      } else {
         tipoterreno = TERRENO.NO_VISION;
       }
 
@@ -47,7 +47,7 @@ const generarMapaConfiguracion = () => {
 };
 
 // Recibe la función onClick desde Mapa.jsx
-const Tablero = ({ onCellClick, configurar }) => {
+const Tablero = ({ onCellClick, configurar, celdasEnRango }) => {
   let mapaInicial;
 
   //Decidimos que mapa generar
@@ -61,7 +61,7 @@ const Tablero = ({ onCellClick, configurar }) => {
 
   return (
     <div className="tablero"
-    style={{
+      style={{
         // Aplicamos el formato de cuadricula
         gridTemplateColumns: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`,
         gridTemplateRows: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`
@@ -74,6 +74,7 @@ const Tablero = ({ onCellClick, configurar }) => {
             x={celda.x}
             y={celda.y}
             tipo_terreno={celda.tipoterreno}
+            enRangoAtaque={celdasEnRango.has(`${celda.x},${celda.y}`)}
             onClick={onCellClick}
           />
         ))
