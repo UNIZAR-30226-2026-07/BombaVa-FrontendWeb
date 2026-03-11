@@ -108,20 +108,29 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
     }
   };
 
-  // Calcular celdas en rango
+  // Calcular celdas en el rango de ataque del barco seleccionado
+  // Devuelve: un Set(tabla hash) con las celdas que están en el rango de ataque
   const calcularCeldasEnRango = () => {
+    // Si no hay un barco seleccionado, no hay celdas en rango, devolvemos un Set vacío
     if (!barcoSeleccionado) return new Set();
+    // Buscamos el barco seleccionado
     const atacante = barcos.find(b => b.id == barcoSeleccionado);
     if (!atacante) return new Set();
 
+    // Calculamos el centro del barco seleccionado
     const { centroX, centroY } = calcularCentroBarco(atacante);
 
+    // Calculamos las celdas en el rango de ataque, y las agregamos a un Set(tabla hash)
     const celdas = new Set();
-    for (let x = 0; x < TAMANO_TABLERO; x++) {
-      for (let y = 0; y < TAMANO_TABLERO; y++) {
-        const distancia = Math.abs(centroX - x) + Math.abs(centroY - y);
-        if (distancia <= ATAQUE_BASE.RANGO) {
-          celdas.add(`${x},${y}`);
+    for (let x = centroX - ATAQUE_BASE.RANGO; x <= centroX + ATAQUE_BASE.RANGO; x++) {
+      for (let y = centroY - ATAQUE_BASE.RANGO; y <= centroY + ATAQUE_BASE.RANGO; y++) {
+        // Si la celda está fuera del tablero, no la agregamos
+        if (x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO) {
+          const distancia = Math.abs(centroX - x) + Math.abs(centroY - y);
+          // Si la celda está fuera del rango, no la agregamos
+          if (distancia <= ATAQUE_BASE.RANGO) {
+            celdas.add(`${x},${y}`);
+          }
         }
       }
     }
@@ -138,7 +147,7 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
         <Barco
           key={barco.id}
           barco={barco}
-          estaSeleccionado={barcoSeleccionado === barco.id}
+          estaSeleccionado={barcoSeleccionado == barco.id}
           onClick={(x, y) => gestionarClickBarco(barco, x, y)}
         />
       ))}

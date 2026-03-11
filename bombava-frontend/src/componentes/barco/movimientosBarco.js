@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { MODULOS_BARCO } from '../../utils/constantes';
 
+// Función que calcula cual es la celda centrál del barco
+/*Parametros:
+* barco: barco del que se calculará la celda central
+* Devuelve: un objeto con las coordenadas x e y de la celda central
+*/
 export const calcularCentroBarco = (barco) => {
     const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
     const medioTamano = Math.floor(barco.tamano / 2);
 
+    // Sabiendo hacia en qué sentido está el barco(horizontal o vertical) calculamos 
+    // la celda central, si es horizontal la celda central será la que tenga el 
+    // valor medio del tamaño del barco en el eje X, si es vertical la celda central 
+    // será la que tenga el valor medio del tamaño del barco en el eje Y.
     const centroX = esHorizontal ? barco.posicion.x + medioTamano : barco.posicion.x;
     const centroY = esHorizontal ? barco.posicion.y : barco.posicion.y + medioTamano;
 
@@ -197,6 +206,14 @@ export const useMovimientosBarco = (barcosIniciales) => {
     // Función para atacar una celda con un barco atacante
     // a una coordenada (targetX, targetY) con un daño específico y 
     // un rango máximo.
+    /*Parametros:
+    * atacanteId: id del barco atacante
+    * targetX: coordenada X de la celda objetivo
+    * targetY: coordenada Y de la celda objetivo
+    * dano: daño que se aplica al módulo impactado
+    * rangoMaximo: rango máximo de ataque del barco atacante
+    * Devuelve: true si el ataque es válido, false en caso contrario
+    */
     const atacarCelda = (atacanteId, targetX, targetY, dano, rangoMaximo) => {
         const atacante = barcos.find(b => b.id == atacanteId);
         if (!atacante) return false;
@@ -229,8 +246,10 @@ export const useMovimientosBarco = (barcosIniciales) => {
                     if (moduloImpactado.destruido) {
                         alert(`El módulo del Barco ${b.id} ya estaba destruido.`);
                     } else {
+                        //Restamos la vida al módulo impactado, la vida no puede ser menor a 0
                         const nuevaVidaModulo = Math.max(0, moduloImpactado.vida - dano);
                         moduloImpactado.vida = nuevaVidaModulo;
+                        //Si la vida es 0, el módulo se destruye
                         if (nuevaVidaModulo == 0) {
                             moduloImpactado.destruido = true;
                             alert(`Un módulo del Barco ${b.id} ha sido destruido`);
@@ -239,7 +258,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
                         }
                     }
 
-                    // Calculamos la vida total sumando la vida de cada módulo con un bucle for
+                    // Calculamos la vida total sumando la vida de cada módulo
                     let vidaTotal = 0;
                     for (let i = 0; i < nuevosModulos.length; i++) {
                         vidaTotal += nuevosModulos[i].vida;

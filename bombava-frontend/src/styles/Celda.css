@@ -5,6 +5,9 @@
   transition: 0.3s;
 }
 
+/* Efecto visual al pasar el ratón por encima de la celda
+   No se tienen en cuenta las celdas que no están en la zona 
+   de visión */
 .celda:not(.celda-zona_sin_vision):hover {
   filter: brightness(1.15);
   /* Aumenta el brillo de la celda */
@@ -12,6 +15,7 @@
   /* Añade un brillo interior blanco*/
 }
 
+/* Efecto visual para las celdas que están en el rango de ataque del barco seleccionado */
 .celda.en-rango-ataque {
   filter: brightness(1.3);
 }
