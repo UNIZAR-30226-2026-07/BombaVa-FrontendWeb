@@ -105,13 +105,15 @@ const ConfigFlota = () => {
         {/* Panel Lateral Derecho (Solo se ve si hay un barco seleccionado) */}
         {barcoSeleccionado && (
             <div className="panel-lateral">
-            <h3>EQUIPAR ARMAS</h3>
-            <p>BARCO: {barcoSeleccionado}</p>
-            <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Metralleta)}>Metralleta</button>
-            <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
-            <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
-            <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado, setbarcosPuestos, barcosPuestos)}>Eliminar Barco</button>
-            {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
+
+                <h3>EQUIPAR ARMAS</h3>
+                <p>BARCO: {barcoSeleccionado}</p>
+                <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Metralleta)}>Metralleta</button>
+                <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
+                <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
+                <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado, setbarcosPuestos, barcosPuestos)}>Eliminar Barco</button>
+                {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
+                
             </div>
         )}
         
