@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MODULOS_BARCO } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO } from '../../utils/constantes';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
@@ -285,6 +285,31 @@ export const useMovimientosBarco = (barcosIniciales) => {
         return true; // El ataque se realizó, aunque haya impactado o no.
     };
 
+    //Funcion utilizada para saber si se puede colocar el barco en esta celda, se obtiene el tipo
+    //de celda de mapa 
+    const celdaEsValida = (x, y,mapa,barcos) =>{
+        let tipoCelda; 
+        let celdaValida = true;
+        if(x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO){
+            tipoCelda = mapa[y][x].tipoCelda;
+            if(tipoCelda == TERRENO.AGUA){
+                for (let barco of barcos) {
+                    if (barco.x === x && barco.y === y) {
+                        // Si coincide la X Y la Y, hay un barco estorbando
+                        celdaValida = false; 
+                    }
+                }
+            }else{
+                celdaValida = false;
+            }
+        }else{
+            celdaValida = false;
+        }
+
+        return celdaValida;
+        
+    }
+
     return {
         barcos,
         barcoSeleccionado,
@@ -294,6 +319,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
         anadirBarco,
         setArmas,
         borrarBarco,
-        atacarCelda
+        atacarCelda,
+        celdaEsValida
     };
 };
