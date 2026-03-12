@@ -48,6 +48,7 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
         Para introducir la imagen del barco sería aquí*/ }
       <div className="barco-visual"
         onClick={(e) => {
+          e.stopPropagation();
           // Calculamos la celda exacta en la que se hizo click
 
           // Obtenemos la posición exacta del clic dentro de la pantalla
