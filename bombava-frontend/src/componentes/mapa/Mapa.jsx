@@ -19,7 +19,8 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
     setBarcoSeleccionado,
     rotarBarco,
     moverBarco,
-    atacarCelda
+    atacarCelda,
+    celdaEsValida
   } = useMovimientosBarco([
     //BARCOS ALIADOS:
     { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },

@@ -22,7 +22,8 @@ const ConfigFlota = () => {
         rotarBarco, 
         anadirBarco, 
         setArmas,
-        borrarBarco
+        borrarBarco,
+        celdaEsValida
     } = useMovimientosBarco([]); // Empezamos con tablero vacío
 
     // Si pulsamos un barco podremos cambiar sus armas y sale un panel con sus datos 
