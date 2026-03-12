@@ -79,7 +79,7 @@ const ConfigFlota = () => {
     <div className="contenedor-horizontal">
       {/* Zona del Tablero */}
       <div className="tablero-contenedor">
-        <Tablero onCellClick={gestionarClickMapa} configurar={true} />
+        <Tablero onCellClick={gestionarClickMapa} configurar={true} celdasEnRango={new Set()} />
         {barcos.map((barco) => (
           <Barco 
             key={barco.id} 
