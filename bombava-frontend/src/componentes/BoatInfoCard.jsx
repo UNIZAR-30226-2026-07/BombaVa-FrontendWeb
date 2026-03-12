@@ -6,11 +6,11 @@ function HealthBar({ maxHealth = 100, currentHealth = 0 }) {
 
     return (
         <div className="health-bar-container">
-            <div className="health-bar-fill" style={{width: `${healthPercentage}%`}} />
+            <div className="health-bar-fill" style={{ width: `${healthPercentage}%` }} />
             <p className="health-bar-text">{currentHealth} / {maxHealth}</p>
         </div>
     );
-} 
+}
 
 function ModuleInfo({ moduleName, moduleImg, moduleAlt, moduleMaxHealth, moduleHealth }) {
     return (
@@ -24,11 +24,11 @@ function ModuleInfo({ moduleName, moduleImg, moduleAlt, moduleMaxHealth, moduleH
     )
 }
 
-function BoatInfoCard({ boatId }) {
+function BoatInfoCard({ boat }) {
 
     // En caso de que no haya un barco seleccionado
-    if (!boatId) {
-        return( 
+    if (!boat) {
+        return (
             <div className='boat-info-card'>
                 <div className='info-card-content'>
                     <p>Selecciona un barco para ver su estado</p>
@@ -37,91 +37,37 @@ function BoatInfoCard({ boatId }) {
         )
     }
 
-    const [boatData, setBoatData] = useState(null);
-
-    useEffect(() => {
-        // Demo: inicializa datos del barco una sola vez o cuando cambie `boatId`.
-        // En producción aquí se haría la llamada a la API para obtener los datos.
-        if (!boatId) {
-            setBoatData(null);
-            return;
-        }
-
-        const demoData = {
-            boatName: "Barco de Prueba",
-            boatImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-            boatMaxHealth: 100,
-            boatHealth: 75,
-            modules: [
-                {
-                    moduleId: 1,
-                    moduleName: "Motor Principal",
-                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-                    moduleAlt: "Imagen del Motor Principal",
-                    moduleMaxHealth: 50,
-                    moduleHealth: 25
-                },
-                {
-                    moduleId: 2,
-                    moduleName: "Timón",
-                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-                    moduleAlt: "Imagen del Timón",
-                    moduleMaxHealth: 30,
-                    moduleHealth: 30
-                },
-                {
-                    moduleId: 3,
-                    moduleName: "Velas",
-                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-                    moduleAlt: "Imagen de las Velas",
-                    moduleMaxHealth: 20,
-                    moduleHealth: 10
-                },
-                {
-                    moduleId: 4,
-                    moduleName: "Cañones",
-                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-                    moduleAlt: "Imagen de los Cañones",
-                    moduleMaxHealth: 40,
-                    moduleHealth: 35
-                },
-                {
-                    moduleId: 5,   
-                    moduleName: "Bodega de Provisiones",
-                    moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-                    moduleAlt: "Imagen de la Bodega de Provisiones",
-                    moduleMaxHealth: 25,
-                    moduleHealth: 20
-                }
-            ]
-        };
-
-        setBoatData(demoData);
-    }, [boatId]);
-
-    //Por Hacer: Cargar la informacion del barco a traves de la API.
-
-    if(boatData === null) {
-        return( 
-            <div className='boat-info-card'>
-                <div className='info-card-content'>
-                    <p>Cargando información del barco...</p>
-                </div>
-            </div>
-        )
+    let modulosArray = [];
+    if (boat.modulos) {
+        modulosArray = boat.modulos.map((mod) => ({
+            moduleId: mod.id,
+            moduleName: mod.nombre,
+            moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
+            moduleAlt: `Imagen del módulo ${mod.nombre}`,
+            moduleMaxHealth: mod.vidaMax,
+            moduleHealth: mod.vida
+        }));
     }
-    
+
+    // Datos del barco seleccionado
+    const boatData = {
+        boatName: `Barco ${boat.tipo} (${boat.id})`,
+        boatImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
+        boatMaxHealth: boat.vidaMax,
+        boatHealth: boat.vida,
+        modules: modulosArray
+    };
     // Caso de barco seleccionado.
     return (
         <div className='boat-info-card'>
-                <div className='info-card-content'>
+            <div className='info-card-content'>
                 <h2>{boatData.boatName}</h2>
                 <img src={boatData.boatImg} alt='' className='boat-image' />
                 <HealthBar maxHealth={boatData.boatMaxHealth} currentHealth={boatData.boatHealth} />
                 <ul>
                     {boatData.modules.map((module => (
                         <li key={module.moduleId}>
-                            <ModuleInfo 
+                            <ModuleInfo
                                 moduleName={module.moduleName}
                                 moduleImg={module.moduleImg}
                                 moduleAlt={module.moduleAlt}

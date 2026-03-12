@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/MenuInicio.css';
 
 function MenuInicio({ alClickJugar }) {//Cojo de los props del padre la funcion que me pasa llamada alClickJugar
-  
+
   const navigate = useNavigate();
 
   return (
@@ -15,9 +15,9 @@ function MenuInicio({ alClickJugar }) {//Cojo de los props del padre la funcion 
 
       {/* Botones principales */}
       <div className="grupo-botones">
-        <button className="menu-btn" onClick={() => navigate('/configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/} 
+        <button className="menu-btn" onClick={() => navigate('/configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/}
         <button className="menu-btn" onClick={() => navigate('/combate')}>COMPETITIVO</button>
-        <button className="menu-btn" onClick={() => alClickJugar('juego')}>PRÁCTICA</button>
+        <button className="menu-btn" onClick={() => alClickJugar('/combate')}>PRÁCTICA</button>
         <button className="menu-btn">UNIRSE</button>
       </div>
     </div>

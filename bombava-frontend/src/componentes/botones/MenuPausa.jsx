@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/MenuPausa.css'; 
+import '../../styles/MenuPausa.css';
 
 function MenuPausa() {
     // Estado para controlar si el pop-up del menú de pausa está visible
@@ -45,12 +45,12 @@ function MenuPausa() {
                     {/* El menu de diálogo (stopPropagation evita que se cierre el menu al clicar en un botón) */}
                     <div className="menu-pausa" onClick={(e) => e.stopPropagation()}>
                         <h2>Partida Pausada</h2>
-                        
+
                         <div className="menu-botones">
                             <button className="btn-menu btn-continuar" onClick={cerrarMenu}>
                                 Continuar la partida
                             </button>
-                            
+
                             <button className="btn-menu btn-guardar" onClick={GuardarYSeguirLuego}>
                                 Seguir en otro momento
                             </button>

@@ -1,12 +1,21 @@
 .celda {
   box-sizing: border-box;
-  border: 2px solid rgba(0,0,0,0.1);
-  position: relative; 
-  transition: 0.3s; 
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: 0.3s;
 }
 
+/* Efecto visual al pasar el ratón por encima de la celda
+   No se tienen en cuenta las celdas que no están en la zona 
+   de visión */
 .celda:not(.celda-zona_sin_vision):hover {
-  filter: brightness(1.15); /* Aumenta el brillo de la celda */
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4); /* Añade un brillo interior blanco*/
+  filter: brightness(1.15);
+  /* Aumenta el brillo de la celda */
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+  /* Añade un brillo interior blanco*/
 }
 
+/* Efecto visual para las celdas que están en el rango de ataque del barco seleccionado */
+.celda.en-rango-ataque {
+  filter: brightness(1.3);
+}

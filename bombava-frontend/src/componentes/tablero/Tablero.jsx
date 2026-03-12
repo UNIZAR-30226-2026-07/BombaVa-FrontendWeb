@@ -13,9 +13,9 @@ const generarMapaInicial = () => {
       let tipoterreno = TERRENO.AGUA;
 
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
-      if (x >= 6 && x < 9 && y >= 6 && y < 9){
+      if (x >= 6 && x < 9 && y >= 6 && y < 9) {
         tipoterreno = TERRENO.ISLA;
-      } 
+      }
 
       fila.push({ x, y, tipoterreno });
     }
@@ -33,9 +33,9 @@ const generarMapaConfiguracion = () => {
       let tipoterreno = TERRENO.AGUA;
 
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
-      if ( y >= 10){
+      if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
-      }else{
+      } else {
         tipoterreno = TERRENO.NO_VISION;
       }
 
@@ -47,7 +47,12 @@ const generarMapaConfiguracion = () => {
 };
 
 // Recibe la función onClick desde Mapa.jsx
-const Tablero = ({ onCellClick, configurar }) => {
+/* Parametros: 
+* onCellClick: función que se ejecuta al hacer click en una celda
+* configurar: booleano que indica si se está configurando la flota
+* celdasEnRango: tabla hash con las celdas que están en rango de ataque del barco seleccionado
+*/
+const Tablero = ({ onCellClick, configurar, celdasEnRango }) => {
   let mapaInicial;
 
   //Decidimos que mapa generar
@@ -61,12 +66,13 @@ const Tablero = ({ onCellClick, configurar }) => {
 
   return (
     <div className="tablero"
-    style={{
+      style={{
         // Aplicamos el formato de cuadricula
         gridTemplateColumns: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`,
         gridTemplateRows: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`
       }}
     >
+      {/*Mapeamos el mapa para mostrar cada celda*/}
       {mapa.map((fila) => (
         fila.map((celda) => (
           <Celda
@@ -74,6 +80,9 @@ const Tablero = ({ onCellClick, configurar }) => {
             x={celda.x}
             y={celda.y}
             tipo_terreno={celda.tipoterreno}
+            // Si la celda está en el rango de ataque(tabla hash), se le aplica un efecto 
+            // visual, para identificarla
+            enRangoAtaque={celdasEnRango.has(`${celda.x},${celda.y}`)}
             onClick={onCellClick}
           />
         ))
