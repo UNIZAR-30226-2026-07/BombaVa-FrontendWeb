@@ -10,6 +10,8 @@ import '../../styles/Barco.css';
 > tamano: Número de casilla que ocupa 
 > tipo: Nombre del tipo de barco.
 > vida: Vida del barco
+> modulos: Array de módulos del barco
+> celdas: Array de celdas que ocupa el barco
 */
 const Barco = ({ barco, estaSeleccionado, onClick }) => {
 

@@ -20,6 +20,22 @@ export const calcularCentroBarco = (barco) => {
     return { centroX, centroY };
 };
 
+// Función que calcula las celdas que ocupa un barco
+/*Parametros:
+* barco: barco del que se calcularán las celdas
+* Devuelve: un array de objetos con las coordenadas x e y de cada celda
+*/
+export const calcularCeldasBarco = (barco) => {
+    const celdas = [];
+    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+    for (let i = 0; i < barco.tamano; i++) {
+        const ejeX = esHorizontal ? barco.posicion.x + i : barco.posicion.x;
+        const ejeY = esHorizontal ? barco.posicion.y : barco.posicion.y + i;
+        celdas.push({ x: ejeX, y: ejeY });
+    }
+    return celdas;
+};
+
 export const useMovimientosBarco = (barcosIniciales) => {
 
     // Función para inicializar un barco con módulos
@@ -42,12 +58,14 @@ export const useMovimientosBarco = (barcosIniciales) => {
         for (let i = 0; i < modulos.length; i++) {
             vidaTotal += modulos[i].vida;
         }
-        return {
+        const barco = {
             ...barcoBase,
             vida: vidaTotal,
             vidaMax: vidaTotal,
             modulos,
         };
+        barco.celdas = calcularCeldasBarco(barco);
+        return barco;
     };
 
     const barcosNormalizados = barcosIniciales.map(inicializarBarcoConModulos);
@@ -90,11 +108,13 @@ export const useMovimientosBarco = (barcosIniciales) => {
             console.log(`Rotación en sentido: ${nuevaOrientacion}`);
 
 
-            return {
+            const nuevoBarco = {
                 ...b, // Copia el resto de propiedades del barco sin cambios
                 orientacion: nuevaOrientacion, // Nueva orientación
                 posicion: { x: nuevoX, y: nuevoY }, //Nueva posicion
             };
+            nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
+            return nuevoBarco;
         }));
     };
 
@@ -129,10 +149,12 @@ export const useMovimientosBarco = (barcosIniciales) => {
                 }
             }
 
-            return {
+            const nuevoBarco = {
                 ...b,// Copia el resto de propiedades del barco sin cambios
                 posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
             };
+            nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
+            return nuevoBarco;
         }
         ));
     };
