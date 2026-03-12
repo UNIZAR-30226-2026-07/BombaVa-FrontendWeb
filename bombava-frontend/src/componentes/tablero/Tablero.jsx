@@ -35,8 +35,10 @@ const generarMapaConfiguracion = () => {
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
       if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
-      } else {
+      } else if (y>=5){
         tipoterreno = TERRENO.NO_VISION;
+      }else{
+        tipoterreno = TERRENO.NO_VISION_ENEMIGO;
       }
 
       fila.push({ x, y, tipoterreno });
