@@ -38,7 +38,7 @@ const ConfigFlota = () => {
 
     // Función para poner un barco, la celda en la que haces click te devuelve su x e y
     const gestionarClickMapa = (x, y) => {
-        
+        if(esCelda)
         if(barcoAPoner != 0 && barcosPuestos[barcoAPoner] == 0){
             let nombreTipo = ""; // Declaramos la variable
             let numArmas = 0; //Para saber cuántas armas puede tener según el tamaño del barco
@@ -65,7 +65,8 @@ const ConfigFlota = () => {
                 tamano: barcoAPoner,
                 tipo: `Barco 1x-${barcoAPoner}`,
                 vida: 100,
-                armas: Array(numArmas).fill(0)
+                armas: Array(numArmas).fill(0),
+                celdas: 
             };
             anadirBarco(nuevoBarco);
             const nuevosBarcosPuestos = [...barcosPuestos]; // Copia

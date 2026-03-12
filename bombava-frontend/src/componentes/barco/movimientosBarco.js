@@ -120,7 +120,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
 
     // Función para mover el barco "id" a la posición X e Y.
     // Solo esta diseñada para hacer movimientos en línea recta
-    const moverBarco = (id, nuevoX, nuevoY) => {
+    const moverBarco = (id, nuevoX, nuevoY, mapa) => {
         setBarcos(barcos.map(b => {
             if (b.id != id) return b;
 
@@ -148,13 +148,16 @@ export const useMovimientosBarco = (barcosIniciales) => {
                     else nuevaPosicionY = nuevoY - b.tamano + 1;//Retrocede
                 }
             }
-
-            const nuevoBarco = {
-                ...b,// Copia el resto de propiedades del barco sin cambios
-                posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
-            };
-            nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
-            return nuevoBarco;
+            
+            if(celdaEsValida(nuevaPosicionX,nuevaPosicionY,mapa,barcos)){
+                const nuevoBarco = {
+                    ...b,// Copia el resto de propiedades del barco sin cambios
+                    posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
+                };
+                nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
+                return nuevoBarco;
+            }
+            
         }
         ));
     };
@@ -316,9 +319,11 @@ export const useMovimientosBarco = (barcosIniciales) => {
             tipoCelda = mapa[y][x].tipoCelda;
             if(tipoCelda == TERRENO.AGUA){
                 for (let barco of barcos) {
-                    if (barco.x === x && barco.y === y) {
-                        // Si coincide la X Y la Y, hay un barco estorbando
-                        celdaValida = false; 
+                    for (let celda of barco.celdas) {
+                        if (celda.x === x && celda.y === y) {
+                            // Si coincide la X Y la Y, hay un barco estorbando
+                            celdaValida = false; 
+                        }
                     }
                 }
             }else{

@@ -104,7 +104,7 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
           onAtaqueRealizado();
         }
       } else {
-        moverBarco(barcoSeleccionado, x, y);
+        moverBarco(barcoSeleccionado, x, y, mapa);
       }
     }
   };

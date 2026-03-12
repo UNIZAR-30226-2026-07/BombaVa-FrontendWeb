@@ -12,6 +12,8 @@ import '../../styles/Barco.css';
 > vida: Vida del barco
 > modulos: Array de módulos del barco
 > celdas: Array de celdas que ocupa el barco
+    > x: posición eje X de esa celda
+    > y: posición eje Y de esa celda
 */
 const Barco = ({ barco, estaSeleccionado, onClick }) => {
 
