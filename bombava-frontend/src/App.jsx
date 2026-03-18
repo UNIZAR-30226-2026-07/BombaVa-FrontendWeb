@@ -6,6 +6,9 @@ import Perfil from './pantallas/Perfil';
 import InfoCard from './componentes/BoatInfoCard';
 import ConfigFlota from './pantallas/ConfigFlota';
 import Combate from "./pantallas/Combate";
+import Inicio from "./pantallas/pantallaInicio.jsx";
+import Registro from "./pantallas/Registrarse.jsx";
+import InicioSesion from "./pantallas/IncioSesion.jsx";
 import ActionButtons from './componentes/ActionButtons.jsx';
 
 
@@ -14,6 +17,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Menu alClickJugar={(destino) => setPantalla(destino)} />} />
+        <Route path="/inicioSesion" element={<InicioSesion />} />
+        <Route path="/registro" element={<Registro />} />
         <Route path="/test" element={<Outlet />}>
           <Route path="botones" element={<ActionButtons boatId={1} />} />
           <Route path="info" element={<InfoCard boatId={1} />} />
