@@ -35,7 +35,7 @@ function labelToImage(label) {
     return mapping[label] || '/assets/default-attack-icon.png';
 }
 
-function ActionButtons({ boatId }) {
+function ActionButtons({ boatId, onAttackClick, modoAtaque }) {
     const [buttonList, setButtonList] = React.useState([
         { id: 1, label: '' },
         { id: 2, label: '' },
@@ -69,7 +69,10 @@ function ActionButtons({ boatId }) {
                         }}>
                     </button>
 
-                    <div className="attack-label" onClick={() => attack(boatId, action.id)}>
+                    <div className="attack-label" onClick={() => {
+                        if (onAttackClick) onAttackClick();
+                        attack(boatId, action.id);
+                    }}>
                         <img src={labelToImage(action.label)} alt={action.label} className="attack-icon" />
                     </div>
 
@@ -82,8 +85,14 @@ function ActionButtons({ boatId }) {
 
                 </div>
 
-                <button className="fire-button" onClick={() => attack(boatId, action.id)}>
-                    Fuego
+                <button
+                    className={`fire-button ${modoAtaque ? 'activo' : ''}`}
+                    onClick={() => {
+                        if (onAttackClick) onAttackClick();
+                        attack(boatId, action.id);
+                    }}
+                >
+                    {modoAtaque ? 'Fuego' : 'Modo Ataque'}
                 </button>
 
             </div>

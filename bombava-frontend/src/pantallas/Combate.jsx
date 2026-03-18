@@ -4,6 +4,7 @@ import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
 import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
+import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE } from "../utils/constantes.js";
 import '../styles/Combate.css';
 
@@ -41,7 +42,7 @@ function Combate() {
     };
 
     // Estado para seleccionar un barco
-    const [selectedBoat, setSelectedBoat] = useState(null);
+    const [barcoSeleccionado, setbarcoSeleccionado] = useState(null);
 
     // Estado para saber si estamos en modo ataque
     const [modoAtaque, setModoAtaque] = useState(false);
@@ -110,7 +111,7 @@ function Combate() {
                     <Mapa
                         modoAtaque={modoAtaque}
                         onAtaqueRealizado={handleAtaqueRealizado}
-                        onSeleccionarBarco={setSelectedBoat}
+                        onSeleccionarBarco={setbarcoSeleccionado}
                     />
                 </div>
             </div>
@@ -119,24 +120,17 @@ function Combate() {
             <div className="combate-columna-central">
                 <h3 className="titulo-acciones">Panel de control</h3>
                 <div className="acciones">
-                    {/* Botones temporales-> HABRÁ QUE CAMBIARLO */}
-                    <button className="boton-temporal"
-                        onClick={() => setModoAtaque(false)}
-                    >
-                        Mover
-                    </button>
-                    <button className={`boton-temporal ${modoAtaque ? 'activo' : ''}`}
-                        onClick={activarModoAtaque}
-                        style={{ backgroundColor: modoAtaque ? 'red' : '' }}
-                    >
-                        {modoAtaque ? 'Selecciona objetivo' : 'Atacar'}
-                    </button>
+                    <ActionButtons
+                        boatId={barcoSeleccionado?.id}/*Si no hay un barco seleccionado, evita que acceda al parámetro que no existirá*/
+                        onAttackClick={activarModoAtaque}
+                        modoAtaque={modoAtaque}
+                    />
                 </div>
             </div>
 
             {/* COLUMNA DERECHA: Información del barco seleccionado */}
             <div className="combate-columna-derecha">
-                <BoatInfoCard boat={selectedBoat} />
+                <BoatInfoCard boat={barcoSeleccionado} />
             </div>
         </div>
     );
