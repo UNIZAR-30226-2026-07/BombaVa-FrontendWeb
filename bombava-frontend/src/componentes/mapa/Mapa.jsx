@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
-import { useMovimientosBarco, calcularCentroBarco } from '../barco/movimientosBarco.js';
+import { calcularCentroBarco } from '../barco/movimientosBarco.js';
 import { ATAQUE_BASE, TAMANO_TABLERO } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
 
@@ -12,46 +11,24 @@ incluye varias capas(de abajo a arriba sería):
     > Torpedos
     > Proyectiles
 */
-const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
-  const {
-    barcos,
-    barcoSeleccionado,
-    setBarcoSeleccionado,
-    rotarBarco,
-    moverBarco,
-    atacarCelda
-  } = useMovimientosBarco([
-    //BARCOS ALIADOS:
-    { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },
-    { id: 'aliado_2', posicion: { x: 6, y: 11 }, orientacion: 'N', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: false },
-    { id: 'aliado_3', posicion: { x: 10, y: 9 }, orientacion: 'N', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: false },
-
-    // BARCOS ENEMIGOS:
-    { id: 'enemigo_1', posicion: { x: 2, y: 2 }, orientacion: 'S', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: true },
-    { id: 'enemigo_2', posicion: { x: 6, y: 2 }, orientacion: 'E', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: true },
-    { id: 'enemigo_3', posicion: { x: 10, y: 0 }, orientacion: 'S', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: true }
-  ]);
-
-  // Si cambia el barcoSeleccionado o cambian los datos de los barcos, le pasamos el objeto entero
-  // al componente padre (Combate.jsx)
-  useEffect(() => {
-    if (onSeleccionarBarco) {
-      if (barcoSeleccionado) {
-        const barcoActual = barcos.find(b => b.id == barcoSeleccionado);
-        onSeleccionarBarco(barcoActual);
-      } else {
-        onSeleccionarBarco(null);
-      }
-    }
-  }, [barcoSeleccionado, barcos, onSeleccionarBarco]);
+const Mapa = ({
+  modoAtaque,
+  onAtaqueRealizado,
+  barcos,
+  barcoSeleccionado,
+  setBarcoSeleccionado,
+  rotarBarco,
+  moverBarco,
+  atacarCelda
+}) => {
 
   /*const gestionarClickMapa = (x, y) => {
     console.log(`Click en celda: ${x}, ${y}`);
     // Lógica de que pasa al clikar
   };*/
 
-  // Función de DEBUG, si pulsamos un barco lo seleccionamos y si pulsamos un 
-  // barco ya seleccionado lo retamos
+  // Si pulsamos un barco lo seleccionamos y si pulsamos un 
+  // barco ya seleccionado lo deseleccionamos
   const gestionarClickBarco = (barco, clickX, clickY) => {
     // No se permite seleccionar barcos enemigos para moverse/rotar, 
     // solo se puede seleccionar un barco enemigo si estamos en modo ataque.
@@ -75,17 +52,17 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
     // Si estamos en modo ataque, no permitir cambiar de barco ni rotarlo
     if (modoAtaque) return;
 
-    // Si clicamos un barco aliado, se selecciona o rota si ya estaba seleccionado
+    // Si clicamos un barco aliado, se selecciona o se deselecciona si ya estaba seleccionado
     if (barcoSeleccionado == barco.id) {
-      // Si clicamos el barco que ya estaba seleccionado, se rota
-      rotarBarco(barco.id, null);
+      // Si clicamos el barco que ya estaba seleccionado, se deselecciona
+      setBarcoSeleccionado(null);
     } else {
       setBarcoSeleccionado(barco.id);
     }
   };
 
-  // Función de DEBUG, hay un barco seleccionado y pulsamos una casilla se va ahí
-  // o ataca si estamos en modo ataque.
+  // Si hay un barco seleccionado y pulsamos una casilla 
+  // ataca si estamos en modo ataque.
   const gestionarClickMapa = (x, y) => {
     if (barcoSeleccionado) {
       if (modoAtaque) {
@@ -102,8 +79,6 @@ const Mapa = ({ modoAtaque, onAtaqueRealizado, onSeleccionarBarco }) => {
         if (exito) {
           onAtaqueRealizado();
         }
-      } else {
-        moverBarco(barcoSeleccionado, x, y);
       }
     }
   };

@@ -6,6 +6,7 @@ import MenuPausa from "../componentes/botones/MenuPausa.jsx";
 import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE } from "../utils/constantes.js";
+import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
 import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -41,8 +42,28 @@ function Combate() {
         }));
     };
 
-    // Estado para seleccionar un barco
-    const [barcoSeleccionado, setbarcoSeleccionado] = useState(null);
+    // Hook para manejar los movimientos de los barcos
+    const {
+        barcos,
+        barcoSeleccionado: idBarcoSeleccionado,
+        setBarcoSeleccionado: setIdBarcoSeleccionado,
+        rotarBarco,
+        moverBarco,
+        atacarCelda
+    } = useMovimientosBarco([
+        //BARCOS ALIADOS:
+        { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },
+        { id: 'aliado_2', posicion: { x: 6, y: 11 }, orientacion: 'N', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: false },
+        { id: 'aliado_3', posicion: { x: 10, y: 9 }, orientacion: 'N', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: false },
+
+        // BARCOS ENEMIGOS:
+        { id: 'enemigo_1', posicion: { x: 2, y: 2 }, orientacion: 'S', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: true },
+        { id: 'enemigo_2', posicion: { x: 6, y: 2 }, orientacion: 'E', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: true },
+        { id: 'enemigo_3', posicion: { x: 10, y: 0 }, orientacion: 'S', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: true }
+    ]);
+
+    // Estado para obtener el objeto del barco seleccionado
+    const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
 
     // Estado para saber si estamos en modo ataque
     const [modoAtaque, setModoAtaque] = useState(false);
@@ -111,7 +132,12 @@ function Combate() {
                     <Mapa
                         modoAtaque={modoAtaque}
                         onAtaqueRealizado={handleAtaqueRealizado}
-                        onSeleccionarBarco={setbarcoSeleccionado}
+                        barcos={barcos}
+                        barcoSeleccionado={idBarcoSeleccionado}
+                        setBarcoSeleccionado={setIdBarcoSeleccionado}
+                        rotarBarco={rotarBarco}
+                        moverBarco={moverBarco}
+                        atacarCelda={atacarCelda}
                     />
                 </div>
             </div>
@@ -121,9 +147,11 @@ function Combate() {
                 <h3 className="titulo-acciones">Panel de control</h3>
                 <div className="acciones">
                     <ActionButtons
-                        boatId={barcoSeleccionado?.id}/*Si no hay un barco seleccionado, evita que acceda al parámetro que no existirá*/
+                        boat={barcoSeleccionado}
                         onAttackClick={activarModoAtaque}
                         modoAtaque={modoAtaque}
+                        rotarBarco={rotarBarco}
+                        moverBarco={moverBarco}
                     />
                 </div>
             </div>
