@@ -16,9 +16,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Menu alClickJugar={(destino) => setPantalla(destino)} />} />
+        <Route path="/" element={<Inicio />} />
         <Route path="/inicioSesion" element={<InicioSesion />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/menuInicial" element={<Menu alClickJugar={(destino) => setPantalla(destino)} />} />
         <Route path="/test" element={<Outlet />}>
           <Route path="botones" element={<ActionButtons boatId={1} />} />
           <Route path="info" element={<InfoCard boatId={1} />} />
