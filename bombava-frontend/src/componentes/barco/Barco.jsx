@@ -10,6 +10,8 @@ import '../../styles/Barco.css';
 > tamano: Número de casilla que ocupa 
 > tipo: Nombre del tipo de barco.
 > vida: Vida del barco
+> modulos: Array de módulos del barco
+> celdas: Array de celdas que ocupa el barco
 */
 const Barco = ({ barco, estaSeleccionado, onClick }) => {
 
@@ -51,6 +53,7 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
         Para introducir la imagen del barco sería aquí*/ }
       <div className="barco-visual"
         onClick={(e) => {
+          e.stopPropagation();
           // Calculamos la celda exacta en la que se hizo click
 
           // Obtenemos la posición del barco en pixeles, respecto al contenedor del tablero

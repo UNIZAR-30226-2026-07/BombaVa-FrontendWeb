@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MODULOS_BARCO } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO } from '../../utils/constantes';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
@@ -18,6 +18,22 @@ export const calcularCentroBarco = (barco) => {
     const centroY = esHorizontal ? barco.posicion.y : barco.posicion.y + medioTamano;
 
     return { centroX, centroY };
+};
+
+// Función que calcula las celdas que ocupa un barco
+/*Parametros:
+* barco: barco del que se calcularán las celdas
+* Devuelve: un array de objetos con las coordenadas x e y de cada celda
+*/
+export const calcularCeldasBarco = (barco) => {
+    const celdas = [];
+    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+    for (let i = 0; i < barco.tamano; i++) {
+        const ejeX = esHorizontal ? barco.posicion.x + i : barco.posicion.x;
+        const ejeY = esHorizontal ? barco.posicion.y : barco.posicion.y + i;
+        celdas.push({ x: ejeX, y: ejeY });
+    }
+    return celdas;
 };
 
 export const useMovimientosBarco = (barcosIniciales) => {
@@ -42,12 +58,14 @@ export const useMovimientosBarco = (barcosIniciales) => {
         for (let i = 0; i < modulos.length; i++) {
             vidaTotal += modulos[i].vida;
         }
-        return {
+        const barco = {
             ...barcoBase,
             vida: vidaTotal,
             vidaMax: vidaTotal,
             modulos,
         };
+        barco.celdas = calcularCeldasBarco(barco);
+        return barco;
     };
 
     const barcosNormalizados = barcosIniciales.map(inicializarBarcoConModulos);
@@ -90,11 +108,13 @@ export const useMovimientosBarco = (barcosIniciales) => {
             console.log(`Rotación en sentido: ${nuevaOrientacion}`);
 
 
-            return {
+            const nuevoBarco = {
                 ...b, // Copia el resto de propiedades del barco sin cambios
                 orientacion: nuevaOrientacion, // Nueva orientación
                 posicion: { x: nuevoX, y: nuevoY }, //Nueva posicion
             };
+            nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
+            return nuevoBarco;
         }));
     };
 
@@ -129,10 +149,12 @@ export const useMovimientosBarco = (barcosIniciales) => {
                 }
             }
 
-            return {
+            const nuevoBarco = {
                 ...b,// Copia el resto de propiedades del barco sin cambios
                 posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
             };
+            nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
+            return nuevoBarco;
         }
         ));
     };
@@ -285,6 +307,31 @@ export const useMovimientosBarco = (barcosIniciales) => {
         return true; // El ataque se realizó, aunque haya impactado o no.
     };
 
+    //Funcion utilizada para saber si se puede colocar el barco en esta celda, se obtiene el tipo
+    //de celda de mapa 
+    const celdaEsValida = (x, y,mapa,barcos) =>{
+        let tipoCelda; 
+        let celdaValida = true;
+        if(x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO){
+            tipoCelda = mapa[y][x].tipoCelda;
+            if(tipoCelda == TERRENO.AGUA){
+                for (let barco of barcos) {
+                    if (barco.x === x && barco.y === y) {
+                        // Si coincide la X Y la Y, hay un barco estorbando
+                        celdaValida = false; 
+                    }
+                }
+            }else{
+                celdaValida = false;
+            }
+        }else{
+            celdaValida = false;
+        }
+
+        return celdaValida;
+        
+    }
+
     return {
         barcos,
         barcoSeleccionado,
@@ -294,6 +341,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
         anadirBarco,
         setArmas,
         borrarBarco,
-        atacarCelda
+        atacarCelda,
+        celdaEsValida
     };
 };
