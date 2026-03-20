@@ -2,21 +2,29 @@
 .combate-contenedor {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    /* Permite que si la pantalla es muy pequeña, los elementos se adapten 
+    y se pongan en una sola columna */
     align-items: flex-start;
     padding: 1.5%;
-    gap: 8%;
+    gap: 4%;
     /* Separación entre las tres columnas */
     background-color: #0a1f33;
     box-sizing: border-box;
+    min-height: 100vh;
 }
 
 /*COLUMNA IZQUIERDA: Barras de recuros y el Mapa */
 .combate-columna-izquierda {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    /* Separación entre las barras y el mapa */
-    min-width: max-content;
+    gap: 15px;
+    /*espacio entre los elementos*/
+    flex: 1.5;
+    /*Tamaño relativo de la columna, 1.5 la de la izquierda y 1 la central y la derecha*/
+    min-width: 300px;
+    /*Ancho minimo de la columna*/
+    box-sizing: border-box;
 }
 
 .recursos-contendor {
@@ -30,11 +38,12 @@
 
 .mapa-contendor {
     background: linear-gradient(to bottom, #b68d68, #8b5e3c);
-    padding: 1%;
+    padding: 2%;
     border-radius: 10px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
-    width: max-content;
-    height: max-content;
+    width: 100%;
+    max-width: 700px;
+    box-sizing: border-box;
 }
 
 /*COLUMNA CENTRAL: Botones de ataque/movimiento */
@@ -44,9 +53,14 @@
     align-items: center;
     background: linear-gradient(to bottom, #b68d68, #8b5e3c);
     border-radius: 10px;
-    padding: 1%;
+    padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     align-self: center;
+    flex: 1;
+    /*Tamaño relativo de la columna*/
+    min-width: 250px;
+    /*Ancho minimo de la columna*/
+    box-sizing: border-box;
 }
 
 .titulo-acciones {
@@ -75,4 +89,9 @@
 .combate-columna-derecha {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    /*Tamaño relativo de la columna*/
+    min-width: 250px;
+    /*Ancho minimo de la columna*/
+    box-sizing: border-box;
 }

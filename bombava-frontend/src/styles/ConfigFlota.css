@@ -1,39 +1,59 @@
 /* Contenedor principal de la pantalla de configuración */
 .mapa_config {
-  position: relative; /* Para que los barcos usen este origen (0,0) */
-  display: flex; 
-  flex-direction: column; /* Alinea los hijos (Tablero, Barcos, Botones) en vertical */
-  align-items: center;    /* Centra todo horizontalmente */
+  position: relative;
+  /* Para que los barcos usen este origen (0,0) */
+  display: flex;
+  flex-direction: column;
+  /* Alinea los hijos (Tablero, Barcos, Botones) en vertical */
+  align-items: center;
+  /* Centra todo horizontalmente */
   padding: 10px;
   border-radius: 8px;
   margin: 0px;
 }
 
 .contenedor-horizontal {
-  display: flex;
-  flex-direction: row; /* Alinea tablero y panel de lado a lado */
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 550px) 1fr;
+  /* 1fr: columna izquierda (vacía), minmax(0, 550px): columna central (tablero), 1fr: columna derecha (botones) */
   align-items: flex-start;
-  gap: 20px; /* Espacio entre el tablero y los botones */
+  /* Alinea los elementos hacia arriba */
+  gap: 20px;
+  /* Espacio entre el tablero y los botones */
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .panel-lateral {
   background-color: #2c3e50;
   color: white;
-  right: -200px; /* Lo pone fuera del tablero, a la derecha */
+  grid-column: 3;
+  /*Columna derecha*/
+  justify-self: flex-start;
+  /*Alinea el contenido a la izquierda*/
   padding: 20px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-width: 150px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .tablero-contenedor {
-    position: relative; /* Los barcos ahora usarán ESTE div como (0,0) */
-    width: fit-content; /* Se ajusta al tamaño del tablero */
-    margin: 0 auto;    /* Lo mantiene centrado si es necesario */
+  position: relative;
+  /* Los barcos usarán ESTE div como contenedor */
+  grid-column: 2;
+  width: 100%;
+  max-width: 550px;
+  /* Tamaño máximo */
+  aspect-ratio: 1 / 1;
+  /*Mantiene la proporción 1:1, la de un cuadrado, que es el tablero*/
+  background-color: rgb(30, 130, 220);
+  border: 2px solid rgb(0, 0, 0);
+  box-sizing: border-box;
+  margin: 0 auto;
+  /* Lo mantiene centrado */
 }
 
 /* Contenedor de los botones de selección de barco */
@@ -66,7 +86,7 @@
 }
 
 /*Lo hago para que el boton de eliminar sea de otro color*/
-.eliminarBarco-btn{
+.eliminarBarco-btn {
   padding: 12px 24px;
   font-weight: bold;
   text-transform: uppercase;

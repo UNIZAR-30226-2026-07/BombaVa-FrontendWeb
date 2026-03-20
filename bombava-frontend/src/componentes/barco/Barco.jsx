@@ -1,4 +1,4 @@
-import { TAMANO_CELDA } from '../../utils/constantes.js';
+import { TAMANO_TABLERO } from '../../utils/constantes.js';
 import '../../styles/Barco.css';
 
 /* Estructura de 'barco':
@@ -13,19 +13,22 @@ import '../../styles/Barco.css';
 */
 const Barco = ({ barco, estaSeleccionado, onClick }) => {
 
-  // Calculamos la posición del barco
-  const PosIzq = barco.posicion.x * TAMANO_CELDA;
-  const PosArriba = barco.posicion.y * TAMANO_CELDA;
-
   const esHorizontal = barco.orientacion === 'E' || barco.orientacion === 'O';
+
+  // Calculamos la posición y dimensiones en porcentajes relativos al tablero
+  // Ya que el tablero será responsive, el tamaño de la celda cambia, por lo que hay que calcularlo
+  // en base al tamaño del tablero.
+  const porcentajeCelda = 100 / TAMANO_TABLERO;
+  const PosIzq = barco.posicion.x * porcentajeCelda;
+  const PosArriba = barco.posicion.y * porcentajeCelda;
 
   let ancho, alto;
   if (esHorizontal) {
-    ancho = TAMANO_CELDA * barco.tamano;
-    alto = TAMANO_CELDA;
+    ancho = porcentajeCelda * barco.tamano;
+    alto = porcentajeCelda;
   } else {
-    ancho = TAMANO_CELDA;
-    alto = TAMANO_CELDA * barco.tamano;
+    ancho = porcentajeCelda;
+    alto = porcentajeCelda * barco.tamano;
   }
 
   //Nombre de la clase basado en el estado y tipo del barco
@@ -38,10 +41,10 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
     <div
       className={nombreClase}
       style={{
-        left: `${PosIzq}px`,
-        top: `${PosArriba}px`,
-        width: `${ancho}px`,
-        height: `${alto}px`,
+        left: `${PosIzq}%`,
+        top: `${PosArriba}%`,
+        width: `${ancho}%`,
+        height: `${alto}%`,
       }}
     >
       {/*Divido la parte visual y la de la entidad de barco, 
@@ -50,21 +53,24 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
         onClick={(e) => {
           // Calculamos la celda exacta en la que se hizo click
 
-          // Obtenemos la posición exacta del clic dentro de la pantalla
-          // e.target es el elemento HTML y getBoundingClientRect() devuelve 
-          // información sobre su posición en el navegador, es decir, dónde 
-          // empieza el barco en la pantalla, sus márgenes left y top
+          // Obtenemos la posición del barco en pixeles, respecto al contenedor del tablero
           const rect = e.target.getBoundingClientRect();
+          // Posición del click respecto a la esquina superior izquierda del barco
           const clickXEnPixeles = e.clientX - rect.left;
           const clickYEnPixeles = e.clientY - rect.top;
 
-          // Calculamos el offset de las celdas respecto a la posición celda de
-          // arriba a la izquierda.
-          const movimientoCeldasX = Math.floor(clickXEnPixeles / TAMANO_CELDA);
-          const movimientoCeldasY = Math.floor(clickYEnPixeles / TAMANO_CELDA);
+          // Calculamos el tamaño en pixeles que ocupa una sola celda visualmente ahora mismo
+          // Como es responsive, el tamaño de la celda cambia, por lo que hay que calcularlo
+          const tamanoCeldaPxWidth = rect.width / (esHorizontal ? barco.tamano : 1);
+          const tamanoCeldaPxHeight = rect.height / (esHorizontal ? 1 : barco.tamano);
 
-          // Calculamos la celda clicada sumando el offset a la
-          // posición del barco.
+          // Dado el tamaño en pixeles de una celda y la posición en pixeles del click, 
+          // calculamos el numero de celdas respecto a la posición superior izquierda del barco.
+          const movimientoCeldasX = Math.floor(clickXEnPixeles / tamanoCeldaPxWidth);
+          const movimientoCeldasY = Math.floor(clickYEnPixeles / tamanoCeldaPxHeight);
+
+          // Calculamos la celda clicada sumando el offset(número de celdas) a la
+          // posición del barco(la posición de la primera celda del barco).
           const celdaClicadaX = barco.posicion.x + movimientoCeldasX;
           const celdaClicadaY = barco.posicion.y + movimientoCeldasY;
 
