@@ -1,4 +1,9 @@
 .mapa {
   position: relative;
-  width: fit-content;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  /*Mantiene la proporción 1:1, la de un cuadrado, que es el tablero*/
+  background-color: rgb(30, 130, 220);
+  border: 2px solid rgb(0, 0, 0);
+  box-sizing: border-box;
 }
