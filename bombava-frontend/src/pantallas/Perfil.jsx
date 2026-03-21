@@ -1,23 +1,52 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { SERVER_API } from '../utils/constantes.js'; 
 import '../styles/Perfil.css';
 
 function Perfil() {
 
   const navigate = useNavigate();
 
-  const [usuario, setUsuario] = useState({
-    nombre: "Capitán Pruebas",
-    rango: "Grumete de Agua Dulce",
-    partidas: 42,
-    victorias: 15,
-    precision: "68%"
-  });
+  const [usuario, setUsuario] = useState(null);
+
+  const cerrarSesion = () => {
+    localStorage.removeItem('token')/*sale a antes de iniciar sesion y registrarse y borra el token de sesión actual*/
+    navigate('/')
+  }
+
+  //La funcion useEffect sirve para pedir los datos del usuario solo cuando se entra a la página, si no cada vez que se cambiase algo del componente se volvería a hace rla peticion
+  useEffect(() => {
+      const obtenerDatosDelServidor = async () => {
+        
+        try{
+          const token = localStorage.getItem('token');//Cojo el token del buscador
+          
+          const res = await axios.get(SERVER_API + '/api/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUsuario(res.data);
+        }catch(err){
+          const mensajeError = err.response?.data?.message 
+                                || err.response?.data?.errors?.[0]?.msg 
+                                || "Error desconocido";
+            
+            alert("Error: " + mensajeError);
+        }
+      };
+
+      obtenerDatosDelServidor();
+    
+    
+  }, []);// [] dice al frontend que solo se ejecute una vez, al abrir la página
+
+  // ESTO EVITA QUE LA WEB SE ROMPA MIENTRAS CARGA
+  if (!usuario) return <h1 style={{color: 'white'}}>Cargando perfil...</h1>;
 
   return ( 
     <div className="contenedor_perfil">
 
-      <button className="boton_cerrar" onClick={() => navigate('/')}>{/*Faltaría poner la función para quitar la cuenta*/}
+      <button className="boton_cerrar" onClick={() => cerrarSesion()}>
         CERRAR SESIÓN
       </button>
 
@@ -32,17 +61,18 @@ function Perfil() {
         </div>
         
         <div className="info_capitan">
-          <h2>{usuario.nombre}</h2>
-          <p className="rango">{usuario.rango}</p>
+          <h2>{usuario.username}</h2>
+          <p className="rango">Rango</p>
           
           <div className="estats">
-            <p><strong>Partidas:</strong> {usuario.partidas}</p>
-            <p><strong>Victorias:</strong> {usuario.victorias}</p>
-            <p><strong>Precisión:</strong> {usuario.precision}</p>
+            <p><strong>Gmail: </strong>{usuario.email} </p>
+            <p><strong>Partidas: </strong> Partidas</p>
+            <p><strong>Victorias: </strong> Victorias</p>
+            <p><strong>Precisión: </strong> Precision</p>
           </div>
         </div>
 
-        <button className="boton_volver" onClick={() => navigate('/')}>
+        <button className="boton_volver" onClick={() => navigate('/menuInicial')}>
           VOLVER AL PUERTO
         </button>
 

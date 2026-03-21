@@ -11,12 +11,13 @@ function Registro() {
   const enviarDatos = async (e) => {
     e.preventDefault();//Sirve para que al enviar no se recargue la página, perdiendo el estado de toda la web (volvería a pantalla inicial)
     try {
-      const res = await axios.post(SERVER_API + '/api/auth/register', form);
+      const res = await axios.post(SERVER_API + '/api/auth/register', cuenta);
       alert("Token recibido: " + res.data.token);
+      navigate('/menuInicial');
     } catch (err) {
       alert("Error: " + err.response.data.errors[0].msg);
     }
-    navigate('/menuInicial');
+    
   };
 
   return (

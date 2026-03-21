@@ -64,7 +64,9 @@
     color: #d2b48c;  
     font-size: 30px;
     margin-bottom: 5px;
+    overflow: visible;
 }
+    
 
 .rango {
     font-style: italic;
