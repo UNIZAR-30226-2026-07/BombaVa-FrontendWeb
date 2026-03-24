@@ -35,9 +35,9 @@ const generarMapaConfiguracion = () => {
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
       if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
-      } else if (y>=5){
+      } else if (y >= 5) {
         tipoterreno = TERRENO.NO_VISION;
-      }else{
+      } else {
         tipoterreno = TERRENO.NO_VISION_ENEMIGO;
       }
 
@@ -69,9 +69,11 @@ const Tablero = ({ onCellClick, configurar, celdasEnRango }) => {
   return (
     <div className="tablero"
       style={{
-        // Aplicamos el formato de cuadricula
-        gridTemplateColumns: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`,
-        gridTemplateRows: `repeat(${TAMANO_TABLERO}, ${TAMANO_CELDA}px)`
+        // Aplicamos el formato de cuadricula usando fracciones (1fr) para ser responsive
+        // Se crean TAMANO_TABLERO columnas y TAMANO_TABLERO filas. Cada columna y cada 
+        // fila ocupa 1fr de espacio, es decir, del esapcio total se divide entre TAMANO_TABLERO
+        gridTemplateColumns: `repeat(${TAMANO_TABLERO}, 1fr)`,
+        gridTemplateRows: `repeat(${TAMANO_TABLERO}, 1fr)`
       }}
     >
       {/*Mapeamos el mapa para mostrar cada celda*/}

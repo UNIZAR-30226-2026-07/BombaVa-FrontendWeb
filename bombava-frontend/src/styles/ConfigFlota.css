@@ -25,13 +25,23 @@
   flex-direction: column;
   gap: 10px;
   min-width: 150px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .tablero-contenedor {
-    position: relative; /* Los barcos ahora usarán ESTE div como (0,0) */
-    width: fit-content; /* Se ajusta al tamaño del tablero */
-    margin: 0 auto;    /* Lo mantiene centrado si es necesario */
+  position: relative;
+  /* Los barcos usarán ESTE div como contenedor */
+  grid-column: 2;
+  width: 100%;
+  max-width: 550px;
+  /* Tamaño máximo */
+  aspect-ratio: 1 / 1;
+  /*Mantiene la proporción 1:1, la de un cuadrado, que es el tablero*/
+  background-color: rgb(30, 130, 220);
+  border: 2px solid rgb(0, 0, 0);
+  box-sizing: border-box;
+  margin: 0 auto;
+  /* Lo mantiene centrado */
 }
 
 /* Contenedor de los botones de selección de barco */
@@ -64,7 +74,7 @@
 }
 
 /*Lo hago para que el boton de eliminar sea de otro color*/
-.eliminarBarco-btn{
+.eliminarBarco-btn {
   padding: 12px 24px;
   font-weight: bold;
   text-transform: uppercase;

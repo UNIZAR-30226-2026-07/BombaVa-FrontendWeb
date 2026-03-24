@@ -1,0 +1,25 @@
+.contenedor-padre{
+    display: flex;
+    flex-direction: column; /* Botones uno debajo del otro */
+    justify-content: center; 
+    align-items: center;     
+    height: 100vh;           /* 100% de la altura de la ventana */
+    width: 100vw;            /* 100% del ancho de la ventana */
+    background-color: #002a68;
+    gap: 20px;               /* Espacio entre los botones */
+}
+
+.boton-inicio-sesion, 
+.boton-registrarse {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;    /* Bordes muy redondeados */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; /* Animación */
+  width: 280px;           /* Ancho fijo para que midan lo mismo */
+  background-color: #684013;
+  color: white;
+}
+
