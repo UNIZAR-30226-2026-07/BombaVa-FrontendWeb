@@ -8,6 +8,7 @@ import ConfigFlota from './pantallas/ConfigFlota';
 import Combate from "./pantallas/Combate";
 import ActionButtons from './componentes/ActionButtons.jsx';
 import Unirse from './pantallas/Unirse';
+import SalaEspera from './pantallas/SalaEspera';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/configurar" element={<ConfigFlota/>}/>
         <Route path="/combate" element={<Combate/>}/>
         <Route path="/unirse" element={<Unirse/>}/>
+        <Route path="/sala-espera" element={<SalaEspera/>}/>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

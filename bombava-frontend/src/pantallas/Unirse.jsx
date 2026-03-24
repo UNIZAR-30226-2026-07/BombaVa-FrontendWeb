@@ -1,21 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { socket } from '../utils/socket';
 import '../styles/Unirse.css';
 
 function Unirse() {
   const [codigo, setCodigo] = useState('');
+  const [errorBusqueda, setErrorBusqueda] = useState('');
   const navigate = useNavigate();
 
+  // Configurar los listeners del socket al llegar a la pantalla
+  useEffect(() => {
+    // Si el join es exitoso y la partida está lista, navegamos a la pantalla de combate
+    const handleMatchReady = (payload) => {
+      console.log('Partida lista', payload);
+      navigate('/combate');
+    };
+
+    // Si hay un error, como por ejemplo "Lobby no encontrado"
+    const handleLobbyError = (payload) => {
+      console.log('Error del lobby:', payload);
+      setErrorBusqueda(payload.message || 'Error al unirse a la sala.');
+    };
+
+    // Escuchamos los siguientes eventos:
+    socket.on('match:ready', handleMatchReady);
+    socket.on('lobby:error', handleLobbyError);
+
+    // Cerramos los listeners al salir de la pantalla
+    return () => {
+      socket.off('match:ready', handleMatchReady);
+      socket.off('lobby:error', handleLobbyError);
+    };
+  }, [navigate]);
+
   // Función que se ejecuta al pulsar el botón "Unirse"
-  // Por ahora solo redirige a combate, en un futuro validará el código y 
-  // se unirá a la partida del código
   const handleUnirse = (e) => {
     e.preventDefault();
-    if (codigo != '') {
-      // COMPLETAR: Aquí iría la llamada a la API para validar el código y unirse a la sala
+    if (codigo !== '') {
+      setErrorBusqueda(''); // Quitar errores previos
       console.log(`Intentando unirse a la sala con código: ${codigo}`);
 
-      navigate('/combate');
+      // Emitimos el evento de unirse a la sala mediante WebSocket
+      socket.emit('lobby:join', { codigo });
     }
   };
 
@@ -24,6 +50,12 @@ function Unirse() {
       <div className="unirse-card">
         <h2>Unirse a Partida</h2>
         <p>Introduce el código de la sala para unirte a la partida.</p>
+
+        {errorBusqueda && (
+          <div className="error-mensaje">
+            {errorBusqueda}
+          </div>
+        )}
 
         <form onSubmit={handleUnirse} className="unirse-form">
           <input
