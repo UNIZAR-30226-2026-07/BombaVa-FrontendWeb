@@ -10,6 +10,8 @@ import Inicio from "./pantallas/pantallaInicio.jsx";
 import Registro from "./pantallas/Registrarse.jsx";
 import InicioSesion from "./pantallas/IncioSesion.jsx";
 import ActionButtons from './componentes/ActionButtons.jsx';
+import Unirse from './pantallas/Unirse';
+import SalaEspera from './pantallas/SalaEspera';
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
         <Route path="/profile" element={<Perfil />} />
         <Route path="/configurar" element={<ConfigFlota/>}/>
         <Route path="/combate" element={<Combate/>}/>
+        <Route path="/unirse" element={<Unirse/>}/>
+        <Route path="/sala-espera" element={<SalaEspera/>}/>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

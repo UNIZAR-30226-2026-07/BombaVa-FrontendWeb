@@ -17,8 +17,8 @@ function MenuInicio({ }) {
       <div className="grupo-botones">
         <button className="menu-btn" onClick={() => navigate('/configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/}
         <button className="menu-btn" onClick={() => navigate('/combate')}>COMPETITIVO</button>
-        <button className="menu-btn" onClick={() => navigate('/combate')}>PRÁCTICA</button>
-        <button className="menu-btn">UNIRSE</button>
+        <button className="menu-btn" onClick={() => navigate('/sala-espera')}>PRÁCTICA</button>
+        <button className="menu-btn" onClick={() => navigate('/unirse')}>UNIRSE</button>
       </div>
     </div>
   );
