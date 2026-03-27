@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/MenuPausa.css';
 
 function MenuPausa() {
     // Estado para controlar si el pop-up del menú de pausa está visible
     const [cuadroPausaVisible, setCuadroPausaVisible] = useState(false);
+
+    const navigate = useNavigate();
 
     // Función para abrir el menú
     const abrirMenu = () => {
@@ -18,14 +21,14 @@ function MenuPausa() {
     // Función para abandonar la partida (Redirige al menú principal)
     const AbandonarPartida = () => {
         // AÑADIR -> Implementar lógica con el backend para abandonar la partida
-        window.location.href = '/'; // Redirige al menú principal 
+        navigate('/menuInicial');
     };
 
     // Función para guardar el estado de la partida y seguir luego
     const GuardarYSeguirLuego = () => {
         console.log("Guardando estado de la partida para continuar después.");
         // AÑADIR -> Implementar lógica de guardado con el backend
-        window.location.href = '/'; // Redirige al menú principal después de guardar
+       navigate('/menuInicial');
     };
 
     return (

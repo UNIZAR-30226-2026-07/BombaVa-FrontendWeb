@@ -69,7 +69,7 @@ function Unirse() {
           />
 
           <div className="unirse-botones">
-            <button type="button" className="btn-cancelar" onClick={() => navigate('/')}>
+            <button type="button" className="btn-cancelar" onClick={() => navigate('/menuInicial')}>
               {/* Al pulsar el botón vuelve al menu */}
               Cancelar
             </button>

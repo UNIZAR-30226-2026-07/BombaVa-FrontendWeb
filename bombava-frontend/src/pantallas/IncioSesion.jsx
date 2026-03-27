@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { SERVER_API } from '../utils/constantes.js'; 
+import { SERVER_API } from '../utils/constantes.js';
+import { socket } from '../utils/socket.js';
 import '../styles/InicioSesion.css';
 
 function InicioSesion() {
@@ -14,6 +15,11 @@ function InicioSesion() {
       const res = await axios.post(SERVER_API + '/api/auth/login', cuenta);
       alert("Token recibido: " + res.data.token);
       localStorage.setItem('token', res.data.token);//Se guarda en el buscador el token para luego poder sacar los datos
+
+      // Desconectamos el socket previo y reconectamos el socket con el nuevo token del usuario
+      socket.disconnect();
+      socket.connect();
+
       navigate('/menuInicial');
     } catch (err) {
       alert("Error: " + err.response.data.errors[0].msg);

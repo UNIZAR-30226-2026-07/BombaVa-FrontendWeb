@@ -69,7 +69,7 @@ function SalaEspera() {
         )}
 
         <div className="sala-espera-botones">
-          <button type="button" className="btn-cancelar" onClick={() => navigate('/')}>
+          <button type="button" className="btn-cancelar" onClick={() => navigate('/menuInicial')}>
             VOLVER AL MENÚ
           </button>
         </div>
