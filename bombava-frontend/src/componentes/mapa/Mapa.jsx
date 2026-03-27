@@ -12,6 +12,7 @@ incluye varias capas(de abajo a arriba sería):
     > Proyectiles
 */
 const Mapa = ({
+  mapa,
   modoAtaque,
   onAtaqueRealizado,
   barcos,
@@ -116,7 +117,7 @@ const Mapa = ({
 
   return (
     <div className="mapa">
-      <Tablero onCellClick={gestionarClickMapa} configurar={false} celdasEnRango={celdasEnRango} />
+      <Tablero mapa={mapa} onCellClick={gestionarClickMapa} configurar={false} celdasEnRango={celdasEnRango} />
 
       {barcos.map((barco) => (
         <Barco
