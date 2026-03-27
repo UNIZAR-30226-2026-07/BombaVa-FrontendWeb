@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../utils/constantes';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:

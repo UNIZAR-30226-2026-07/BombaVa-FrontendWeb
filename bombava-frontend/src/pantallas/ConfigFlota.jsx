@@ -123,7 +123,6 @@ const ConfigFlota = () => {
                     
                     //Miro si cabe o no, si el barco no cabe entero subo la fila de la celda que tiene la punta superior del barco
                     if (!celdaEsValida(x, yActual,barcos)) {
-                        alert("Hola " + x + " " + y);
                         todasValidas = false;
                         break; 
                     }
@@ -140,7 +139,6 @@ const ConfigFlota = () => {
                 }
                 
             }
-            alert("Hola2");
             if(encaja){
                 const nuevoBarco = {
                     id: nombreTipo,
