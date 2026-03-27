@@ -3,7 +3,54 @@ import Tablero from '../componentes/tablero/Tablero';
 import Barco from '../componentes/barco/Barco.jsx';
 import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos, TAMANO_TABLERO, TERRENO } from '../utils/constantes.js'; 
+
+/**
+ // Función para generar un mapa inicial de ejemplo
+const generarMapaInicial = () => {
+  const map = [];
+  for (let y = 0; y < TAMANO_TABLERO; y++) {
+    const fila = [];
+    for (let x = 0; x < TAMANO_TABLERO; x++) {
+      //Mapa con todo agua y una isla central
+      let tipoterreno = TERRENO.AGUA;
+
+      // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
+      if (x >= 6 && x < 9 && y >= 6 && y < 9) {
+        tipoterreno = TERRENO.ISLA;
+      }
+
+      fila.push({ x, y, tipoterreno });
+    }
+    map.push(fila);
+  }
+  return map;
+};
+ */
+
+const generarMapaConfiguracion = () => {
+  const map = [];
+  for (let y = 0; y < TAMANO_TABLERO; y++) {
+    const fila = [];
+    for (let x = 0; x < TAMANO_TABLERO; x++) {
+      //Mapa con todo agua y una isla central
+      let tipoterreno = TERRENO.AGUA;
+
+      // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
+      if (y >= 10) {
+        tipoterreno = TERRENO.AGUA;
+      } else if (y >= 5) {
+        tipoterreno = TERRENO.NO_VISION;
+      } else {
+        tipoterreno = TERRENO.NO_VISION_ENEMIGO;
+      }
+
+      fila.push({ x, y, tipoterreno });
+    }
+    map.push(fila);
+  }
+  return map;
+};
 
 /*El mapa es la clase que engloba a todo el tablero de juego, para ello 
 incluye varias capas(de abajo a arriba sería):
@@ -13,8 +60,13 @@ incluye varias capas(de abajo a arriba sería):
     > Proyectiles
 */
 const ConfigFlota = () => {
+    let mapaInicial;
+    //generamos el mapa inicial
+    mapaInicial = generarMapaConfiguracion();
+
     const [barcoAPoner, setBarcoAPoner] = useState(0); // 0 significa que no hay ninguno seleccionado
     const [barcosPuestos, setbarcosPuestos] = useState([0,0,0,0,0,0]) //Barcos puestos de cada tipo, realmente por ahora solo uso los indices 1, 3 y 5
+    const [mapa, setMapa] = useState(mapaInicial);//El mapa
     const { 
         barcos, 
         barcoSeleccionado, 
@@ -24,7 +76,7 @@ const ConfigFlota = () => {
         setArmas,
         borrarBarco,
         celdaEsValida
-    } = useMovimientosBarco([]); // Empezamos con tablero vacío
+    } = useMovimientosBarco([],mapa); // Empezamos con tablero vacío
 
     // Si pulsamos un barco podremos cambiar sus armas y sale un panel con sus datos 
     const gestionarClickBarco = (id) => {
@@ -57,21 +109,56 @@ const ConfigFlota = () => {
                     break;
                 default: nombreTipo = "BarcoRaro";
             }
+            
+            let celdasFinales = [];
+            let encaja = false;
+            let intentoY = y; 
 
-            const nuevoBarco = {
-                id: nombreTipo,
-                posicion: { x, y },
-                orientacion: 'N',
-                tamano: barcoAPoner,
-                tipo: `Barco 1x-${barcoAPoner}`,
-                vida: 100,
-                armas: Array(numArmas).fill(0)
-            };
-            anadirBarco(nuevoBarco);
-            const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
-            nuevosBarcosPuestos[barcoAPoner] = 1; // Modifica la copia
-            setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
-            setBarcoAPoner(0)
+            for (let desplazamiento = 0; desplazamiento < barcoAPoner; desplazamiento++) {
+                let celdasTemporales = [];
+                let todasValidas = true;
+                
+                for (let i = 0; i < barcoAPoner; i++) {
+                    let yActual = intentoY + i;
+                    
+                    //Miro si cabe o no, si el barco no cabe entero subo la fila de la celda que tiene la punta superior del barco
+                    if (!celdaEsValida(x, yActual,barcos)) {
+                        todasValidas = false;
+                        break; 
+                    }
+                    
+                    celdasTemporales.push({ x: x, y: yActual });
+                }
+                
+                if (todasValidas) {
+                    celdasFinales = celdasTemporales;
+                    encaja = true;
+                    break; 
+                } else {
+                    intentoY--; // Probamos a subir el punto de origen a ver si así cabe
+                }
+                
+            }
+            if(encaja){
+                const nuevoBarco = {
+                    id: nombreTipo,
+                    posicion: { x: x, y: intentoY },
+                    orientacion: 'N',
+                    tamano: barcoAPoner,
+                    tipo: `Barco 1x-${barcoAPoner}`,
+                    vida: 100,
+                    armas: Array(numArmas).fill(0),
+                    celdas: celdasFinales
+                };
+                anadirBarco(nuevoBarco);
+                const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
+                nuevosBarcosPuestos[barcoAPoner] = 1; // Modifica la copia
+                setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
+                setBarcoAPoner(0)
+            }
+            
+            
+            
         }
     };
 
@@ -83,7 +170,7 @@ const ConfigFlota = () => {
             {/* Zona del Tablero */}
             <div className="tablero-contenedor">
 
-                <Tablero onCellClick={gestionarClickMapa} configurar={true} celdasEnRango={new Set()} />
+                <Tablero mapa= {mapa} onCellClick={gestionarClickMapa} configurar={true} celdasEnRango={new Set()} />
                 {barcos.map((barco) => (
                 <Barco 
                     key={barco.id} 
@@ -113,7 +200,7 @@ const ConfigFlota = () => {
                 <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Misiles)}>Misiles</button>
                 <button className="ponerBarco-btn" onClick={() => setArmas(barcoSeleccionado,Torpedos)}>Torpedos</button>
                 <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado, setbarcosPuestos, barcosPuestos)}>Eliminar Barco</button>
-                {/* Aquí puedes añadir las armas que mencionas en los comentarios */}
+                
                 
             </div>
         )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../utils/constantes';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
@@ -36,7 +36,7 @@ export const calcularCeldasBarco = (barco) => {
     return celdas;
 };
 
-export const useMovimientosBarco = (barcosIniciales) => {
+export const useMovimientosBarco = (barcosIniciales, mapa) => {
 
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
@@ -309,18 +309,22 @@ export const useMovimientosBarco = (barcosIniciales) => {
 
     //Funcion utilizada para saber si se puede colocar el barco en esta celda, se obtiene el tipo
     //de celda de mapa 
-    const celdaEsValida = (x, y,mapa,barcos) =>{
+    const celdaEsValida = (x, y,barcos) =>{
         let tipoCelda; 
         let celdaValida = true;
         if(x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO){
-            tipoCelda = mapa[y][x].tipoCelda;
+            tipoCelda = mapa[y][x].tipoterreno;
             if(tipoCelda == TERRENO.AGUA){
-                for (let barco of barcos) {
-                    if (barco.x === x && barco.y === y) {
-                        // Si coincide la X Y la Y, hay un barco estorbando
-                        celdaValida = false; 
+                if(barcos.length > 0){
+                    for (let barco of barcos) {
+                        for(let i = 0; i< barco.tamano ; i++){
+                            if(barco.celdas[i].x == x && barco.celdas[i].y == y){
+                                celdaValida = false;
+                            }
+                        }
                     }
                 }
+                
             }else{
                 celdaValida = false;
             }
