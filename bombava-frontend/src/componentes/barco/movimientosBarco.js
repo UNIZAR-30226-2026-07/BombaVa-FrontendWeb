@@ -107,6 +107,12 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
             const nuevoY = nuevoEsHorizontal ? pivoteY : pivoteY - pivoteIdx;
             console.log(`Rotación en sentido: ${nuevaOrientacion}`);
 
+            // Comprobación de que no se sale del tablero
+            if(nuevaOrientacion == 'N' || nuevaOrientacion == 'S'){
+                if(nuevoY < 0 || nuevoY > TAMANO_TABLERO - b.tamano) return b;
+            }else if(nuevaOrientacion == 'E' || nuevaOrientacion == 'O'){
+                if(nuevoX < 0 || nuevoX > TAMANO_TABLERO - b.tamano) return b;
+            }
 
             const nuevoBarco = {
                 ...b, // Copia el resto de propiedades del barco sin cambios
