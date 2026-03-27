@@ -3,9 +3,10 @@ import Tablero from '../componentes/tablero/Tablero';
 import Barco from '../componentes/barco/Barco.jsx';
 import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos, TAMANO_TABLERO, TERRENO } from '../utils/constantes.js'; 
 
-// Función para generar un mapa inicial de ejemplo
+/**
+ // Función para generar un mapa inicial de ejemplo
 const generarMapaInicial = () => {
   const map = [];
   for (let y = 0; y < TAMANO_TABLERO; y++) {
@@ -25,6 +26,7 @@ const generarMapaInicial = () => {
   }
   return map;
 };
+ */
 
 const generarMapaConfiguracion = () => {
   const map = [];
@@ -60,7 +62,7 @@ incluye varias capas(de abajo a arriba sería):
 const ConfigFlota = () => {
     let mapaInicial;
     //generamos el mapa inicial
-    mapaInicial = generarMapaInicial();
+    mapaInicial = generarMapaConfiguracion();
 
     const [barcoAPoner, setBarcoAPoner] = useState(0); // 0 significa que no hay ninguno seleccionado
     const [barcosPuestos, setbarcosPuestos] = useState([0,0,0,0,0,0]) //Barcos puestos de cada tipo, realmente por ahora solo uso los indices 1, 3 y 5
@@ -108,48 +110,57 @@ const ConfigFlota = () => {
                 default: nombreTipo = "BarcoRaro";
             }
             
-        let celdasFinales = [];
-        let encaja = false;
-        let intentoY = y; 
+            let celdasFinales = [];
+            let encaja = false;
+            let intentoY = y; 
 
-        for (let desplazamiento = 0; desplazamiento < barcoAPoner; desplazamiento++) {
-            let celdasTemporales = [];
-            let todasValidas = true;
-
-            for (let i = 0; i < barcoAPoner; i++) {
-                let yActual = intentoY - i;
-                //Miro si cabe o no, si el barco no cabe entero subo la fila de la celda que tiene la punta superior del barco
-                if (!celdaEsValida(x, yActual,barcos)) {
-                    todasValidas = false;
-                    break; 
+            for (let desplazamiento = 0; desplazamiento < barcoAPoner; desplazamiento++) {
+                let celdasTemporales = [];
+                let todasValidas = true;
+                
+                for (let i = 0; i < barcoAPoner; i++) {
+                    let yActual = intentoY + i;
+                    
+                    //Miro si cabe o no, si el barco no cabe entero subo la fila de la celda que tiene la punta superior del barco
+                    if (!celdaEsValida(x, yActual,barcos)) {
+                        alert("Hola " + x + " " + y);
+                        todasValidas = false;
+                        break; 
+                    }
+                    
+                    celdasTemporales.push({ x: x, y: yActual });
                 }
-                celdasTemporales.push({ x: x, y: yActual });
+                
+                if (todasValidas) {
+                    celdasFinales = celdasTemporales;
+                    encaja = true;
+                    break; 
+                } else {
+                    intentoY--; // Probamos a subir el punto de origen a ver si así cabe
+                }
+                
             }
-
-            if (todasValidas) {
-                celdasFinales = celdasTemporales;
-                encaja = true;
-                break; 
-            } else {
-                intentoY++; // Probamos a subir el punto de origen a ver si así cabe
+            alert("Hola2");
+            if(encaja){
+                const nuevoBarco = {
+                    id: nombreTipo,
+                    posicion: { x: x, y: intentoY },
+                    orientacion: 'N',
+                    tamano: barcoAPoner,
+                    tipo: `Barco 1x-${barcoAPoner}`,
+                    vida: 100,
+                    armas: Array(numArmas).fill(0),
+                    celdas: celdasFinales
+                };
+                anadirBarco(nuevoBarco);
+                const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
+                nuevosBarcosPuestos[barcoAPoner] = 1; // Modifica la copia
+                setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
+                setBarcoAPoner(0)
             }
-        }
             
-            const nuevoBarco = {
-                id: nombreTipo,
-                posicion: { x: x, y: intentoY - (barcoAPoner - 1) },
-                orientacion: 'N',
-                tamano: barcoAPoner,
-                tipo: `Barco 1x-${barcoAPoner}`,
-                vida: 100,
-                armas: Array(numArmas).fill(0),
-                celdas: celdasFinales
-            };
-            anadirBarco(nuevoBarco);
-            const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
-            nuevosBarcosPuestos[barcoAPoner] = 1; // Modifica la copia
-            setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
-            setBarcoAPoner(0)
+            
+            
         }
     };
 

@@ -313,14 +313,18 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         let tipoCelda; 
         let celdaValida = true;
         if(x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO){
-            tipoCelda = mapa[y][x].tipoCelda;
+            tipoCelda = mapa[y][x].tipoterreno;
             if(tipoCelda == TERRENO.AGUA){
-                for (let barco of barcos) {
-                    if (barco.x === x && barco.y === y) {
-                        // Si coincide la X Y la Y, hay un barco estorbando
-                        celdaValida = false; 
+                if(barcos.length > 0){
+                    for (let barco of barcos) {
+                        for(let i = 0; i< barco.tamano ; i++){
+                            if(barco.celdas[i].x == x && barco.celdas[i].y == y){
+                                celdaValida = false;
+                            }
+                        }
                     }
                 }
+                
             }else{
                 celdaValida = false;
             }
