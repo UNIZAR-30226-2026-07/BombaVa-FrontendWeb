@@ -7,9 +7,10 @@ const URL_WEBSOCKET = 'http://localhost:3000';
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
   autoConnect: true,
-  // Habrá que poner el token del usuario logueado
-  auth: {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViOWU3YTgxLTgxZjgtNDU4MC1iNDVmLWNiZTFhYTQ1YWU2ZiIsIm5vbWJyZVVzdWFyaW8iOiJvc2Nhcl90ZXN0ZXIiLCJlbWFpbCI6Im9zY2FyQHRlc3QuY29tIiwiaWF0IjoxNzc0MzU2OTA4LCJleHAiOjE3NzQ0NDMzMDh9.C_eR1JpUZU36HAF9l-RsQUR4ySe7X3UdBlGukeTCByw"
+  // Usamos una función para que lea el token del localStorage cada vez que intente conectarse
+  auth: (cb) => {
+    const token = localStorage.getItem('token');
+    cb({ token });
   }
 });
 
