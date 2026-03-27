@@ -36,7 +36,7 @@ export const calcularCeldasBarco = (barco) => {
     return celdas;
 };
 
-export const useMovimientosBarco = (barcosIniciales) => {
+export const useMovimientosBarco = (barcosIniciales, mapa) => {
 
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
@@ -309,7 +309,7 @@ export const useMovimientosBarco = (barcosIniciales) => {
 
     //Funcion utilizada para saber si se puede colocar el barco en esta celda, se obtiene el tipo
     //de celda de mapa 
-    const celdaEsValida = (x, y,mapa,barcos) =>{
+    const celdaEsValida = (x, y,barcos) =>{
         let tipoCelda; 
         let celdaValida = true;
         if(x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO){
