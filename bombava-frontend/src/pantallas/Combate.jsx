@@ -1,5 +1,5 @@
 import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
@@ -7,6 +7,7 @@ import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
+import { socket } from '../utils/socket.js';
 import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -66,25 +67,63 @@ function Combate() {
     };
 
     // Hook para manejar los movimientos de los barcos
+    // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
         barcos,
         barcoSeleccionado: idBarcoSeleccionado,
         setBarcoSeleccionado: setIdBarcoSeleccionado,
         rotarBarco,
         moverBarco,
-        atacarCelda
-    } = useMovimientosBarco([
-        //BARCOS ALIADOS:
-        { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },
-        { id: 'aliado_2', posicion: { x: 6, y: 12 }, orientacion: 'O', tamano: 5, tipo: 'destructor', vida: 100, esEnemigo: false },
-        { id: 'aliado_3', posicion: { x: 13, y: 9 }, orientacion: 'N', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: false },
+        atacarCelda,
+        cargarBarcosDesdeApi
+    } = useMovimientosBarco([]);
 
-        // BARCOS ENEMIGOS:
-        { id: 'enemigo_1', posicion: { x: 2, y: 2 }, orientacion: 'S', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: true },
-        { id: 'enemigo_2', posicion: { x: 6, y: 2 }, orientacion: 'E', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: true },
-        { id: 'enemigo_3', posicion: { x: 10, y: 0 }, orientacion: 'S', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: true }
-    ], mapa);
+    useEffect(() => {
+        const handleStartInfo = (payload) => {
+                        
+            // Cargar los barcos pasandole lo que llega del local storage
+            cargarBarcosDesdeApi(payload.playerFleet, payload.enemyFleet);
 
+            // Actualizar munición y combustible iniciales según el local storage
+            setBarras(prev => ({
+                     ...prev,
+                     municion: payload.ammo,
+                     combustible: payload.fuel
+                 }));
+        };
+
+        // Al llegar a Combate.jsx está guardado en el local storage el estado de la partida
+        const guardado = localStorage.getItem('bombaVa_matchState');
+        if (guardado) {
+            const parsed = JSON.parse(guardado);
+            handleStartInfo(parsed);
+        }else{
+            console.log("No hay estado previo de la partida");
+            navigate('/menuInicial');
+        }
+
+        // Escucha las actualizaciones de la partida
+        const handleVisionUpdate = (visionPayload) => {
+             console.log("Nueva visión recibida:", visionPayload);
+             cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
+             
+             // Añadir los datos de la actualización al Local storage.
+             const estadoPrevio = localStorage.getItem('bombaVa_matchState');
+             if (estadoPrevio) {
+                 const estadoActualizado = JSON.parse(estadoPrevio);
+                 estadoActualizado.playerFleet = visionPayload.myFleet || estadoActualizado.playerFleet;
+                 estadoActualizado.enemyFleet = visionPayload.visibleEnemyFleet || estadoActualizado.enemyFleet;
+                 localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+             }
+        };
+
+        socket.on('match:vision_update', handleVisionUpdate);
+
+        return () => {
+            socket.off('match:vision_update', handleVisionUpdate);
+        };
+    }, []);
+    
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
 

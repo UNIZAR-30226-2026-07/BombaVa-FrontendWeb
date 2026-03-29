@@ -165,6 +165,35 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         ));
     };
 
+    // Función para cargar los barcos desde la API
+    // Recibe dos arrays, uno con los barcos del jugador y otro con los barcos enemigos
+    // y los convierte a un formato que se pueda usar en el juego.
+    const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
+        const barcosMapeados = [
+            ...playerFleet.map(ship => ({
+                id: ship.id,
+                posicion: { x: ship.x, y: ship.y },
+                orientacion: ship.orientation,
+                tamano: ship.size || 3, // La  API no envía size
+                tipo: ship.type || 'destructor', // La  API no envía type
+                vida: ship.currentHp , 
+                esEnemigo: false
+            })),
+            ...enemyFleet.map(ship => ({
+                id: ship.id,
+                posicion: { x: ship.x, y: ship.y },
+                orientacion: ship.orientation,
+                tamano: ship.size || 3, // La  API no envía size
+                tipo: ship.type || 'destructor', // La  API no envía type
+                vida: ship.currentHp,
+                esEnemigo: true
+            }))
+        ];
+        
+        const barcosJuego = barcosMapeados.map(inicializarBarcoConModulos);
+        setBarcos(barcosJuego);
+    };
+
     const anadirBarco = (nuevoBarco) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         const barcoConModulos = inicializarBarcoConModulos(nuevoBarco);
         // Como no puedo modificar la lista de barcos creo otra con todos los que hay más el nuevo
@@ -352,6 +381,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         setArmas,
         borrarBarco,
         atacarCelda,
-        celdaEsValida
+        celdaEsValida,
+        cargarBarcosDesdeApi
     };
 };
