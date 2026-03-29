@@ -165,29 +165,51 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         ));
     };
 
+    // Función para transformar el centro que da la API a la coordenada origen que usa nuestro frontend
+    // Coordenda API: centro del barco
+    // Coordenda Frontend: proa del barco(extremo superior izquierdo)
+    const adaptarCentroApi = (xCentro, yCentro, orientacion, tamano) => {
+        const offset = Math.floor(tamano / 2);
+        let x = xCentro;
+        let y = yCentro;
+        
+        if (orientacion === 'N') y -= offset;
+        else if (orientacion === 'S') y -= offset;
+        else if (orientacion === 'E') x += offset;
+        else if (orientacion === 'W') x += offset;
+
+        return { x, y };
+    };
+
     // Función para cargar los barcos desde la API
     // Recibe dos arrays, uno con los barcos del jugador y otro con los barcos enemigos
     // y los convierte a un formato que se pueda usar en el juego.
     const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
         const barcosMapeados = [
-            ...playerFleet.map(ship => ({
-                id: ship.id,
-                posicion: { x: ship.x, y: ship.y },
-                orientacion: ship.orientation,
-                tamano: ship.size || 3, // La  API no envía size
-                tipo: ship.type || 'destructor', // La  API no envía type
-                vida: ship.currentHp , 
-                esEnemigo: false
-            })),
-            ...enemyFleet.map(ship => ({
-                id: ship.id,
-                posicion: { x: ship.x, y: ship.y },
-                orientacion: ship.orientation,
-                tamano: ship.size || 3, // La  API no envía size
-                tipo: ship.type || 'destructor', // La  API no envía type
-                vida: ship.currentHp,
-                esEnemigo: true
-            }))
+            ...playerFleet.map(ship => {
+                const tamano = ship.size || 3; // La API no envía size
+                return {
+                    id: ship.id,
+                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    orientacion: ship.orientation,
+                    tamano: tamano, 
+                    tipo: ship.type || 'destructor', // La API no envía type
+                    vida: ship.currentHp, 
+                    esEnemigo: false
+                };
+            }),
+            ...enemyFleet.map(ship => {
+                const tamano = ship.size || 3; // La API no envía size
+                return {
+                    id: ship.id,
+                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    orientacion: ship.orientation,
+                    tamano: tamano, 
+                    tipo: ship.type || 'destructor', // La API no envía type
+                    vida: ship.currentHp,
+                    esEnemigo: true
+                };
+            })
         ];
         
         const barcosJuego = barcosMapeados.map(inicializarBarcoConModulos);
