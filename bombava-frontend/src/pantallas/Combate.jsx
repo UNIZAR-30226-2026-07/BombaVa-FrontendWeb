@@ -73,9 +73,9 @@ function Combate() {
         barcoSeleccionado: idBarcoSeleccionado,
         setBarcoSeleccionado: setIdBarcoSeleccionado,
         rotarBarco,
-        moverBarco,
         atacarCelda,
-        cargarBarcosDesdeApi
+        cargarBarcosDesdeApi,
+        moverBarcoAdelante
     } = useMovimientosBarco([]);
 
     useEffect(() => {
@@ -92,11 +92,14 @@ function Combate() {
                  }));
         };
 
-        // Al llegar a Combate.jsx está guardado en el local storage el estado de la partida
+        // Al llegar a Combate.jsx el estado de la partida está guardado en el local storage
         const guardado = localStorage.getItem('bombaVa_matchState');
         if (guardado) {
             const parsed = JSON.parse(guardado);
             handleStartInfo(parsed);
+            // Conectarse a la sala de la partida
+            const mId = parsed.matchInfo.matchId;
+            socket.emit('game:join', mId);
         }else{
             console.log("No hay estado previo de la partida");
             navigate('/menuInicial');
@@ -117,10 +120,31 @@ function Combate() {
              }
         };
 
+       // Escuchamos devoluciones del  movimiento hacia adelante
+        const handleShipMoved = (payload) => {
+             console.log("Movimiento confirmado por el back-end:", payload);
+
+             // Actualizamos el barco 
+             moverBarcoAdelante(payload.shipId);
+             
+             // Restar consumo en las barras
+             setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+
+             // Guardar cambios en local storage
+             const estadoPrevio = localStorage.getItem('bombaVa_matchState');
+             if (estadoPrevio) {
+                const estadoActualizado = JSON.parse(estadoPrevio);
+                estadoActualizado.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+             }
+        };
+
         socket.on('match:vision_update', handleVisionUpdate);
+        socket.on('ship:moved', handleShipMoved);
 
         return () => {
             socket.off('match:vision_update', handleVisionUpdate);
+            socket.off('ship:moved', handleShipMoved);
         };
     }, []);
     
@@ -199,7 +223,6 @@ function Combate() {
                         barcoSeleccionado={idBarcoSeleccionado}
                         setBarcoSeleccionado={setIdBarcoSeleccionado}
                         rotarBarco={rotarBarco}
-                        moverBarco={moverBarco}
                         atacarCelda={atacarCelda}
                     />
                 </div>
@@ -214,7 +237,6 @@ function Combate() {
                         onAttackClick={activarModoAtaque}
                         modoAtaque={modoAtaque}
                         rotarBarco={rotarBarco}
-                        moverBarco={moverBarco}
                     />
                 </div>
             </div>

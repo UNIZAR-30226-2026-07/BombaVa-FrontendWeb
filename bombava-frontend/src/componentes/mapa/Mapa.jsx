@@ -19,7 +19,6 @@ const Mapa = ({
   barcoSeleccionado,
   setBarcoSeleccionado,
   rotarBarco,
-  moverBarco,
   atacarCelda
 }) => {
 

@@ -6,7 +6,7 @@ import '../../styles/Barco.css';
 > posicion: 
     > x: posición eje X
     > y: posición eje Y 
-> orientacion: Orientación del barco puede ser 'N','S','E','O', 
+> orientacion: Orientación del barco puede ser 'N','S','E','W', 
 > tamano: Número de casilla que ocupa 
 > tipo: Nombre del tipo de barco.
 > vida: Vida del barco
@@ -15,7 +15,7 @@ import '../../styles/Barco.css';
 */
 const Barco = ({ barco, estaSeleccionado, onClick }) => {
 
-  const esHorizontal = barco.orientacion === 'E' || barco.orientacion === 'O';
+  const esHorizontal = barco.orientacion === 'E' || barco.orientacion === 'W';
 
   // Calculamos la posición y dimensiones en porcentajes relativos al tablero
   // Ya que el tablero será responsive, el tamaño de la celda cambia, por lo que hay que calcularlo

@@ -7,7 +7,7 @@ import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../u
 * Devuelve: un objeto con las coordenadas x e y de la celda central
 */
 export const calcularCentroBarco = (barco) => {
-    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'W';
     const medioTamano = Math.floor(barco.tamano / 2);
 
     // Sabiendo hacia en qué sentido está el barco(horizontal o vertical) calculamos 
@@ -27,7 +27,7 @@ export const calcularCentroBarco = (barco) => {
 */
 export const calcularCeldasBarco = (barco) => {
     const celdas = [];
-    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+    const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'W';
     for (let i = 0; i < barco.tamano; i++) {
         const ejeX = esHorizontal ? barco.posicion.x + i : barco.posicion.x;
         const ejeY = esHorizontal ? barco.posicion.y : barco.posicion.y + i;
@@ -73,7 +73,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
     const [barcoSeleccionado, setBarcoSeleccionado] = useState(null);
 
     // Función para rotar el barco "id" al sentido "sentido", pudiendo ser uno
-    // uno de estos valores: ['N', 'E', 'S', 'O']. En caso de no indicar un 
+    // uno de estos valores: ['N', 'E', 'S', 'W']. En caso de no indicar un 
     // sentido iterara al siguiete sentido de orientación de la lista.
     // Para rotar seleccióna el pivote de rotación mediante la siguiente norma: 
     // Nº de casilla impar => casilla del centro como pivote
@@ -84,8 +84,8 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
 
             let nuevaOrientacion;
             if (sentido == null) {
-                // Secuencia de rotación: N -> E -> S -> O
-                const orden = ['N', 'E', 'S', 'O'];
+                // Secuencia de rotación: N -> E -> S -> W
+                const orden = ['N', 'E', 'S', 'W'];
                 const idxActual = orden.indexOf(b.orientacion);
                 nuevaOrientacion = orden[(idxActual + 1) % 4];
             } else {
@@ -95,7 +95,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
             // Pivote de la rotación: Impar => centro o Par => el de atrás de los dos del medio.
             const pivoteIdx = Math.floor(b.tamano / 2);
 
-            const esHorizontal = b.orientacion === 'E' || b.orientacion === 'O';
+            const esHorizontal = b.orientacion === 'E' || b.orientacion === 'W';
 
             // Calculamos la celda que será el pivote de la rotación
             const pivoteX = esHorizontal ? b.posicion.x + pivoteIdx : b.posicion.x;
@@ -110,7 +110,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
             // Comprobación de que no se sale del tablero
             if(nuevaOrientacion == 'N' || nuevaOrientacion == 'S'){
                 if(nuevoY < 0 || nuevoY > TAMANO_TABLERO - b.tamano) return b;
-            }else if(nuevaOrientacion == 'E' || nuevaOrientacion == 'O'){
+            }else if(nuevaOrientacion == 'E' || nuevaOrientacion == 'W'){
                 if(nuevoX < 0 || nuevoX > TAMANO_TABLERO - b.tamano) return b;
             }
 
@@ -124,45 +124,26 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         }));
     };
 
-    // Función para mover el barco "id" a la posición X e Y.
-    // Solo esta diseñada para hacer movimientos en línea recta
-    const moverBarco = (id, nuevoX, nuevoY) => {
-        setBarcos(barcos.map(b => {
-            if (b.id != id) return b;
+    // Función para avanzar 1 casilla
+    /*Parametros:
+    * id: id del barco a mover
+    * Devuelve: el barco movido 1 casilla hacia adelante
+    */
+    const moverBarcoAdelante = (id) => {
+        setBarcos(prevBarcos => prevBarcos.map(b => {
+            if (b.id !== id) return b;
+            
+            let nuevaPosicionX = b.posicion.x;
+            let nuevaPosicionY = b.posicion.y;
+            if (b.orientacion === 'N') nuevaPosicionY -= 1;
+            else if (b.orientacion === 'S') nuevaPosicionY += 1;
+            else if (b.orientacion === 'E') nuevaPosicionX += 1;
+            else if (b.orientacion === 'W') nuevaPosicionX -= 1;
 
-            let nuevaPosicionX = nuevoX;
-            let nuevaPosicionY = nuevoY;
-
-            if (b.orientacion == 'E' || b.orientacion == 'O') {
-                if (b.orientacion == 'E') {
-                    if (nuevoX > b.posicion.x) nuevaPosicionX = nuevoX - b.tamano + 1; //Avanza
-                    else nuevaPosicionX = nuevoX;
-                }
-                else if (b.orientacion == 'O') {
-                    if (nuevoX < b.posicion.x) nuevaPosicionX = nuevoX; //Avanza
-                    else nuevaPosicionX = nuevoX - b.tamano + 1;//Retrocede
-                }
-            }
-
-            else if (b.orientacion == 'N' || b.orientacion == 'S') {
-                if (b.orientacion == 'S') {
-                    if (nuevoY > b.posicion.y) nuevaPosicionY = nuevoY - b.tamano + 1; //Avanza
-                    else nuevaPosicionY = nuevoY;//Retrocede
-                }
-                else if (b.orientacion == 'N') {
-                    if (nuevoY < b.posicion.y) nuevaPosicionY = nuevoY;//Avanza
-                    else nuevaPosicionY = nuevoY - b.tamano + 1;//Retrocede
-                }
-            }
-
-            const nuevoBarco = {
-                ...b,// Copia el resto de propiedades del barco sin cambios
-                posicion: { x: nuevaPosicionX, y: nuevaPosicionY }, //Nueva posicion
-            };
+            const nuevoBarco = { ...b, posicion: { x: nuevaPosicionX, y: nuevaPosicionY } };
             nuevoBarco.celdas = calcularCeldasBarco(nuevoBarco);
             return nuevoBarco;
-        }
-        ));
+        }));
     };
 
     // Función para transformar el centro que da la API a la coordenada origen que usa nuestro frontend
@@ -266,7 +247,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
     // Comprueba si un barco ocupa una coordenada (x, y), 
     // teniendo en cuenta su posición, orientación y tamaño
     const ocupaCasilla = (barco, objetivoX, objetivoY) => {
-        const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'O';
+        const esHorizontal = barco.orientacion == 'E' || barco.orientacion == 'W';
 
         if (esHorizontal) {
             // El barco se extiende en el eje X
@@ -398,12 +379,12 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         barcoSeleccionado,
         setBarcoSeleccionado,
         rotarBarco,
-        moverBarco,
         anadirBarco,
         setArmas,
         borrarBarco,
         atacarCelda,
         celdaEsValida,
-        cargarBarcosDesdeApi
+        cargarBarcosDesdeApi,
+        moverBarcoAdelante
     };
 };

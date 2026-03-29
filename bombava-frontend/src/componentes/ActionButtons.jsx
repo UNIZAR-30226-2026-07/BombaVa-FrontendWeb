@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/ActionButtons.css';
 import { TAMANO_TABLERO } from '../utils/constantes.js';
+import { peticionMoverse } from '../utils/socket.js';
 
 function attack(boatId, actionId) {
     // API: ejecutar la acción de ataque correspondiente
@@ -18,35 +19,28 @@ function labelToImage(label) {
     return mapping[label] || '/assets/default-attack-icon.png';
 }
 
-function ActionButtons({ boat, onAttackClick, modoAtaque, rotarBarco, moverBarco }) {
+function ActionButtons({ boat, onAttackClick, modoAtaque, rotarBarco }) {
     const boatId = boat?.id;
 
     const moveFoward = () => {
         if (!boat) return;
-        let nuevoX = boat.posicion.x;
-        let nuevoY = boat.posicion.y;
+        //Chekear si no se sale del límite:
+        if(boat.orientacion === 'N' && boat.posicion.y === 0) return;
+        if(boat.orientacion === 'E' && boat.posicion.x === TAMANO_TABLERO - 1) return;
+        if(boat.orientacion === 'S' && boat.posicion.y === TAMANO_TABLERO - 1) return;
+        if(boat.orientacion === 'W' && boat.posicion.x === 0) return;
 
-        // Calculamos la nueva posicion segun la orientacion
-        if (boat.orientacion === 'N') nuevoY = boat.posicion.y - 1;
-        else if (boat.orientacion === 'S') nuevoY = boat.posicion.y + boat.tamano;
-        else if (boat.orientacion === 'E') nuevoX = boat.posicion.x + boat.tamano;
-        else if (boat.orientacion === 'O') nuevoX = boat.posicion.x - 1;
-
-        // Comprobamos si el barco esta en el borde y evitamos que salga del tablero
-        if (boat.orientacion === 'N' && boat.posicion.y <= 0) return;
-        if (boat.orientacion === 'S' && boat.posicion.y >= TAMANO_TABLERO - boat.tamano) return;
-        if (boat.orientacion === 'E' && boat.posicion.x >= TAMANO_TABLERO - boat.tamano) return;
-        if (boat.orientacion === 'O' && boat.posicion.x <= 0) return;
-
-        // API: mover el barco hacia adelante
-
-        moverBarco(boat.id, nuevoX, nuevoY);
-        console.log(`Barco ${boat.id} se mueve hacia adelante`);
+        // Recuperamos el ID de la partida actual
+        const estadoPartida = localStorage.getItem('bombaVa_matchState');
+        if (estadoPartida) {
+            const matchId = JSON.parse(estadoPartida)?.matchInfo?.matchId;
+            peticionMoverse(matchId, boat.id, boat.orientacion);
+        }
     };
 
     const turnLeft = () => {
         if (!boat) return;
-        const orden = ['N', 'E', 'S', 'O'];
+        const orden = ['N', 'E', 'S', 'W'];
         // Indice de la orientacion actual
         const idxActual = orden.indexOf(boat.orientacion);
         // Nueva orientacion girando a la izquierda
