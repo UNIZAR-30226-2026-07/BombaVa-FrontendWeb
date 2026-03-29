@@ -151,14 +151,14 @@ const ConfigFlota = () => {
         const datosMazo = {
             deckName: "Mi Nueva Flota",
             shipIds: barcos.map(b => {
-                // Saco la celda del centro porque en el backend las celdas se enumeran al reves
+                // Saco la celda del centro porque en el backend las celdas se enumeran al reves (de abajo a arriba en vez de de arriba a abajo)
                 const celdaCentral = b.celdas[Math.floor(b.tamano / 2)];
 
                 return {
                     userShipId: b.id,
                     position: {
-                        x: (TAMANO_TABLERO - 1) - celdaCentral.x, // El - 1 porque empiezan por 0
-                        y: (TAMANO_TABLERO - 1) - celdaCentral.y  
+                        x: celdaCentral.x, 
+                        y: (TAMANO_TABLERO - 1) - celdaCentral.y  // El - 1 porque empiezan por 0
                     },
                     orientation: b.orientacion
                 };
