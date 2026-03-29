@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/ActionButtons.css';
 import { TAMANO_TABLERO } from '../utils/constantes.js';
-import { peticionMoverse } from '../utils/socket.js';
+import { peticionMoverse, peticionRotar } from '../utils/socket.js';
 
 function attack(boatId, actionId) {
     // API: ejecutar la acción de ataque correspondiente
@@ -19,7 +19,7 @@ function labelToImage(label) {
     return mapping[label] || '/assets/default-attack-icon.png';
 }
 
-function ActionButtons({ boat, onAttackClick, modoAtaque, rotarBarco }) {
+function ActionButtons({ boat, onAttackClick, modoAtaque }) {
     const boatId = boat?.id;
 
     const moveFoward = () => {
@@ -33,33 +33,33 @@ function ActionButtons({ boat, onAttackClick, modoAtaque, rotarBarco }) {
         // Recuperamos el ID de la partida actual
         const estadoPartida = localStorage.getItem('bombaVa_matchState');
         if (estadoPartida) {
-            const matchId = JSON.parse(estadoPartida)?.matchInfo?.matchId;
+            const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
             peticionMoverse(matchId, boat.id, boat.orientacion);
         }
     };
 
     const turnLeft = () => {
         if (!boat) return;
-        const orden = ['N', 'E', 'S', 'W'];
-        // Indice de la orientacion actual
-        const idxActual = orden.indexOf(boat.orientacion);
-        // Nueva orientacion girando a la izquierda
-        const nuevaOrientacion = orden[(idxActual + 3) % 4];
-
-        // API: girar el barco a la izquierda
-
-        rotarBarco(boat.id, nuevaOrientacion);
-        console.log(`Barco ${boat.id} gira a la izquierda`);
+        
+        // Recuperamos el ID de la partida actual
+        const estadoPartida = localStorage.getItem('bombaVa_matchState');
+        if (estadoPartida) {
+            const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
+            // -90 Grados es girar a la izquierda
+            peticionRotar(matchId, boat.id, -90);
+        }
     };
 
     const turnRight = () => {
         if (!boat) return;
 
-        // API: girar el barco a la derecha
-
-        // Llamamos a la funcion rotarBarco, por defecto gira a la derecha
-        rotarBarco(boat.id, null);
-        console.log(`Barco ${boat.id} gira a la derecha`);
+        // Recuperamos el ID de la partida actual
+        const estadoPartida = localStorage.getItem('bombaVa_matchState');
+        if (estadoPartida) {
+            const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
+            // 90 Grados es girar a la derecha
+            peticionRotar(matchId, boat.id, 90);
+        }
     };
 
     const [buttonList, setButtonList] = React.useState([

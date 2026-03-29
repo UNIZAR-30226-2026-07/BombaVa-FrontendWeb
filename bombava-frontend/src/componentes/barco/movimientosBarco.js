@@ -79,7 +79,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
     // Nº de casilla impar => casilla del centro como pivote
     // Nº de casilla par => la casilla de atrás de los dos del medio será el pivote.
     const rotarBarco = (id, sentido) => {
-        setBarcos(barcos.map(b => {
+        setBarcos(prevBarcos => prevBarcos.map(b => {
             if (b.id !== id) return b;
 
             let nuevaOrientacion;
@@ -156,8 +156,8 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         
         if (orientacion === 'N') y -= offset;
         else if (orientacion === 'S') y -= offset;
-        else if (orientacion === 'E') x += offset;
-        else if (orientacion === 'W') x += offset;
+        else if (orientacion === 'E') x -= offset;
+        else if (orientacion === 'W') x -= offset;
 
         return { x, y };
     };

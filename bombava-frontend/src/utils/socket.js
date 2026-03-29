@@ -43,3 +43,9 @@ export const peticionMoverse = (matchId, shipId, direction) => {
     console.log(`Petición al backend: mover barco ${shipId} hacia ${direction}`);
     socket.emit('ship:move', { matchId, shipId, direction });
 };
+
+// Función para pedir al backend que rote un barco
+export const peticionRotar = (matchId, shipId, degrees) => {
+    console.log(`Petición al backend: rotar barco ${shipId} ${degrees} grados`);
+    socket.emit('ship:rotate', { matchId, shipId, degrees });
+};

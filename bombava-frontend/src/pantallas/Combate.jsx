@@ -139,12 +139,35 @@ function Combate() {
              }
         };
 
+       // Escuchamos devoluciones de rotaciones autorizadas
+        const handleShipRotated = (payload) => {
+             console.log("Rotación confirmada por el back-end:", payload);
+
+             // Actualizamos el barco visualmente 
+             rotarBarco(payload.shipId, payload.orientation);
+             
+             // Restar consumo en las barras
+             setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+
+             // Guardar cambios en local storage
+             const estadoPrevio = localStorage.getItem('bombaVa_matchState');
+             if (estadoPrevio) {
+                const estadoActualizado = JSON.parse(estadoPrevio);
+                estadoActualizado.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+             }
+        };
+
+        socket.on('match:startInfo', handleStartInfo);
         socket.on('match:vision_update', handleVisionUpdate);
         socket.on('ship:moved', handleShipMoved);
+        socket.on('ship:rotated', handleShipRotated);
 
         return () => {
+            socket.off('match:startInfo', handleStartInfo);
             socket.off('match:vision_update', handleVisionUpdate);
             socket.off('ship:moved', handleShipMoved);
+            socket.off('ship:rotated', handleShipRotated);
         };
     }, []);
     
@@ -236,7 +259,6 @@ function Combate() {
                         boat={barcoSeleccionado}
                         onAttackClick={activarModoAtaque}
                         modoAtaque={modoAtaque}
-                        rotarBarco={rotarBarco}
                     />
                 </div>
             </div>
