@@ -399,7 +399,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         atacarCelda,
         celdaEsValida,
         cargarBarcosDesdeApi,
-        moverBarcoAdelante
+        moverBarcoAdelante,
         limpiarArmas
     };
 };
