@@ -1,5 +1,8 @@
 // Se encarga de la comunicación con el backend mediante WebSocket
 import { io } from 'socket.io-client';
+import { TAMANO_TABLERO } from './constantes.js';
+
+
 
 // URL del backend
 const URL_WEBSOCKET = 'http://localhost:3000';
@@ -34,6 +37,11 @@ socket.on('disconnect', () => {
   console.log('Desconectado del servidor WebSocket');
 });
 
+// Función que traduce el eje Y entre el frontend (0,0 Arriba-Izq) y el backend (0,0 Abajo-Izq)
+export const traducirCoordY = (y) => {
+  return (TAMANO_TABLERO - 1) - y;
+};
+
 /////////////////////////////////////
 //  Funciones centralizadas para pedir al backend
 /////////////////////////////////////
@@ -58,6 +66,7 @@ export const peticionPasarTurno = (matchId) => {
 
 // Función para pedir al backend que ataque con el cañón
 export const peticionAtacarCanon = (matchId, shipId, x, y) => {
-  console.log(`Petición al backend: cañonazo del barco ${shipId} a la casilla x:${x} y:${y}`);
-  socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y } });
+  const targetY = traducirCoordY(y);
+  console.log(`Petición al backend: cañonazo del barco ${shipId} a la casilla FRONT {x:${x}, y:${y}} -> BACK {x:${x}, y:${targetY}}`);
+  socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
 };

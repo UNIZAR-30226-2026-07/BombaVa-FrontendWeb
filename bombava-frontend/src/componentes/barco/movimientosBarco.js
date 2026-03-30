@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../utils/constantes';
-import { peticionAtacarCanon } from '../../utils/socket';
+import { peticionAtacarCanon, traducirCoordY } from '../../utils/socket';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
@@ -172,7 +172,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
                 const tamano = ship.size || 3; // La API no envía size
                 return {
                     id: ship.id,
-                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: ship.type || 'destructor', // La API no envía type
@@ -184,7 +184,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
                 const tamano = ship.size || 3; // La API no envía size
                 return {
                     id: ship.id,
-                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: ship.type || 'destructor', // La API no envía type

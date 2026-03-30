@@ -121,7 +121,7 @@ function ActionButtons({ boat, onAttackClick, modoAtaque }) {
                         attack(boatId, action.id);
                     }}
                 >
-                    {modoAtaque ? 'Fuego' : 'Modo Ataque'}
+                    {modoAtaque ? 'Selecciona objetivo' : 'Disparar'}
                 </button>
 
             </div>
