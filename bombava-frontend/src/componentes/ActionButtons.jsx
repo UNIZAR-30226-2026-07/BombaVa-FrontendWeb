@@ -2,6 +2,9 @@ import React from 'react';
 import '../styles/ActionButtons.css';
 import { TAMANO_TABLERO } from '../utils/constantes.js';
 import { peticionMoverse, peticionRotar } from '../utils/socket.js';
+import imgCanon from "../assets/armas/canon.png";
+import imgTorpedo from "../assets/armas/torpedoLanzador.png";
+import imgMina from "../assets/armas/mina.png";
 
 function attack(boatId, actionId) {
     // API: ejecutar la acción de ataque correspondiente
@@ -11,10 +14,10 @@ function attack(boatId, actionId) {
 
 function labelToImage(label) {
     const mapping = {
-        'Cañón': '/assets/cannon-icon.png',
-        'Torpedo': '/assets/torpedo-icon.png',
-        'Ametralladora': '/assets/machinegun-icon.png',
-        'Mina': '/assets/mine-icon.png',
+        'Cañón': imgCanon,
+        'Torpedo': imgTorpedo,
+        'Ametralladora': '../assets/armas/ametralladora.png',
+        'Mina': imgMina
     };
     return mapping[label] || '/assets/default-attack-icon.png';
 }
@@ -63,10 +66,10 @@ function ActionButtons({ boat, onAttackClick, modoAtaque }) {
     };
 
     const [buttonList, setButtonList] = React.useState([
-        { id: 1, label: '' },
-        { id: 2, label: '' },
-        { id: 3, label: '' },
-        { id: 4, label: '' },
+        { id: 1, label: 'Cañón' },
+        { id: 2, label: 'Torpedo' },
+        { id: 3, label: 'Mina' },
+        { id: 4, label: 'Ametralladora' },
     ]);
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const [action, setAction] = React.useState(buttonList[0]);
