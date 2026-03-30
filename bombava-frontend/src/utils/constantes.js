@@ -57,3 +57,9 @@ export const MODULOS_BARCO = {
     { id: 4, nombre: "Motor", vidaMax: 80 }
   ]
 };
+
+export const NOMBRES_ARMAS = {
+  [Metralleta]: "Cañón", 
+  [Misiles]: "Mina",       
+  [Torpedos]: "Torpedo"      
+};

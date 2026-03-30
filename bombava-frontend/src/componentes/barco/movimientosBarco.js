@@ -208,20 +208,20 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         if (encontrado) {
             //Hay que revisar que se pueda meter el arma en este barco
             let numArmas; //Pone en esta variable el max de armas de este arbol
-
+            
             setBarcos(barcos.map(b => {
+                if (b.id === barcoSeleccionado) {//Solo se añade al barco que está seleccionado
+                    // Buscamos el primer hueco libre (donde haya un 0)
+                    const indiceLibre = b.armas.indexOf(0);
 
-                // Buscamos el primer hueco libre (donde haya un 0)
-                const indiceLibre = b.armas.indexOf(0);
+                    // Si hay hueco (el índice no es -1), añadimos el arma
+                    if (indiceLibre !== -1) {
+                        const nuevasArmas = [...b.armas];
+                        nuevasArmas[indiceLibre] = arma;  // Insertamos el arma
 
-                // Si hay hueco (el índice no es -1), añadimos el arma
-                if (indiceLibre !== -1) {
-                    const nuevasArmas = [...b.armas];
-                    nuevasArmas[indiceLibre] = arma;  // Insertamos el arma
-
-                    return { ...b, armas: nuevasArmas };
+                        return { ...b, armas: nuevasArmas };
+                    }
                 }
-
                 return b; // Si está lleno, devolvemos el barco sin cambios
             }));
         }
@@ -374,6 +374,20 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         
     }
 
+    //Quita las armas del barco que está seleccionado
+    const limpiarArmas = (barcoSeleccionado) => {
+        setBarcos(barcos.map(b => {
+        // Solo actuamos sobre el barco seleccionado
+        if (b.id === barcoSeleccionado) {
+            // Creamos un nuevo array del mismo tamaño pero lleno de 0s
+            const armasVacias = Array(b.armas.length).fill(0);
+            return { ...b, armas: armasVacias };
+        }
+        // Los demás barcos se quedan igual
+        return b;
+    }));
+    }
+
     return {
         barcos,
         barcoSeleccionado,
@@ -386,5 +400,6 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         celdaEsValida,
         cargarBarcosDesdeApi,
         moverBarcoAdelante
+        limpiarArmas
     };
 };
