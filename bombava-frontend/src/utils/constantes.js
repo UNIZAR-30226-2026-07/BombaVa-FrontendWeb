@@ -1,7 +1,7 @@
 /*
     Fichero con las constantes generales del proyecto.
 */
-export const SERVER_API = 'http://localhost:3000'
+export const SERVER_API = 'https://bombava-backend-vbgv.onrender.com';
 
 export const TAMANO_TABLERO = 15;
 export const TAMANO_CELDA = 40;
