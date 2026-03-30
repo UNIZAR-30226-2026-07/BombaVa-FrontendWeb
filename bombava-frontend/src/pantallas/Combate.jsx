@@ -228,7 +228,7 @@ function Combate() {
         };
     }, []);
 
-    const handlePasarTurnoClick = () => {
+    const handlePasarTurno = () => {
         const estado = localStorage.getItem('bombaVa_matchState');
         if (estado) {
             const matchId = JSON.parse(estado).matchInfo.matchId;
@@ -264,11 +264,6 @@ function Combate() {
         setModoAtaque(true);
     };
 
-    const handlePasarTurno = () => {
-        alert("Turno pasado");
-        // CUIDADO!!! -> Completar con el backend la lógica de pasar el turno
-    };
-
     return (
         <div className="combate-contenedor">
             {
@@ -281,7 +276,7 @@ function Combate() {
 
             {/*Botón para pasar el turno*/}
             {esMiTurno && (
-                <BtnPasarTurno onPasarTurno={handlePasarTurnoClick} />
+                <BtnPasarTurno onPasarTurno={handlePasarTurno} />
             )}
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
