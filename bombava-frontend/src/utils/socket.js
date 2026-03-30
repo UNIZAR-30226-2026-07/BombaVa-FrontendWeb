@@ -55,3 +55,9 @@ export const peticionPasarTurno = (matchId) => {
   console.log(`Petición al backend: pasar turno`);
   socket.emit('match:turn_end', { matchId });
 };
+
+// Función para pedir al backend que ataque con el cañón
+export const peticionAtacarCanon = (matchId, shipId, x, y) => {
+  console.log(`Petición al backend: cañonazo del barco ${shipId} a la casilla x:${x} y:${y}`);
+  socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y } });
+};
