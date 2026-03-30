@@ -95,3 +95,11 @@
     /*Ancho minimo de la columna*/
     box-sizing: border-box;
 }
+
+.turno-indicador {
+    color: yellow;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 5px;
+}

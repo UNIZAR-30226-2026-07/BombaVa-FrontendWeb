@@ -19,6 +19,11 @@ socket.on('connect', () => {
   console.log('Conectado al servidor WebSocket:', socket.id);
 });
 
+// Escucha los fallos que lleguen del servidor
+socket.on('game:error', (fail) => {
+  alert('El Servidor ha rechazado tu acción:\n' + fail.message);
+});
+
 // Para ver cuando el usuario tiene un error al conectar con el servidor
 socket.on('connect_error', (error) => {
   console.error('Error al conectar con el servidor WebSocket:', error.message);
@@ -28,3 +33,25 @@ socket.on('connect_error', (error) => {
 socket.on('disconnect', () => {
   console.log('Desconectado del servidor WebSocket');
 });
+
+/////////////////////////////////////
+//  Funciones centralizadas para pedir al backend
+/////////////////////////////////////
+
+// Función para pedir al backend que mueva un barco
+export const peticionMoverse = (matchId, shipId, direction) => {
+  console.log(`Petición al backend: mover barco ${shipId} hacia ${direction}`);
+  socket.emit('ship:move', { matchId, shipId, direction });
+};
+
+// Función para pedir al backend que rote un barco
+export const peticionRotar = (matchId, shipId, degrees) => {
+  console.log(`Petición al backend: rotar barco ${shipId} ${degrees} grados`);
+  socket.emit('ship:rotate', { matchId, shipId, degrees });
+};
+
+// Función para pedir al backend que pase el turno
+export const peticionPasarTurno = (matchId) => {
+  console.log(`Petición al backend: pasar turno`);
+  socket.emit('match:turn_end', { matchId });
+};

@@ -6,6 +6,7 @@ import '../styles/SalaEspera.css';
 function SalaEspera() {
   const [codigo, setCodigo] = useState('');
   const [errorBusqueda, setErrorBusqueda] = useState('');
+  const [estadoEspera, setEstadoEspera] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,10 +19,17 @@ function SalaEspera() {
       setCodigo(payload.codigo);
     };
 
-    // Handler cuando el otro jugador se une, pasamos a la  pantalla de combate
+    // Handler cuando el otro jugador se une
     const handleMatchReady = (payload) => {
       console.log('Oponente encontrado. Partida lista.', payload);
-      navigate('/combate');
+      setEstadoEspera('Cargando partida...');
+    };
+
+    // Handler para ir a Combate.jsx cuando llega la info de la partida
+    const handleStartInfo = (payload) => {
+       console.log('Información inicial recibida', payload);
+       localStorage.setItem('bombaVa_matchState', JSON.stringify(payload));
+       navigate('/combate');
     };
 
     // Handler por si hay algún error al crear la sala
@@ -33,12 +41,14 @@ function SalaEspera() {
     // Al llegar a la pantalla escuchamos los eventos:
     socket.on('lobby:created', handleLobbyCreated);
     socket.on('match:ready', handleMatchReady);
+    socket.on('match:startInfo', handleStartInfo);
     socket.on('lobby:error', handleLobbyError);
 
     return () => {
       // Al salir de la pantalla, dejamos de escuchar los eventos
       socket.off('lobby:created', handleLobbyCreated);
       socket.off('match:ready', handleMatchReady);
+      socket.off('match:startInfo', handleStartInfo);
       socket.off('lobby:error', handleLobbyError);
     };
   }, [navigate]);
@@ -62,7 +72,7 @@ function SalaEspera() {
             {/* Si hay un código, mostramos el mensaje de espera */}
             {codigo && (
               <div>
-                <p className="esperando-texto">Esperando a que se una el oponente...</p>
+                <p className="esperando-texto">{estadoEspera || 'Esperando a que se una el oponente...'}</p>
               </div>
             )}
           </div>
