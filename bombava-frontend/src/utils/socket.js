@@ -56,13 +56,13 @@ export const peticionMoverse = (matchId, shipId, direction) => {
     dirFinal = opuestos[direction];
   }
 
-  console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal} (Original: ${direction})`);
+  console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal}`);
   socket.emit('ship:move', { matchId, shipId, direction: dirFinal });
 };
 
 // Función para pedir al backend que rote un barco
 export const peticionRotar = (matchId, shipId, degrees) => {
-  console.log(`Petición al backend: rotar barco ${shipId} ${degrees} grados`);
+  console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
   socket.emit('ship:rotate', { matchId, shipId, degrees });
 };
 
@@ -75,6 +75,6 @@ export const peticionPasarTurno = (matchId) => {
 // Función para pedir al backend que ataque con el cañón
 export const peticionAtacarCanon = (matchId, shipId, x, y) => {
   const targetY = traducirCoordY(y);
-  console.log(`Petición al backend: cañonazo del barco ${shipId} a la casilla FRONT {x:${x}, y:${y}} -> BACK {x:${x}, y:${targetY}}`);
+  console.log(`Petición al backend: cañonazo del barco ${shipId}}`);
   socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
 };
