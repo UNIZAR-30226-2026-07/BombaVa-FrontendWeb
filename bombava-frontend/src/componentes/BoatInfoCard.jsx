@@ -51,7 +51,7 @@ function BoatInfoCard({ boat }) {
 
     // Datos del barco seleccionado
     const boatData = {
-        boatName: `Barco ${boat.tipo} (${boat.id})`,
+        boatName: `Barco ${boat.tipo}`,
         boatImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
         boatMaxHealth: boat.vidaMax,
         boatHealth: boat.vida,
