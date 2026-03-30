@@ -48,8 +48,16 @@ export const traducirCoordY = (y) => {
 
 // Función para pedir al backend que mueva un barco
 export const peticionMoverse = (matchId, shipId, direction) => {
-  console.log(`Petición al backend: mover barco ${shipId} hacia ${direction}`);
-  socket.emit('ship:move', { matchId, shipId, direction });
+  let dirFinal = direction;
+  
+  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
+  if (localStorage.getItem('bombaVa_esHost') == 'true') {
+    const opuestos = { 'N': 'S', 'S': 'N', 'E': 'E', 'W': 'W' };
+    dirFinal = opuestos[direction];
+  }
+
+  console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal} (Original: ${direction})`);
+  socket.emit('ship:move', { matchId, shipId, direction: dirFinal });
 };
 
 // Función para pedir al backend que rote un barco
