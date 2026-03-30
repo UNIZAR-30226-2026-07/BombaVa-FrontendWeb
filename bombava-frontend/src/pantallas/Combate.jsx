@@ -7,7 +7,7 @@ import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
-import { socket } from '../utils/socket.js';
+import { socket, peticionPasarTurno } from '../utils/socket.js';
 import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -78,6 +78,9 @@ function Combate() {
         moverBarcoAdelante
     } = useMovimientosBarco([]);
 
+    // Estado para saber si es mi turno o el del oponente
+    const [esMiTurno, setEsMiTurno] = useState(false);
+
     useEffect(() => {
         const handleStartInfo = (payload) => {
                         
@@ -90,6 +93,8 @@ function Combate() {
                      municion: payload.ammo,
                      combustible: payload.fuel
                  }));
+                 
+            setEsMiTurno(payload.matchInfo.currentTurnPlayer == payload.matchInfo.yourId);
         };
 
         // Al llegar a Combate.jsx el estado de la partida está guardado en el local storage
@@ -100,6 +105,8 @@ function Combate() {
             // Conectarse a la sala de la partida
             const mId = parsed.matchInfo.matchId;
             socket.emit('game:join', mId);
+            // Chequea si es mi turno
+            setEsMiTurno(parsed.matchInfo.currentTurnPlayer == parsed.matchInfo.yourId);
         }else{
             console.log("No hay estado previo de la partida");
             navigate('/menuInicial');
@@ -158,18 +165,56 @@ function Combate() {
              }
         };
 
+        const handleTurnChanged = (payload) => {
+            console.log("Turno cambiado:", payload);
+            const estadoPrevio = localStorage.getItem('bombaVa_matchState');
+            if (estadoPrevio) {
+                const estado = JSON.parse(estadoPrevio);
+                const miId = estado.matchInfo.yourId;
+
+                // Actualizamos si es mi turno
+                setEsMiTurno(payload.nextPlayerId == miId);
+
+                // Actualizamos las barras de recursos
+                setBarras(prev => ({
+                    ...prev,
+                    municion: payload.resources.ammo,
+                    combustible: payload.resources.fuel
+                }));
+
+                // Actualizamos el estado del local storage
+                estado.ammo = payload.resources.ammo;
+                estado.fuel = payload.resources.fuel;
+                estado.matchInfo.currentTurnPlayer = payload.nextPlayerId;
+                estado.matchInfo.turnNumber = payload.turnNumber;
+                
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(estado));
+            }
+        };
+
         socket.on('match:startInfo', handleStartInfo);
         socket.on('match:vision_update', handleVisionUpdate);
+        socket.on('match:turn_changed', handleTurnChanged);
         socket.on('ship:moved', handleShipMoved);
         socket.on('ship:rotated', handleShipRotated);
 
         return () => {
             socket.off('match:startInfo', handleStartInfo);
             socket.off('match:vision_update', handleVisionUpdate);
+            socket.off('match:turn_changed', handleTurnChanged);
             socket.off('ship:moved', handleShipMoved);
             socket.off('ship:rotated', handleShipRotated);
         };
     }, []);
+
+    const handlePasarTurnoClick = () => {
+        const estado = localStorage.getItem('bombaVa_matchState');
+        if (estado) {
+            const matchId = JSON.parse(estado).matchInfo.matchId;
+            peticionPasarTurno(matchId);
+            setEsMiTurno(false);
+        }
+    };
     
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
@@ -214,7 +259,9 @@ function Combate() {
             }
 
             {/*Botón para pasar el turno*/}
-            <BtnPasarTurno onPasarTurno={handlePasarTurno} />
+            {esMiTurno && (
+                <BtnPasarTurno onPasarTurno={handlePasarTurnoClick} />
+            )}
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
             <MenuPausa />
@@ -253,13 +300,20 @@ function Combate() {
 
             {/*COLUMNA CENTRAL: Hueco para los botones de movimiento/ataque */}
             <div className="combate-columna-central">
-                <h3 className="titulo-acciones">Panel de control</h3>
+                <h3 className="titulo-acciones">
+                    Panel de control
+                    <div className="turno-indicador">
+                        {esMiTurno ? "" : "Esperando al oponente..."}
+                    </div>
+                </h3>
                 <div className="acciones">
-                    <ActionButtons
-                        boat={barcoSeleccionado}
-                        onAttackClick={activarModoAtaque}
-                        modoAtaque={modoAtaque}
-                    />
+                    {esMiTurno && (
+                        <ActionButtons
+                            boat={barcoSeleccionado}
+                            onAttackClick={activarModoAtaque}
+                            modoAtaque={modoAtaque}
+                        />
+                    )}
                 </div>
             </div>
 
