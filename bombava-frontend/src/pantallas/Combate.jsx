@@ -1,5 +1,5 @@
 import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
@@ -80,6 +80,9 @@ function Combate() {
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
+    
+    // Varaible para guardar el estado de la partida
+    const matchStateRef = useRef(null);
 
     useEffect(() => {
         const handleStartInfo = (payload) => {
@@ -98,13 +101,19 @@ function Combate() {
         };
 
         // Al llegar a Combate.jsx el estado de la partida está guardado en el local storage
-        const guardado = localStorage.getItem('bombaVa_matchState');
-        if (guardado) {
-            const parsed = JSON.parse(guardado);
+        const estadoGuardado = localStorage.getItem('bombaVa_matchState');
+        if (estadoGuardado) {
+            const parsed = JSON.parse(estadoGuardado);
+
+            // Guardamos el estado de la partida en la variable matchStateRef
+            matchStateRef.current = parsed;
+
+            // Actualizamos la información de la partida en el front-end
             handleStartInfo(parsed);
+            
             // Conectarse a la sala de la partida
-            const mId = parsed.matchInfo.matchId;
-            socket.emit('game:join', mId);
+            const gameId = parsed.matchInfo.matchId;
+            socket.emit('game:join', gameId);
             // Chequea si es mi turno
             setEsMiTurno(parsed.matchInfo.currentTurnPlayer == parsed.matchInfo.yourId);
         }else{
@@ -117,13 +126,11 @@ function Combate() {
             console.log("Nueva visión recibida:", visionPayload);
             cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
             
-            // Añadir los datos de la actualización al Local storage.
-            const estadoPrevio = localStorage.getItem('bombaVa_matchState');
-            if (estadoPrevio) {
-                const estadoActualizado = JSON.parse(estadoPrevio);
-                estadoActualizado.playerFleet = visionPayload.myFleet || estadoActualizado.playerFleet;
-                estadoActualizado.enemyFleet = visionPayload.visibleEnemyFleet || estadoActualizado.enemyFleet;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+            // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+            if (matchStateRef.current) {
+                matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
+                matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
             }
         };
 
@@ -131,26 +138,23 @@ function Combate() {
         const handleShipMoved = (payload) => {
             console.log("Movimiento confirmado por el back-end:", payload);
 
-            const estadoPrevio = localStorage.getItem('bombaVa_matchState');
-            const estado = JSON.parse(estadoPrevio);
-            const miId = estado.matchInfo.yourId;
-            
-            // He movido yo el barco o mi oponente
-            const yoHeMovido = payload.userId == miId;
-            
-            if(yoHeMovido){
-                // Restar consumo en las barras
-                setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
-            }
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // He movido yo el barco o mi oponente
+                const yoHeMovido = payload.userId == miId;
+                
+                if(yoHeMovido){
+                    // Restar consumo en las barras
+                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                }
 
-            // Actualizamos el barco 
-            moverBarcoAdelante(payload.shipId);
+                // Actualizamos el barco 
+                moverBarcoAdelante(payload.shipId);
 
-            // Guardar cambios en local storage
-            if (estadoPrevio) {
-                const estadoActualizado = JSON.parse(estadoPrevio);
-                estadoActualizado.fuel = payload.fuelReserve;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
             }
         };
 
@@ -158,34 +162,31 @@ function Combate() {
         const handleShipRotated = (payload) => {
             console.log("Rotación confirmada por el back-end:", payload);
             
-            const estadoPrevio = localStorage.getItem('bombaVa_matchState');
-            const estado = JSON.parse(estadoPrevio);
-            const miId = estado.matchInfo.yourId;
-            
-            // He movido yo el barco o mi oponente
-            const yoHeMovido = payload.userId == miId;
-            
-            if(yoHeMovido){
-                // Restar consumo en las barras
-                setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
-            }
-            // Actualizamos el barco visualmente 
-            rotarBarco(payload.shipId, payload.orientation);
-            
-            // Guardar cambios en local storage
-            if (estadoPrevio) {
-                const estadoActualizado = JSON.parse(estadoPrevio);
-                estadoActualizado.fuel = payload.fuelReserve;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(estadoActualizado));
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // He movido yo el barco o mi oponente
+                const yoHeMovido = payload.userId == miId;
+                
+                if(yoHeMovido){
+                    // Restar consumo en las barras
+                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                }
+                
+                // Actualizamos el barco visualmente
+                rotarBarco(payload.shipId, payload.orientation);
+                
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
             }
         };
 
         const handleTurnChanged = (payload) => {
             console.log("Turno cambiado:", payload);
-            const estadoPrevio = localStorage.getItem('bombaVa_matchState');
-            if (estadoPrevio) {
-                const estado = JSON.parse(estadoPrevio);
-                const miId = estado.matchInfo.yourId;
+            
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
 
                 // Actualizamos si es mi turno
                 setEsMiTurno(payload.nextPlayerId == miId);
@@ -202,13 +203,13 @@ function Combate() {
                     }));
                 }
 
-                // Actualizamos el estado del local storage
-                estado.ammo = payload.resources.ammo;
-                estado.fuel = payload.resources.fuel;
-                estado.matchInfo.currentTurnPlayer = payload.nextPlayerId;
-                estado.matchInfo.turnNumber = payload.turnNumber;
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.ammo = payload.resources.ammo;
+                matchStateRef.current.fuel = payload.resources.fuel;
+                matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
+                matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
                 
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(estado));
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
             }
         };
 
