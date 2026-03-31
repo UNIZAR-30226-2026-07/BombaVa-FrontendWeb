@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { SERVER_API } from '../utils/constantes.js'; 
 import { socket } from '../utils/socket.js';
+import { registrar, guardarToken } from '../services/authApi.js';
 import '../styles/Registrarse.css';
 
 function Registro() {
@@ -12,20 +11,16 @@ function Registro() {
   const enviarDatos = async (e) => {
     e.preventDefault();//Sirve para que al enviar no se recargue la página, perdiendo el estado de toda la web (volvería a pantalla inicial)
     try {
-      const res = await axios.post(SERVER_API + '/api/auth/register', cuenta);
-      alert("Token recibido: " + res.data.token);
-      //Se guarda en el buscador el token para luego poder sacar los datos
-      localStorage.setItem('token', res.data.token);
-
-      // Desconectamos el socket previo y reconectamos el socket con el nuevo token del usuario
-      socket.disconnect();
-      socket.connect();
+      const res = await registrar(cuenta);
+      alert("Token recibido: " + res.token);
+      
+      // Guarda el token y reconecta el socket con el nuevo token
+      guardarToken(res.token, socket);
 
       navigate('/menuInicial');
     } catch (err) {
-      alert("Error: " + err.response.data.errors[0].msg);
+      alert("Error: " + err.message);
     }
-    
   };
 
   return (
