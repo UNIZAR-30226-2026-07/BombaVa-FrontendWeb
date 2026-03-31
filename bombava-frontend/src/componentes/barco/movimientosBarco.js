@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../utils/constantes';
+import { peticionAtacarCanon, traducirCoordY } from '../../utils/socket';
 
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
@@ -171,7 +172,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
                 const tamano = ship.size || 3; // La API no envía size
                 return {
                     id: ship.id,
-                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: ship.type || 'destructor', // La API no envía type
@@ -183,7 +184,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
                 const tamano = ship.size || 3; // La API no envía size
                 return {
                     id: ship.id,
-                    posicion: adaptarCentroApi(ship.x, ship.y, ship.orientation, tamano),
+                    posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: ship.type || 'destructor', // La API no envía type
@@ -290,59 +291,14 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
             return false;
         }
 
-        let impacto = false;
-
-        //Buscamos si algún barco enemigo ocupa esa casilla y le restamos la vida
-        const nuevosBarcos = barcos.map(b => {
-            if (b.id != atacanteId) {
-                const infoCasilla = ocupaCasilla(b, targetX, targetY);
-                if (infoCasilla.ocupada) {
-                    impacto = true;
-
-                    // Modificamos el módulo específico impactado
-                    const nuevosModulos = [...b.modulos];
-                    const moduloImpactado = nuevosModulos[infoCasilla.indiceModulo];
-
-                    if (moduloImpactado.destruido) {
-                        alert(`El módulo del Barco ${b.id} ya estaba destruido.`);
-                    } else {
-                        //Restamos la vida al módulo impactado, la vida no puede ser menor a 0
-                        const nuevaVidaModulo = Math.max(0, moduloImpactado.vida - dano);
-                        moduloImpactado.vida = nuevaVidaModulo;
-                        //Si la vida es 0, el módulo se destruye
-                        if (nuevaVidaModulo == 0) {
-                            moduloImpactado.destruido = true;
-                            alert(`Un módulo del Barco ${b.id} ha sido destruido`);
-                        } else {
-                            alert(`Módulo del barco ${b.id} ha sido impactado, vida restante: ${nuevaVidaModulo}`);
-                        }
-                    }
-
-                    // Calculamos la vida total sumando la vida de cada módulo
-                    let vidaTotal = 0;
-                    for (let i = 0; i < nuevosModulos.length; i++) {
-                        vidaTotal += nuevosModulos[i].vida;
-                    }
-
-                    if (vidaTotal == 0) {
-                        // Si ya no tiene vida, lo marcamos como destruido
-                        b.destruido = true;
-                        alert(`Barco ${b.id} hundido`);
-                    }
-
-                    return { ...b, modulos: nuevosModulos, vida: vidaTotal };
-                }
-            }
-            return b;
-        });
-
-        if (impacto) {
-            setBarcos(nuevosBarcos);
-        } else {
-            alert("Ataque fallido, no hay barcos en esa posición");
+        // Petición al backend para realizar el ataque
+        const estadoPartida = localStorage.getItem('bombaVa_matchState');
+        if (estadoPartida) {
+            const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
+            peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
         }
 
-        return true; // El ataque se realizó, aunque haya impactado o no.
+        return true; // El ataque se mandó al servidor.
     };
 
     //Funcion utilizada para saber si se puede colocar el barco en esta celda, se obtiene el tipo

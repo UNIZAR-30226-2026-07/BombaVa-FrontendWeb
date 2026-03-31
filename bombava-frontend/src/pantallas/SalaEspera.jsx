@@ -29,6 +29,7 @@ function SalaEspera() {
     const handleStartInfo = (payload) => {
        console.log('Información inicial recibida', payload);
        localStorage.setItem('bombaVa_matchState', JSON.stringify(payload));
+       localStorage.setItem('bombaVa_esHost', 'true'); // Guardamos que somos los creadores de la sala
        navigate('/combate');
     };
 

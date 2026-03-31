@@ -1,5 +1,8 @@
 // Se encarga de la comunicación con el backend mediante WebSocket
 import { io } from 'socket.io-client';
+import { TAMANO_TABLERO } from './constantes.js';
+
+
 
 // URL del backend
 const URL_WEBSOCKET = 'http://localhost:3000';
@@ -34,19 +37,32 @@ socket.on('disconnect', () => {
   console.log('Desconectado del servidor WebSocket');
 });
 
+// Función que traduce el eje Y entre el frontend (0,0 Arriba-Izq) y el backend (0,0 Abajo-Izq)
+export const traducirCoordY = (y) => {
+  return (TAMANO_TABLERO - 1) - y;
+};
+
 /////////////////////////////////////
 //  Funciones centralizadas para pedir al backend
 /////////////////////////////////////
 
 // Función para pedir al backend que mueva un barco
 export const peticionMoverse = (matchId, shipId, direction) => {
-  console.log(`Petición al backend: mover barco ${shipId} hacia ${direction}`);
-  socket.emit('ship:move', { matchId, shipId, direction });
+  let dirFinal = direction;
+  
+  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
+  if (localStorage.getItem('bombaVa_esHost') == 'true') {
+    const opuestos = { 'N': 'S', 'S': 'N', 'E': 'E', 'W': 'W' };
+    dirFinal = opuestos[direction];
+  }
+
+  console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal}`);
+  socket.emit('ship:move', { matchId, shipId, direction: dirFinal });
 };
 
 // Función para pedir al backend que rote un barco
 export const peticionRotar = (matchId, shipId, degrees) => {
-  console.log(`Petición al backend: rotar barco ${shipId} ${degrees} grados`);
+  console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
   socket.emit('ship:rotate', { matchId, shipId, degrees });
 };
 
@@ -54,4 +70,11 @@ export const peticionRotar = (matchId, shipId, degrees) => {
 export const peticionPasarTurno = (matchId) => {
   console.log(`Petición al backend: pasar turno`);
   socket.emit('match:turn_end', { matchId });
+};
+
+// Función para pedir al backend que ataque con el cañón
+export const peticionAtacarCanon = (matchId, shipId, x, y) => {
+  const targetY = traducirCoordY(y);
+  console.log(`Petición al backend: cañonazo del barco ${shipId}}`);
+  socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
 };
