@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { obtenerPerfil, limpiarToken } from '../services/authApi.js';
+import { notification } from '../services/notificationService.js';
 import '../styles/Perfil.css';
 
 function Perfil() {
@@ -21,7 +22,7 @@ function Perfil() {
           const datos = await obtenerPerfil();
           setUsuario(datos);
         } catch (err) {
-          alert("Error: " + err.message);
+          notification.error(err.message);
         }
       };
 

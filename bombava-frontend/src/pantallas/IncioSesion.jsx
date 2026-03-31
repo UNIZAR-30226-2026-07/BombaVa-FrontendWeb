@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '../utils/socket.js';
 import { login, guardarToken } from '../services/authApi.js';
+import { notification } from '../services/notificationService.js';
 import '../styles/InicioSesion.css';
 
 function InicioSesion() {
@@ -12,14 +13,14 @@ function InicioSesion() {
     e.preventDefault();//Sirve para que al enviar no se recargue la página, perdiendo el estado de toda la web (volvería a pantalla inicial)
     try {
       const res = await login(cuenta);
-      alert("Token recibido: " + res.token);
+      notification.success("¡Sesión iniciada! Bienvenido, capitán.");
       
       // Guarda el token y reconecta el socket con el nuevo token
       guardarToken(res.token, socket);
 
       navigate('/menuInicial');
     } catch (err) {
-      alert("Error: " + err.message);
+      notification.error(err.message);
     }
   };
 

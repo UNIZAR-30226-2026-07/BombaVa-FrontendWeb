@@ -6,6 +6,7 @@ import '../styles/ConfigFlota.css';
 import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos, TAMANO_TABLERO, TERRENO, NOMBRES_ARMAS } from '../utils/constantes.js'; 
 import { useNavigate } from 'react-router-dom';
 import { crearYActivarDeck } from '../services/decksApi.js';
+import { notification } from '../services/notificationService.js';
 
 
 const generarMapaConfiguracion = () => {
@@ -149,10 +150,10 @@ const ConfigFlota = () => {
     const enviarFlota = async () => {
         try {
             await crearYActivarDeck(barcos);
-            alert("¡Flota guardada y activada!");
+            notification.success("¡Flota guardada y activada!");
             navigate('/menuInicial');
         } catch (error) {
-            alert(error.message);
+            notification.error(error.message);
         }
     };
 
