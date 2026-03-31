@@ -128,7 +128,7 @@ function ActionButtons({ boat, onAttackClick, modoAtaque }) {
                 <button onClick={turnLeft} alt='Girar Izquierda' className='Izquierda'>↰</button>
                 <div className="middle">
                     <button onClick={moveFoward} alt='Adelante' className='Adelante'>↥</button>
-                    <img src="/public/topview.png" alt="" className="" />
+                    <img src="/topview.png" alt="" className="" />
                 </div>
                 <button onClick={turnRight} alt='Girar Derecha' className='Derecha'>↱</button>
 
