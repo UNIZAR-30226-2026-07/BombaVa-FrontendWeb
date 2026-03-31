@@ -1,5 +1,5 @@
 import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
@@ -7,6 +7,7 @@ import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
+import { socket, peticionPasarTurno } from '../utils/socket.js';
 import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -66,25 +67,202 @@ function Combate() {
     };
 
     // Hook para manejar los movimientos de los barcos
+    // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
         barcos,
         barcoSeleccionado: idBarcoSeleccionado,
         setBarcoSeleccionado: setIdBarcoSeleccionado,
         rotarBarco,
-        moverBarco,
-        atacarCelda
-    } = useMovimientosBarco([
-        //BARCOS ALIADOS:
-        { id: 'aliado_1', posicion: { x: 2, y: 12 }, orientacion: 'N', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: false },
-        { id: 'aliado_2', posicion: { x: 6, y: 12 }, orientacion: 'O', tamano: 5, tipo: 'destructor', vida: 100, esEnemigo: false },
-        { id: 'aliado_3', posicion: { x: 13, y: 9 }, orientacion: 'N', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: false },
+        atacarCelda,
+        cargarBarcosDesdeApi,
+        moverBarcoAdelante
+    } = useMovimientosBarco([]);
 
-        // BARCOS ENEMIGOS:
-        { id: 'enemigo_1', posicion: { x: 2, y: 2 }, orientacion: 'S', tamano: 1, tipo: 'lancha', vida: 100, esEnemigo: true },
-        { id: 'enemigo_2', posicion: { x: 6, y: 2 }, orientacion: 'E', tamano: 3, tipo: 'destructor', vida: 100, esEnemigo: true },
-        { id: 'enemigo_3', posicion: { x: 10, y: 0 }, orientacion: 'S', tamano: 5, tipo: 'portaaviones', vida: 100, esEnemigo: true }
-    ], mapa);
+    // Estado para saber si es mi turno o el del oponente
+    const [esMiTurno, setEsMiTurno] = useState(false);
+    
+    // Varaible para guardar el estado de la partida
+    const matchStateRef = useRef(null);
 
+    useEffect(() => {
+        const handleStartInfo = (payload) => {
+                        
+            // Cargar los barcos pasandole lo que llega del local storage
+            cargarBarcosDesdeApi(payload.playerFleet, payload.enemyFleet);
+
+            // Actualizar munición y combustible iniciales según el local storage
+            setBarras(prev => ({
+                     ...prev,
+                     municion: payload.ammo,
+                     combustible: payload.fuel
+                 }));
+                 
+            setEsMiTurno(payload.matchInfo.currentTurnPlayer == payload.matchInfo.yourId);
+        };
+
+        // Al llegar a Combate.jsx el estado de la partida está guardado en el local storage
+        const estadoGuardado = localStorage.getItem('bombaVa_matchState');
+        if (estadoGuardado) {
+            const parsed = JSON.parse(estadoGuardado);
+
+            // Guardamos el estado de la partida en la variable matchStateRef
+            matchStateRef.current = parsed;
+
+            // Actualizamos la información de la partida en el front-end
+            handleStartInfo(parsed);
+            
+            // Conectarse a la sala de la partida
+            const gameId = parsed.matchInfo.matchId;
+            socket.emit('game:join', gameId);
+            // Chequea si es mi turno
+            setEsMiTurno(parsed.matchInfo.currentTurnPlayer == parsed.matchInfo.yourId);
+        }else{
+            console.log("No hay estado previo de la partida");
+            navigate('/menuInicial');
+        }
+
+        // Escucha las actualizaciones de la partida
+        const handleVisionUpdate = (visionPayload) => {
+            console.log("Nueva visión recibida:", visionPayload);
+            cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
+            
+            // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+            if (matchStateRef.current) {
+                matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
+                matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+            }
+        };
+
+       // Escuchamos devoluciones del  movimiento hacia adelante
+        const handleShipMoved = (payload) => {
+            console.log("Movimiento confirmado por el back-end:", payload);
+
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // He movido yo el barco o mi oponente
+                const yoHeMovido = payload.userId == miId;
+                
+                if(yoHeMovido){
+                    // Restar consumo en las barras
+                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                }
+
+                // Actualizamos el barco 
+                moverBarcoAdelante(payload.shipId);
+
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+            }
+        };
+
+       // Escuchamos devoluciones de rotaciones autorizadas
+        const handleShipRotated = (payload) => {
+            console.log("Rotación confirmada por el back-end:", payload);
+            
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // He movido yo el barco o mi oponente
+                const yoHeMovido = payload.userId == miId;
+                
+                if(yoHeMovido){
+                    // Restar consumo en las barras
+                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                }
+                
+                // Actualizamos el barco visualmente
+                rotarBarco(payload.shipId, payload.orientation);
+                
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.fuel = payload.fuelReserve;
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+            }
+        };
+
+        const handleTurnChanged = (payload) => {
+            console.log("Turno cambiado:", payload);
+            
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+
+                // Actualizamos si es mi turno
+                setEsMiTurno(payload.nextPlayerId == miId);
+
+                // He movido yo el barco o mi oponente
+                const yoHeMovido = payload.nextPlayerId == miId;
+                
+                if(yoHeMovido){
+                    // Actualizamos las barras de recursos
+                    setBarras(prev => ({
+                        ...prev,
+                        municion: payload.resources.ammo,
+                        combustible: payload.resources.fuel
+                    }));
+                }
+
+                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
+                matchStateRef.current.ammo = payload.resources.ammo;
+                matchStateRef.current.fuel = payload.resources.fuel;
+                matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
+                matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
+                
+                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+            }
+        };
+
+        const handleShipAttacked = (payload) => {
+            console.log("Ataque procesado por backend:", payload);
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // Si he sido yo el que ha disparado, actualizo mi munición mostrada
+                if (payload.attackerId == miId) {
+                    setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
+                    matchStateRef.current.ammo = payload.ammoCurrent;
+                    localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+                }
+                
+                if (payload.hit) {
+                    if (payload.targetHp == 0) {
+                        alert("Barco alcanzado. Barco hundido.");
+                    } else {
+                        alert("Barco alcanzado. Vida restante: " + payload.targetHp);
+                    }
+                } else {
+                    alert("Agua. El ataque falló.");
+                }
+            }
+        };
+
+        socket.on('match:startInfo', handleStartInfo);
+        socket.on('match:vision_update', handleVisionUpdate);
+        socket.on('match:turn_changed', handleTurnChanged);
+        socket.on('ship:moved', handleShipMoved);
+        socket.on('ship:rotated', handleShipRotated);
+        socket.on('ship:attacked', handleShipAttacked);
+
+        return () => {
+            socket.off('match:startInfo', handleStartInfo);
+            socket.off('match:vision_update', handleVisionUpdate);
+            socket.off('match:turn_changed', handleTurnChanged);
+            socket.off('ship:moved', handleShipMoved);
+            socket.off('ship:rotated', handleShipRotated);
+            socket.off('ship:attacked', handleShipAttacked);
+        };
+    }, []);
+
+    const handlePasarTurno = () => {
+        const estado = localStorage.getItem('bombaVa_matchState');
+        if (estado) {
+            const matchId = JSON.parse(estado).matchInfo.matchId;
+            peticionPasarTurno(matchId);
+            setEsMiTurno(false);
+        }
+    };
+    
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
 
@@ -93,8 +271,7 @@ function Combate() {
 
     // Función que se ejecutará al realizar un ataque en el mapa
     const handleAtaqueRealizado = () => {
-        actualizarMunicion(ATAQUE_BASE.COSTE);
-        setModoAtaque(false); // Desactivamos el modo ataque tras realizarlo
+        setModoAtaque(false); // Desactivamos el modo ataque para volver a la selección normal
     };
 
     // Función que se activa al pulsar en atacar en el panel de control
@@ -112,11 +289,6 @@ function Combate() {
         setModoAtaque(true);
     };
 
-    const handlePasarTurno = () => {
-        alert("Turno pasado");
-        // CUIDADO!!! -> Completar con el backend la lógica de pasar el turno
-    };
-
     return (
         <div className="combate-contenedor">
             {
@@ -128,7 +300,9 @@ function Combate() {
             }
 
             {/*Botón para pasar el turno*/}
-            <BtnPasarTurno onPasarTurno={handlePasarTurno} />
+            {esMiTurno && (
+                <BtnPasarTurno onPasarTurno={handlePasarTurno} />
+            )}
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
             <MenuPausa />
@@ -160,7 +334,6 @@ function Combate() {
                         barcoSeleccionado={idBarcoSeleccionado}
                         setBarcoSeleccionado={setIdBarcoSeleccionado}
                         rotarBarco={rotarBarco}
-                        moverBarco={moverBarco}
                         atacarCelda={atacarCelda}
                     />
                 </div>
@@ -168,15 +341,20 @@ function Combate() {
 
             {/*COLUMNA CENTRAL: Hueco para los botones de movimiento/ataque */}
             <div className="combate-columna-central">
-                <h3 className="titulo-acciones">Panel de control</h3>
+                <h3 className="titulo-acciones">
+                    Panel de control
+                    <div className="turno-indicador">
+                        {esMiTurno ? "" : "Esperando al oponente..."}
+                    </div>
+                </h3>
                 <div className="acciones">
-                    <ActionButtons
-                        boat={barcoSeleccionado}
-                        onAttackClick={activarModoAtaque}
-                        modoAtaque={modoAtaque}
-                        rotarBarco={rotarBarco}
-                        moverBarco={moverBarco}
-                    />
+                    {esMiTurno && (
+                        <ActionButtons
+                            boat={barcoSeleccionado}
+                            onAttackClick={activarModoAtaque}
+                            modoAtaque={modoAtaque}
+                        />
+                    )}
                 </div>
             </div>
 

@@ -17,5 +17,20 @@
 
 /* Efecto visual para las celdas que están en el rango de ataque del barco seleccionado */
 .celda.en-rango-ataque {
-  filter: brightness(1.3);
+  filter: brightness(1.1);
+  animation: animacionCeldas 2s infinite;
+}
+
+@keyframes animacionCeldas {
+  0% {
+    filter: brightness(1.1);
+  }
+
+  50% {
+    filter: brightness(1.25);
+  }
+
+  100% {
+    filter: brightness(1.1);
+  }
 }

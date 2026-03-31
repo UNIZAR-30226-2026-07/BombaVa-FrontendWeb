@@ -11,14 +11,45 @@
   bottom: 3px;
   left: 6px;
   right: 3px;
-  border: 2px solid rgba(10, 10,10,1);
   border-radius: 10px;
   /*Animaciones:*/
   transition: all 1s;
 }
 
 .barco-entidad.seleccionado .barco-visual {
-  border-color: rgb(228, 235, 164); 
   box-shadow: 0 0 20px rgba(96, 96, 55, 0.5);
   transform: scale(1.05); 
+}
+
+.barco-imagen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.barco-imagen.enemigo {
+  filter: hue-rotate(310deg) saturate(2);
+}
+
+.barco-imagen.aliado {
+  filter: hue-rotate(0deg) saturate(1);
+}
+
+.barco-imagen.N {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.barco-imagen.S {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.barco-imagen.E {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.barco-imagen.W {
+  transform: translate(-50%, -50%) rotate(-90deg);
 }

@@ -36,7 +36,7 @@ export const Torpedos = 3;
 export const ATAQUE_BASE = {
   COSTE: 2,
   DANO: 50,
-  RANGO: 8
+  RANGO: 4
 };
 
 // Configuración de los módulos según tamaño del barco

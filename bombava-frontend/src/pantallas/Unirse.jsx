@@ -6,14 +6,24 @@ import '../styles/Unirse.css';
 function Unirse() {
   const [codigo, setCodigo] = useState('');
   const [errorBusqueda, setErrorBusqueda] = useState('');
+  const [estadoUnirse, setEstadoUnirse] = useState('');
   const navigate = useNavigate();
 
   // Configurar los listeners del socket al llegar a la pantalla
   useEffect(() => {
-    // Si el join es exitoso y la partida está lista, navegamos a la pantalla de combate
+
+    // Si el join es exitoso y la partida está lista, esperamos a recibir la información de la partida
     const handleMatchReady = (payload) => {
       console.log('Partida lista', payload);
-      navigate('/combate');
+      setEstadoUnirse('Cargando partida...');
+    };
+
+    // Handler para ir a combate cuando llega la info de la partida
+    const handleStartInfo = (payload) => {
+       console.log('Información inicial recibida', payload);
+       localStorage.setItem('bombaVa_matchState', JSON.stringify(payload));
+       localStorage.setItem('bombaVa_esHost', 'false'); // Guardamos que nos hemos unido, no somos host
+       navigate('/combate');
     };
 
     // Si hay un error, como por ejemplo "Lobby no encontrado"
@@ -24,11 +34,13 @@ function Unirse() {
 
     // Escuchamos los siguientes eventos:
     socket.on('match:ready', handleMatchReady);
+    socket.on('match:startInfo', handleStartInfo);
     socket.on('lobby:error', handleLobbyError);
 
     // Cerramos los listeners al salir de la pantalla
     return () => {
       socket.off('match:ready', handleMatchReady);
+      socket.off('match:startInfo', handleStartInfo);
       socket.off('lobby:error', handleLobbyError);
     };
   }, [navigate]);
@@ -69,14 +81,23 @@ function Unirse() {
           />
 
           <div className="unirse-botones">
-            <button type="button" className="btn-cancelar" onClick={() => navigate('/menuInicial')}>
-              {/* Al pulsar el botón vuelve al menu */}
-              Cancelar
-            </button>
-            <button type="submit" className="btn-unirse">
-              {/* Al pulsar el botón se ejecuta handleUnirse del formulario padre */}
-              Unirse
-            </button>
+            {estadoUnirse ? 
+            (
+              <p className="esperando-texto">{estadoUnirse}</p>
+            ) 
+            : 
+            (
+              <>
+                <button type="button" className="btn-cancelar" onClick={() => navigate('/menuInicial')}>
+                  {/* Al pulsar el botón vuelve al menu */}
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-unirse">
+                  {/* Al pulsar el botón se ejecuta handleUnirse del formulario padre */}
+                  Unirse
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

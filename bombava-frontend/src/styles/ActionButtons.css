@@ -35,6 +35,12 @@
     justify-content: center;
 }
 
+.attack-icon {
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+}
+
 .change-left,
 .change-right {
     width: 28px;
