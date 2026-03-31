@@ -5,8 +5,8 @@ import { TAMANO_TABLERO } from './constantes.js';
 
 
 // URL del backend
-const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
-//const URL_WEBSOCKET = 'http://localhost:3000';
+//const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
+const URL_WEBSOCKET = 'http://localhost:3000';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
@@ -84,4 +84,10 @@ export const peticionAtacarCanon = (matchId, shipId, x, y) => {
   const targetY = traducirCoordY(y);
   console.log(`Petición al backend: cañonazo del barco ${shipId}}`);
   socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
+};
+
+// Función para pedir al backend abandonar la partida
+export const peticionAbandonarPartida = (matchId) => {
+    console.log(`Petición al backend: abandonar partida ${matchId}`);
+    socket.emit('match:surrender', { matchId });
 };
