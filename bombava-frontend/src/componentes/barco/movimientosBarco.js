@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO } from '../../utils/constantes';
-
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API } from '../../utils/constantes';
+import axios from 'axios';
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
 * barco: barco del que se calculará la celda central
