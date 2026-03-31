@@ -4,8 +4,10 @@ import Tablero from '../componentes/tablero/Tablero';
 import Barco from '../componentes/barco/Barco.jsx';
 import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5, TAMANO_TABLERO, TERRENO, SERVER_API } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos, TAMANO_TABLERO, TERRENO, NOMBRES_ARMAS } from '../utils/constantes.js'; 
 import { useNavigate } from 'react-router-dom';
+import { crearYActivarDeck } from '../services/decksApi.js';
+import { notification } from '../services/notificationService.js';
 
 
 const generarMapaConfiguracion = () => {
@@ -153,46 +155,14 @@ const ConfigFlota = () => {
         }
     };
 
-    //Función para enviar todos los datos del mazo a la API
+    //Función para enviar todos los datos de la flota a la API
     const enviarFlota = async () => {
-        // Aquí construimos el mensaje
-        const datosMazo = {
-            deckName: "Mi Nueva Flota",
-            shipIds: barcos.map(b => {
-                // Saco la celda del centro porque en el backend las celdas se enumeran al reves (de abajo a arriba en vez de de arriba a abajo)
-                const celdaCentral = b.celdas[Math.floor(b.tamano / 2)];
-
-                return {
-                    userShipId: b.id,
-                    position: {
-                        x: celdaCentral.x, 
-                        y: (TAMANO_TABLERO - 1) - celdaCentral.y  // El - 1 porque empiezan por 0
-                    },
-                    orientation: b.orientacion
-                };
-            })
-        }; 
-    
         try {
-            const token = localStorage.getItem('token');//Cojo el token del buscador
-
-            const respuesta = await axios.post(SERVER_API + '/api/inventory/decks', datosMazo, {//Si va todo bien respuesta.data tendrá el mazo
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert("¡Flota guardada!");
-            //Activamos este nuevo mazo para que se use en partida
-            console.log(respuesta.data.id);
-            try{
-                await axios.patch(SERVER_API + '/api/inventory/decks/' + respuesta.data.id + '/activate', datosMazo, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                navigate('/menuInicial');
-            }catch(error){
-                alert("Error al activar: " + (error.response?.data?.message || error.message));
-            }
-            
-        } catch (err) {
-            alert("Error al guardar: " + (err.response?.data?.message || err.message));
+            await crearYActivarDeck(barcos);
+            notification.success("¡Flota guardada y activada!");
+            navigate('/menuInicial');
+        } catch (error) {
+            notification.error(error.message);
         }
     };
 

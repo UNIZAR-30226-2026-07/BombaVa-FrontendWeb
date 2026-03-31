@@ -5,7 +5,7 @@ import { TAMANO_TABLERO } from './constantes.js';
 
 
 // URL del backend
-const URL_WEBSOCKET = 'http://localhost:3000';
+const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
