@@ -203,45 +203,11 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         setBarcos([...barcos, barcoConModulos]);
     }
 
-    const setArmas = (barcoSeleccionado, arma) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
-        const encontrado = barcos.find(b => b.id === barcoSeleccionado);/*Barco seleccionado ya contiene la id del que está seleccionado*/
-        if (encontrado) {
-            //Hay que revisar que se pueda meter el arma en este barco
-            let numArmas; //Pone en esta variable el max de armas de este arbol
-            
-            setBarcos(barcos.map(b => {
-                if (b.id === barcoSeleccionado) {//Solo se añade al barco que está seleccionado
-                    // Buscamos el primer hueco libre (donde haya un 0)
-                    const indiceLibre = b.armas.indexOf(0);
-
-                    // Si hay hueco (el índice no es -1), añadimos el arma
-                    if (indiceLibre !== -1) {
-                        const nuevasArmas = [...b.armas];
-                        nuevasArmas[indiceLibre] = arma;  // Insertamos el arma
-
-                        return { ...b, armas: nuevasArmas };
-                    }
-                }
-                return b; // Si está lleno, devolvemos el barco sin cambios
-            }));
-        }
-
-    }
-
-    const borrarBarco = (barcoSeleccionado, setbarcosPuestos, barcosPuestos) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
+    const borrarBarco = (barcoSeleccionado) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
         const nuevosBarcos = barcos.filter(b => b.id !== barcoSeleccionado);
 
         setBarcos(nuevosBarcos);
-
-        // Si ya no está no lo estamos seleccionando
-        setBarcoSeleccionado(null);
-        const encontrado = barcos.find(b => b.id === barcoSeleccionado);
-        const nuevosBarcosPuestos = [...barcosPuestos]; // Copia
-        nuevosBarcosPuestos[encontrado.tamano] = 0; // Modifica la copia para que sepa que se puede poner otro de este tipo
-        setbarcosPuestos(nuevosBarcosPuestos); // Actualiza el estado
-
-
     }
 
     // Comprueba si un barco ocupa una coordenada (x, y), 
@@ -374,18 +340,91 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         
     }
 
-    //Quita las armas del barco que está seleccionado
-    const limpiarArmas = (barcoSeleccionado) => {
-        setBarcos(barcos.map(b => {
-        // Solo actuamos sobre el barco seleccionado
-        if (b.id === barcoSeleccionado) {
-            // Creamos un nuevo array del mismo tamaño pero lleno de 0s
-            const armasVacias = Array(b.armas.length).fill(0);
-            return { ...b, armas: armasVacias };
+    const equiparArma = async (barcoSeleccionado,arma) => {
+        const barco = barcos.find(b => b.id === barcoSeleccionado);
+        let numArmas = 0; //Para saber cuántas armas puede tener según el tamaño del barco
+        switch (barco.tamano){
+            case BARCO1x1: 
+                numArmas = 1;
+                break;
+            case BARCO1x3: 
+                numArmas = 2;
+                break;
+            case BARCO1x5: 
+                numArmas = 3; 
+                break;
         }
-        // Los demás barcos se quedan igual
-        return b;
-    }));
+        if (barco.armas.length >= numArmas) {
+            alert("Este barco ya no tiene más ranuras disponibles.");
+            return;
+        }
+        const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
+        if (yaTieneEsaArma) {
+            alert("Este barco ya tiene equipado un " + arma.name);
+            return;
+        }
+        //hay que actualizar las armas del barco por si se utiliza en otro mazo
+        const token = localStorage.getItem('token');//Cojo el token del buscador
+
+        try {
+            // Envío la nueva arma al barco en el backend
+            await axios.patch(SERVER_API + '/api/inventory/ships/' + barcoSeleccionado + '/equip', { weaponSlug: arma.slug },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // Actualizo mi vector de armas
+            setBarcos(barcos.map(b => {
+                if (b.id === barcoSeleccionado) {
+                    return { 
+                        ...b, 
+                        armas: [...b.armas, arma] 
+                    };
+                }
+                return b;
+            }));
+
+            alert(`${arma.name} equipado correctamente.`);
+
+        } catch (err) {
+            console.error(err);
+            alert("Error de la API: " + (err.response?.data?.message || "No se pudo equipar"));
+        }
+    }
+    //Quita las armas del barco que está seleccionado
+    const limpiarArma = async (barcoSeleccionado,arma) => {
+        const barco = barcos.find(b => b.id === barcoSeleccionado);
+        const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
+        if (!yaTieneEsaArma) {
+            alert("Este barco no tiene equipado un " + arma.name);
+            return;
+        }
+        //hay que actualizar las armas del barco por si se utiliza en otro mazo
+        const token = localStorage.getItem('token');//Cojo el token del buscador
+
+        try {
+            // Quito la nueva arma del barco en el backend
+            await axios.delete(SERVER_API + '/api/inventory/ships/' + barcoSeleccionado + '/weapons/' + arma.slug,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // Actualizo mi vector de armas
+            setBarcos(barcos.map(b => {
+                // Solo actuamos sobre el barco seleccionado
+                if (b.id === barcoSeleccionado) {
+                    // Quito con filter el arma que sobra del barco
+                    const nuevasArmas = b.armas.filter(a => a.slug !== arma.slug);
+                    return { ...b, armas: nuevasArmas };
+                }
+                // Los demás barcos se quedan igual
+                return b;
+            }));
+
+            alert(`${arma.name} quitada correctamente.`);
+
+        } catch (err) {
+            console.error(err);
+            alert("Error de la API: " + (err.response?.data?.message || "No se pudo quitar"));
+        }
     }
 
     return {
@@ -394,12 +433,12 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         setBarcoSeleccionado,
         rotarBarco,
         anadirBarco,
-        setArmas,
         borrarBarco,
         atacarCelda,
         celdaEsValida,
         cargarBarcosDesdeApi,
         moverBarcoAdelante,
-        limpiarArmas
+        equiparArma,
+        limpiarArma
     };
 };
