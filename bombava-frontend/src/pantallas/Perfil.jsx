@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { SERVER_API } from '../utils/constantes.js'; 
+import { obtenerPerfil, limpiarToken } from '../services/authApi.js';
+import { notification } from '../services/notificationService.js';
 import '../styles/Perfil.css';
 
 function Perfil() {
@@ -11,33 +11,22 @@ function Perfil() {
   const [usuario, setUsuario] = useState(null);
 
   const cerrarSesion = () => {
-    localStorage.removeItem('token')/*sale a antes de iniciar sesion y registrarse y borra el token de sesión actual*/
+    limpiarToken()/*sale a antes de iniciar sesion y registrarse y borra el token de sesión actual*/
     navigate('/')
   }
 
   //La funcion useEffect sirve para pedir los datos del usuario solo cuando se entra a la página, si no cada vez que se cambiase algo del componente se volvería a hace rla peticion
   useEffect(() => {
       const obtenerDatosDelServidor = async () => {
-        
-        try{
-          const token = localStorage.getItem('token');//Cojo el token del buscador
-          
-          const res = await axios.get(SERVER_API + '/api/auth/me', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setUsuario(res.data);
-        }catch(err){
-          const mensajeError = err.response?.data?.message 
-                                || err.response?.data?.errors?.[0]?.msg 
-                                || "Error desconocido";
-            
-            alert("Error: " + mensajeError);
+        try {
+          const datos = await obtenerPerfil();
+          setUsuario(datos);
+        } catch (err) {
+          notification.error(err.message);
         }
       };
 
       obtenerDatosDelServidor();
-    
-    
   }, []);// [] dice al frontend que solo se ejecute una vez, al abrir la página
 
   // ESTO EVITA QUE LA WEB SE ROMPA MIENTRAS CARGA

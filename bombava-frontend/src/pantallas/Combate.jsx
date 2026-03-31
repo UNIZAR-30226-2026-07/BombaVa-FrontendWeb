@@ -7,7 +7,9 @@ import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
-import { socket, peticionPasarTurno } from '../utils/socket.js';
+import { peticionPasarTurno } from '../utils/socket.js';
+import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego } from '../services/gameApi.js';
+import { notification } from '../services/notificationService.js';
 import '../styles/Combate.css';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
@@ -85,173 +87,108 @@ function Combate() {
     const matchStateRef = useRef(null);
 
     useEffect(() => {
-        const handleStartInfo = (payload) => {
-                        
-            // Cargar los barcos pasandole lo que llega del local storage
-            cargarBarcosDesdeApi(payload.playerFleet, payload.enemyFleet);
-
-            // Actualizar munición y combustible iniciales según el local storage
-            setBarras(prev => ({
-                     ...prev,
-                     municion: payload.ammo,
-                     combustible: payload.fuel
-                 }));
-                 
-            setEsMiTurno(payload.matchInfo.currentTurnPlayer == payload.matchInfo.yourId);
-        };
-
-        // Al llegar a Combate.jsx el estado de la partida está guardado en el local storage
-        const estadoGuardado = localStorage.getItem('bombaVa_matchState');
-        if (estadoGuardado) {
-            const parsed = JSON.parse(estadoGuardado);
-
-            // Guardamos el estado de la partida en la variable matchStateRef
-            matchStateRef.current = parsed;
-
-            // Actualizamos la información de la partida en el front-end
-            handleStartInfo(parsed);
-            
-            // Conectarse a la sala de la partida
-            const gameId = parsed.matchInfo.matchId;
-            socket.emit('game:join', gameId);
-            // Chequea si es mi turno
-            setEsMiTurno(parsed.matchInfo.currentTurnPlayer == parsed.matchInfo.yourId);
-        }else{
+        // Cargar estado inicial de la partida
+        const estadoPartida = cargarEstadoPartida();
+        if (!estadoPartida) {
             console.log("No hay estado previo de la partida");
-            navigate('/menuInicial');
+            return;
         }
 
-        // Escucha las actualizaciones de la partida
-        const handleVisionUpdate = (visionPayload) => {
-            console.log("Nueva visión recibida:", visionPayload);
-            cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
-            
-            // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
-            if (matchStateRef.current) {
-                matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
-                matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
-            }
-        };
+        // Guardar en ref y conectarse a la sala
+        matchStateRef.current = estadoPartida;
+        unirseASalaDeJuego(estadoPartida.matchInfo.matchId);
 
-       // Escuchamos devoluciones del  movimiento hacia adelante
-        const handleShipMoved = (payload) => {
-            console.log("Movimiento confirmado por el back-end:", payload);
+        // Cargar barcos iniciales y verificar turno
+        cargarBarcosDesdeApi(estadoPartida.playerFleet, estadoPartida.enemyFleet);
+        setBarras(prev => ({
+            ...prev,
+            municion: estadoPartida.ammo,
+            combustible: estadoPartida.fuel
+        }));
+        setEsMiTurno(estadoPartida.matchInfo.currentTurnPlayer == estadoPartida.matchInfo.yourId);
 
-            if (matchStateRef.current) {
-                const miId = matchStateRef.current.matchInfo.yourId;
+        // Definir handlers para los eventos del servidor
+        const gameHandlers = {
+            onVisionUpdate: (visionPayload) => {
+                console.log("Nueva visión recibida:", visionPayload);
+                cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
                 
-                // He movido yo el barco o mi oponente
-                const yoHeMovido = payload.userId == miId;
-                
-                if(yoHeMovido){
-                    // Restar consumo en las barras
-                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                if (matchStateRef.current) {
+                    matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
+                    matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
+                    guardarEstadoPartida(matchStateRef.current);
                 }
+            },
 
-                // Actualizamos el barco 
-                moverBarcoAdelante(payload.shipId);
-
-                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
-                matchStateRef.current.fuel = payload.fuelReserve;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
-            }
-        };
-
-       // Escuchamos devoluciones de rotaciones autorizadas
-        const handleShipRotated = (payload) => {
-            console.log("Rotación confirmada por el back-end:", payload);
-            
-            if (matchStateRef.current) {
-                const miId = matchStateRef.current.matchInfo.yourId;
-                
-                // He movido yo el barco o mi oponente
-                const yoHeMovido = payload.userId == miId;
-                
-                if(yoHeMovido){
-                    // Restar consumo en las barras
-                    setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
-                }
-                
-                // Actualizamos el barco visualmente
-                rotarBarco(payload.shipId, payload.orientation);
-                
-                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
-                matchStateRef.current.fuel = payload.fuelReserve;
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
-            }
-        };
-
-        const handleTurnChanged = (payload) => {
-            console.log("Turno cambiado:", payload);
-            
-            if (matchStateRef.current) {
-                const miId = matchStateRef.current.matchInfo.yourId;
-
-                // Actualizamos si es mi turno
-                setEsMiTurno(payload.nextPlayerId == miId);
-
-                // He movido yo el barco o mi oponente
-                const yoHeMovido = payload.nextPlayerId == miId;
-                
-                if(yoHeMovido){
-                    // Actualizamos las barras de recursos
-                    setBarras(prev => ({
-                        ...prev,
-                        municion: payload.resources.ammo,
-                        combustible: payload.resources.fuel
-                    }));
-                }
-
-                // Actualizamos matchStateRef y guardamos los cambios en LocalStorage
-                matchStateRef.current.ammo = payload.resources.ammo;
-                matchStateRef.current.fuel = payload.resources.fuel;
-                matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
-                matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
-                
-                localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
-            }
-        };
-
-        const handleShipAttacked = (payload) => {
-            console.log("Ataque procesado por backend:", payload);
-            if (matchStateRef.current) {
-                const miId = matchStateRef.current.matchInfo.yourId;
-                
-                // Si he sido yo el que ha disparado, actualizo mi munición mostrada
-                if (payload.attackerId == miId) {
-                    setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
-                    matchStateRef.current.ammo = payload.ammoCurrent;
-                    localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
-                }
-                
-                if (payload.hit) {
-                    if (payload.targetHp == 0) {
-                        alert("Barco alcanzado. Barco hundido.");
-                    } else {
-                        alert("Barco alcanzado. Vida restante: " + payload.targetHp);
+            onShipMoved: (payload) => {
+                console.log("Movimiento confirmado por el back-end:", payload);
+                if (matchStateRef.current) {
+                    const miId = matchStateRef.current.matchInfo.yourId;
+                    if (payload.userId == miId) {
+                        setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
                     }
-                } else {
-                    alert("Agua. El ataque falló.");
+                    moverBarcoAdelante(payload.shipId);
+                    matchStateRef.current.fuel = payload.fuelReserve;
+                    guardarEstadoPartida(matchStateRef.current);
+                }
+            },
+
+            onShipRotated: (payload) => {
+                console.log("Rotación confirmada por el back-end:", payload);
+                if (matchStateRef.current) {
+                    const miId = matchStateRef.current.matchInfo.yourId;
+                    if (payload.userId == miId) {
+                        setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
+                    }
+                    rotarBarco(payload.shipId, payload.orientation);
+                    matchStateRef.current.fuel = payload.fuelReserve;
+                    guardarEstadoPartida(matchStateRef.current);
+                }
+            },
+
+            onTurnChanged: (payload) => {
+                console.log("Turno cambiado:", payload);
+                if (matchStateRef.current) {
+                    const miId = matchStateRef.current.matchInfo.yourId;
+                    setEsMiTurno(payload.nextPlayerId == miId);
+                    if (payload.nextPlayerId == miId) {
+                        setBarras(prev => ({
+                            ...prev,
+                            municion: payload.resources.ammo,
+                            combustible: payload.resources.fuel
+                        }));
+                    }
+                    matchStateRef.current.ammo = payload.resources.ammo;
+                    matchStateRef.current.fuel = payload.resources.fuel;
+                    matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
+                    matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
+                    guardarEstadoPartida(matchStateRef.current);
+                }
+            },
+
+            onShipAttacked: (payload) => {
+                console.log("Ataque procesado por backend:", payload);
+                if (matchStateRef.current) {
+                    const miId = matchStateRef.current.matchInfo.yourId;
+                    if (payload.attackerId == miId) {
+                        setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
+                        matchStateRef.current.ammo = payload.ammoCurrent;
+                        guardarEstadoPartida(matchStateRef.current);
+                    }
+                    if (payload.hit) {
+                        notification.success(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Impacto! Vida: ${payload.targetHp}`);
+                    } else {
+                        notification.warning("¡Agua! Disparo fallido.");
+                    }
                 }
             }
         };
 
-        socket.on('match:startInfo', handleStartInfo);
-        socket.on('match:vision_update', handleVisionUpdate);
-        socket.on('match:turn_changed', handleTurnChanged);
-        socket.on('ship:moved', handleShipMoved);
-        socket.on('ship:rotated', handleShipRotated);
-        socket.on('ship:attacked', handleShipAttacked);
+        // Registrar listeners y obener función cleanup
+        const cleanup = setupGameListeners(gameHandlers);
 
-        return () => {
-            socket.off('match:startInfo', handleStartInfo);
-            socket.off('match:vision_update', handleVisionUpdate);
-            socket.off('match:turn_changed', handleTurnChanged);
-            socket.off('ship:moved', handleShipMoved);
-            socket.off('ship:rotated', handleShipRotated);
-            socket.off('ship:attacked', handleShipAttacked);
-        };
+        // Limpiar listeners al desmontar
+        return cleanup;
     }, []);
 
     const handlePasarTurno = () => {
@@ -283,7 +220,7 @@ function Combate() {
             return;
         }
         if (barras.municion < ATAQUE_BASE.COSTE) {
-            alert("No hay suficiente munición para atacar");
+            notification.warning("No hay suficiente munición para atacar");
             return;
         }
         setModoAtaque(true);

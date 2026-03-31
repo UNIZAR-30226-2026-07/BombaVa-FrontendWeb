@@ -1,14 +1,14 @@
 /*
     Fichero con las constantes generales del proyecto.
 */
-export const SERVER_API = 'http://localhost:3000'
+export const SERVER_API = 'https://bombava-backend-vbgv.onrender.com';
 
 export const TAMANO_TABLERO = 15;
 export const TAMANO_CELDA = 40;
 
 export const TERRENO = {
-  AGUA: 'agua',     // Agua profunda
-  ISLA: 'isla',   // Isla 
+  AGUA: 'agua',
+  ISLA: 'isla',
   AGUA_NO_PROFUNDA: 'agua_no_profunda',
   NO_VISION: 'zona_sin_vision',
   NO_VISION_ENEMIGO: 'zona_sin_vision enemigo'
