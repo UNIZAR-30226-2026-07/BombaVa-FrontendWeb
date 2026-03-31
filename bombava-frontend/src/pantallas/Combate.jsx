@@ -213,11 +213,36 @@ function Combate() {
             }
         };
 
+        const handleShipAttacked = (payload) => {
+            console.log("Ataque procesado por backend:", payload);
+            if (matchStateRef.current) {
+                const miId = matchStateRef.current.matchInfo.yourId;
+                
+                // Si he sido yo el que ha disparado, actualizo mi munición mostrada
+                if (payload.attackerId == miId) {
+                    setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
+                    matchStateRef.current.ammo = payload.ammoCurrent;
+                    localStorage.setItem('bombaVa_matchState', JSON.stringify(matchStateRef.current));
+                }
+                
+                if (payload.hit) {
+                    if (payload.targetHp == 0) {
+                        alert("Barco alcanzado. Barco hundido.");
+                    } else {
+                        alert("Barco alcanzado. Vida restante: " + payload.targetHp);
+                    }
+                } else {
+                    alert("Agua. El ataque falló.");
+                }
+            }
+        };
+
         socket.on('match:startInfo', handleStartInfo);
         socket.on('match:vision_update', handleVisionUpdate);
         socket.on('match:turn_changed', handleTurnChanged);
         socket.on('ship:moved', handleShipMoved);
         socket.on('ship:rotated', handleShipRotated);
+        socket.on('ship:attacked', handleShipAttacked);
 
         return () => {
             socket.off('match:startInfo', handleStartInfo);
@@ -225,6 +250,7 @@ function Combate() {
             socket.off('match:turn_changed', handleTurnChanged);
             socket.off('ship:moved', handleShipMoved);
             socket.off('ship:rotated', handleShipRotated);
+            socket.off('ship:attacked', handleShipAttacked);
         };
     }, []);
 
@@ -245,8 +271,7 @@ function Combate() {
 
     // Función que se ejecutará al realizar un ataque en el mapa
     const handleAtaqueRealizado = () => {
-        actualizarMunicion(ATAQUE_BASE.COSTE);
-        setModoAtaque(false); // Desactivamos el modo ataque tras realizarlo
+        setModoAtaque(false); // Desactivamos el modo ataque para volver a la selección normal
     };
 
     // Función que se activa al pulsar en atacar en el panel de control

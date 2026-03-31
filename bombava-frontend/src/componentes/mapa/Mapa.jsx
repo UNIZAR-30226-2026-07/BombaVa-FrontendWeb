@@ -86,6 +86,9 @@ const Mapa = ({
   // Calcular celdas en el rango de ataque del barco seleccionado
   // Devuelve: un Set(tabla hash) con las celdas que están en el rango de ataque
   const calcularCeldasEnRango = () => {
+    // Solo mostrar rango de ataque si hemos pulsado Fuego
+    if (!modoAtaque) return new Set();
+    
     // Si no hay un barco seleccionado, no hay celdas en rango, devolvemos un Set vacío
     if (!barcoSeleccionado) return new Set();
     // Buscamos el barco seleccionado

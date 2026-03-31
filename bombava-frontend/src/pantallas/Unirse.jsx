@@ -22,6 +22,7 @@ function Unirse() {
     const handleStartInfo = (payload) => {
        console.log('Información inicial recibida', payload);
        localStorage.setItem('bombaVa_matchState', JSON.stringify(payload));
+       localStorage.setItem('bombaVa_esHost', 'false'); // Guardamos que nos hemos unido, no somos host
        navigate('/combate');
     };
 
