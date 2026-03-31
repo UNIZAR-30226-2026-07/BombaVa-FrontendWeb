@@ -59,6 +59,19 @@ export const MODULOS_BARCO = {
   ]
 };
 
+// Estadísticas de los barcos
+export const ESTADISTICAS_BARCOS = {
+  [BARCO1x1]: {
+    vidaMax: 10
+  },
+  [BARCO1x3]: {
+    vidaMax: 30
+  },
+  [BARCO1x5]: {
+    vidaMax: 50
+  }
+};
+
 export const NOMBRES_ARMAS = {
   [Metralleta]: "Cañón", 
   [Misiles]: "Mina",       

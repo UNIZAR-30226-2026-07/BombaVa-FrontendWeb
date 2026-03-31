@@ -77,7 +77,8 @@ function Combate() {
         rotarBarco,
         atacarCelda,
         cargarBarcosDesdeApi,
-        moverBarcoAdelante
+        moverBarcoAdelante,
+        actualizarVidaBarco
     } = useMovimientosBarco([]);
 
     // Estado para saber si es mi turno o el del oponente
