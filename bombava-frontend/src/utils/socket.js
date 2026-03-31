@@ -6,6 +6,7 @@ import { TAMANO_TABLERO } from './constantes.js';
 
 // URL del backend
 const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
+//const URL_WEBSOCKET = 'http://localhost:3000';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
@@ -62,6 +63,12 @@ export const peticionMoverse = (matchId, shipId, direction) => {
 
 // Función para pedir al backend que rote un barco
 export const peticionRotar = (matchId, shipId, degrees) => {
+
+  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
+  if (localStorage.getItem('bombaVa_esHost') == 'false') {
+    degrees = -degrees;
+  }
+
   console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
   socket.emit('ship:rotate', { matchId, shipId, degrees });
 };
