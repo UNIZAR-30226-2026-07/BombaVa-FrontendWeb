@@ -91,3 +91,9 @@ export const peticionAbandonarPartida = (matchId) => {
     console.log(`Petición al backend: abandonar partida ${matchId}`);
     socket.emit('match:surrender', { matchId });
 };
+
+// Función para pedir una pausa al otro jugador
+export const peticionPausarPartida = (matchId) => {
+    console.log(`Petición al backend: pausar la partida ${matchId}`);
+    socket.emit('match:pause_request', { matchId });
+};

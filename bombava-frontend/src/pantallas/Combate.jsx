@@ -203,6 +203,11 @@ function Combate() {
                     eliminarEstadoPartida();
                     navigate('/menuInicial');
                 }, 4000);
+            },
+
+            onMatchPaused: (payload) => {
+                console.log("Oponente ha solicitado pausar la partida:", payload);
+                notification.warning(`El jugador ${payload.from} ha pausado la partida.`);
             }
         };
 
