@@ -31,7 +31,7 @@ function Registro() {
         <input type="text" placeholder="Usuario" onChange={e => setCuenta({...cuenta, username: e.target.value})} />
         <input type="email" placeholder="Email" onChange={e => setCuenta({...cuenta, email: e.target.value})} />
         <input type="password" placeholder="Contraseña" onChange={e => setCuenta({...cuenta, contrasena: e.target.value})} />
-        <button type="submit">Crear Usuario</button>
+        <button type="submit">CREAR USUARIO</button>
       </form>
     </div>
   );

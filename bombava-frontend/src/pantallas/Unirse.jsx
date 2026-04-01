@@ -60,7 +60,7 @@ function Unirse() {
   return (
     <div className="unirse-container">
       <div className="unirse-card">
-        <h2>Unirse a Partida</h2>
+        <h2>Unirse a una partida</h2>
         <p>Introduce el código de la sala para unirte a la partida.</p>
 
         {errorBusqueda && (

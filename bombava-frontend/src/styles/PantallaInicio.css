@@ -5,21 +5,26 @@
     align-items: center;     
     height: 100vh;           /* 100% de la altura de la ventana */
     width: 100vw;            /* 100% del ancho de la ventana */
-    background-color: #002a68;
+    background-color: #0a1f33;
     gap: 20px;               /* Espacio entre los botones */
 }
 
 .boton-inicio-sesion, 
 .boton-registrarse {
+  background: linear-gradient(to bottom, #d2a679, #8b5e3c);
+  color: #1d1809;
   padding: 15px 40px;
   font-size: 1.2rem;
   font-weight: bold;
-  border: none;
-  border-radius: 50px;    /* Bordes muy redondeados */
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s; /* Animación */
-  width: 280px;           /* Ancho fijo para que midan lo mismo */
-  background-color: #684013;
-  color: white;
+  border: 2px solid #5d4037;
+  border-radius: 30px;
+  box-shadow: 0px 5px 0px #3e2723;
+  transition: 0.3s ease;
+  width: 320px;
 }
 
+.boton-inicio-sesion:hover, 
+.boton-registrarse:hover {
+  filter: brightness(1.1);
+  transform: scale(1.03);
+}
