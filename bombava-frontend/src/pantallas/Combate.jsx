@@ -180,12 +180,19 @@ function Combate() {
                         setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
                         matchStateRef.current.ammo = payload.ammoCurrent;
                         guardarEstadoPartida(matchStateRef.current);
+                        //Mensajes al atacante:
+                        if (payload.hit) {
+                            notification.success(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Barco impactado! Vida: ${payload.targetHp}`);
+                        } else {
+                            notification.warning("¡Agua! Disparo fallido.");
+                        }
+                    }else{
+                        //Mensajes al atacado:
+                        if (payload.hit) {
+                            notification.info(payload.targetHp == 0 ? "Te han hundido un barco" : `Te han impactado un barco. Vida: ${payload.targetHp}`);
+                        } 
                     }
-                    if (payload.hit) {
-                        notification.success(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Impacto! Vida: ${payload.targetHp}`);
-                    } else {
-                        notification.warning("¡Agua! Disparo fallido.");
-                    }
+                    
                 }
             },
 
