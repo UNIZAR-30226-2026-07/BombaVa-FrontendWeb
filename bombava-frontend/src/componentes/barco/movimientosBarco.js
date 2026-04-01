@@ -41,9 +41,9 @@ export const calcularCeldasBarco = (barco) => {
 
 /*Parametros:
  * barcosIniciales: array con los barcos que se cargarán al principio
- * setModoAtaque: función para cambiar el estado de modo ataque
+ * opcionesExtra: objeto con configuraciones adicionales { mapa, setModoAtaque }
  */
-export const useMovimientosBarco = (barcosIniciales, setModoAtaque) => {
+export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) => {
 
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
@@ -270,8 +270,11 @@ export const useMovimientosBarco = (barcosIniciales, setModoAtaque) => {
         if (distancia > rangoMaximo) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
             notification.warning("Fuera de rango");
-            // Salir de modo ataque:
-            setModoAtaque(false);
+
+            // Salir de modo ataque
+            if (setModoAtaque){
+                setModoAtaque(false);
+            }
             return false;
         }
 

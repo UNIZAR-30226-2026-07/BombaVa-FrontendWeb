@@ -84,7 +84,7 @@ function Combate() {
         cargarBarcosDesdeApi,
         moverBarcoAdelante,
         actualizarVidaBarco
-    } = useMovimientosBarco([], setModoAtaque);
+    } = useMovimientosBarco([], { setModoAtaque });
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
