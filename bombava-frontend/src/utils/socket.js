@@ -1,7 +1,7 @@
 // Se encarga de la comunicación con el backend mediante WebSocket
 import { io } from 'socket.io-client';
 import { TAMANO_TABLERO } from './constantes.js';
-
+import { notification } from '../services/notificationService.js';
 
 
 // URL del backend
@@ -25,6 +25,10 @@ socket.on('connect', () => {
 
 // Escucha los fallos que lleguen del servidor
 socket.on('game:error', (fail) => {
+  if(fail.message == "Ataque no disponible o munición insuficiente") {
+    notification.error("Ataque no disponible. Cada barco solo tiene un ataque por turno.");
+    return;
+  }
   alert('El Servidor ha rechazado tu acción:\n' + fail.message);
 });
 

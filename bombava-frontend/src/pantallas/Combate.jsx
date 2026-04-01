@@ -70,6 +70,9 @@ function Combate() {
         }));
     };
 
+    // Estado para saber si estamos en modo ataque
+    const [modoAtaque, setModoAtaque] = useState(false);
+
     // Hook para manejar los movimientos de los barcos
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
@@ -81,7 +84,7 @@ function Combate() {
         cargarBarcosDesdeApi,
         moverBarcoAdelante,
         actualizarVidaBarco
-    } = useMovimientosBarco([]);
+    } = useMovimientosBarco([], setModoAtaque);
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
@@ -229,9 +232,6 @@ function Combate() {
     
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
-
-    // Estado para saber si estamos en modo ataque
-    const [modoAtaque, setModoAtaque] = useState(false);
 
     // Función que se ejecutará al realizar un ataque en el mapa
     const handleAtaqueRealizado = () => {
