@@ -63,7 +63,7 @@ const ConfigFlota = () => {
         celdaEsValida,
         equiparArma,
         limpiarArma
-    } = useMovimientosBarco([],mapa); // Empezamos con tablero vacío
+    } = useMovimientosBarco([], { mapa }); // Empezamos con el tablero vacío
 
     //Al abrir la pantalla se cargan todos los tipos de barcos y armas que hay guardados en el backend
     useEffect(() => {
@@ -205,6 +205,7 @@ const ConfigFlota = () => {
                         <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x5)}>PONER BARCO 1x5</button>
                     </div>
 
+                    <button className="confirmar-btn" onClick={() => enviarFlota()}>CONFIRMAR FLOTA</button>
                 </div>
 
                 {/* Panel Lateral Derecho (Solo se ve si hay un barco seleccionado) */}
@@ -251,7 +252,7 @@ const ConfigFlota = () => {
                 )}
                 
             </div>
-            <button className="confirmar-btn" onClick={() => enviarFlota()}>CONFIRMAR FLOTA</button>
+            
     </div>
 
     );

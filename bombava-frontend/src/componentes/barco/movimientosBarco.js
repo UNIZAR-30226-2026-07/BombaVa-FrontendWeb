@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS } from '../../utils/constantes';
 import axios from 'axios';
 import { peticionAtacarCanon, traducirCoordY } from '../../utils/socket';
+import { notification } from '../../services/notificationService';
+
 // Función que calcula cual es la celda centrál del barco
 /*Parametros:
 * barco: barco del que se calculará la celda central
@@ -37,7 +39,11 @@ export const calcularCeldasBarco = (barco) => {
     return celdas;
 };
 
-export const useMovimientosBarco = (barcosIniciales, mapa) => {
+/*Parametros:
+ * barcosIniciales: array con los barcos que se cargarán al principio
+ * opcionesExtra: objeto con configuraciones adicionales { mapa, setModoAtaque }
+ */
+export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) => {
 
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
@@ -46,27 +52,37 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         // Recorremos la configuracion de modulos y creamos los modulos,
         // colocamos la vida de cada modulo en base a la configuracion, al
         // igual que su nombre y su id.
+
+        // APAÑO DE LA VIDA POR MODULOS
+        // Repartimos la vida del barco entre sus modulos
+        let vidaPorModulo = Math.floor(barcoBase.vida / barcoBase.tamano);
         modulos = configuracionModulos.map(conf => ({
             id: conf.id,
             nombre: conf.nombre,
             vidaMax: conf.vidaMax,
-            vida: conf.vidaMax,
+            vida: vidaPorModulo,
             destruido: false
         }));
 
-        // Calculamos la vida total del barco sumando la vida de todos sus módulos
-        let vidaTotal = 0;
-        for (let i = 0; i < modulos.length; i++) {
-            vidaTotal += modulos[i].vida;
-        }
         const barco = {
             ...barcoBase,
-            vida: vidaTotal,
-            vidaMax: vidaTotal,
+            vida: barcoBase.vida,
+            vidaMax: ESTADISTICAS_BARCOS[barcoBase.tamano].vidaMax,
             modulos,
         };
         barco.celdas = calcularCeldasBarco(barco);
         return barco;
+    };
+
+    // Función para actualizar la vida de un barco tras un ataque
+    const actualizarVidaBarco = (id, nuevaVida) => {
+        setBarcos(prevBarcos => prevBarcos.map(b => {
+            if (b.id !== id) return b;
+            return {
+                ...b,
+                vida: nuevaVida
+            };
+        }));
     };
 
     const barcosNormalizados = barcosIniciales.map(inicializarBarcoConModulos);
@@ -253,7 +269,12 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
 
         if (distancia > rangoMaximo) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
-            alert("Fuera de rango");
+            notification.warning("Fuera de rango");
+
+            // Salir de modo ataque
+            if (setModoAtaque){
+                setModoAtaque(false);
+            }
             return false;
         }
 
@@ -395,6 +416,7 @@ export const useMovimientosBarco = (barcosIniciales, mapa) => {
         cargarBarcosDesdeApi,
         moverBarcoAdelante,
         equiparArma,
-        limpiarArma
+        limpiarArma,
+        actualizarVidaBarco
     };
 };

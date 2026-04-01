@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { peticionAbandonarPartida, peticionPausarPartida } from '../../utils/socket';
+import { cargarEstadoPartida, eliminarEstadoPartida } from '../../services/gameApi';
 import '../../styles/MenuPausa.css';
 
 function MenuPausa() {
@@ -18,17 +20,30 @@ function MenuPausa() {
         setCuadroPausaVisible(false);
     };
 
-    // Función para abandonar la partida (Redirige al menú principal)
+    // Función para abandonar la partida
     const AbandonarPartida = () => {
-        // AÑADIR -> Implementar lógica con el backend para abandonar la partida
+        const estado = cargarEstadoPartida();
+        if (estado) {
+            const matchId = estado.matchInfo.matchId;
+            // Notificamos al backend de la rendición
+            peticionAbandonarPartida(matchId);
+
+            // Eliminamos el estado de la partida
+            eliminarEstadoPartida();
+        }
         navigate('/menuInicial');
     };
 
     // Función para guardar el estado de la partida y seguir luego
     const GuardarYSeguirLuego = () => {
-        console.log("Guardando estado de la partida para continuar después.");
-        // AÑADIR -> Implementar lógica de guardado con el backend
-       navigate('/menuInicial');
+        const estado = cargarEstadoPartida();
+        if (estado) {
+            const matchId = estado.matchInfo.matchId;
+            peticionPausarPartida(matchId);
+        }
+        
+        console.log("Pausando la partida.");
+        navigate('/menuInicial');
     };
 
     return (

@@ -1,7 +1,8 @@
 /*
     Fichero con las constantes generales del proyecto.
 */
-export const SERVER_API = 'https://bombava-backend-vbgv.onrender.com';
+//export const SERVER_API = 'https://bombava-backend-vbgv.onrender.com';
+export const SERVER_API = 'http://localhost:3000';
 
 export const TAMANO_TABLERO = 15;
 export const TAMANO_CELDA = 40;
@@ -32,6 +33,12 @@ export const Metralleta = 1;
 export const Misiles = 2;
 export const Torpedos = 3;
 
+// Configuración de recursos
+export const COSTES = {
+  MOVIMIENTO: 1,
+  ROTACION: 2,
+};
+
 // Configuración de ataque base
 export const ATAQUE_BASE = {
   COSTE: 2,
@@ -42,20 +49,33 @@ export const ATAQUE_BASE = {
 // Configuración de los módulos según tamaño del barco
 export const MODULOS_BARCO = {
   [BARCO1x1]: [
-    { id: 0, nombre: "Núcleo", vidaMax: 100 }
+    { id: 0, nombre: "Núcleo", vidaMax: 20 }
   ],
   [BARCO1x3]: [
-    { id: 0, nombre: "Sistema de Armas", vidaMax: 80 },
-    { id: 1, nombre: "Puente de Mando", vidaMax: 100 },
-    { id: 2, nombre: "Motor", vidaMax: 80 }
+    { id: 0, nombre: "Sistema de Armas", vidaMax: 10 },
+    { id: 1, nombre: "Puente de Mando", vidaMax: 10 },
+    { id: 2, nombre: "Motor", vidaMax: 10 }
   ],
   [BARCO1x5]: [
-    { id: 0, nombre: "Sistema de Armas", vidaMax: 80 },
-    { id: 1, nombre: "Casco", vidaMax: 120 },
-    { id: 2, nombre: "Puente de Mando", vidaMax: 150 },
-    { id: 3, nombre: "Casco", vidaMax: 120 },
-    { id: 4, nombre: "Motor", vidaMax: 80 }
+    { id: 0, nombre: "Sistema de Armas", vidaMax: 10 },
+    { id: 1, nombre: "Casco", vidaMax: 10 },
+    { id: 2, nombre: "Puente de Mando", vidaMax: 10 },
+    { id: 3, nombre: "Casco", vidaMax: 10 },
+    { id: 4, nombre: "Motor", vidaMax: 10 }
   ]
+};
+
+// Estadísticas de los barcos
+export const ESTADISTICAS_BARCOS = {
+  [BARCO1x1]: {
+    vidaMax: 10
+  },
+  [BARCO1x3]: {
+    vidaMax: 30
+  },
+  [BARCO1x5]: {
+    vidaMax: 50
+  }
 };
 
 export const NOMBRES_ARMAS = {

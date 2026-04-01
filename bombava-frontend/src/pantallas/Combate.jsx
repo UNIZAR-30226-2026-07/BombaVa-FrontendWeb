@@ -1,5 +1,6 @@
 import BarraProgreso from "../componentes/barras_recursos/Barras.jsx";
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Mapa from "../componentes/mapa/Mapa.jsx";
 import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
@@ -8,7 +9,7 @@ import ActionButtons from "../componentes/ActionButtons.jsx";
 import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
 import { peticionPasarTurno } from '../utils/socket.js';
-import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego } from '../services/gameApi.js';
+import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego, eliminarEstadoPartida } from '../services/gameApi.js';
 import { notification } from '../services/notificationService.js';
 import '../styles/Combate.css';
 
@@ -28,9 +29,9 @@ const generarMapaInicial = () => {
       let tipoterreno = TERRENO.AGUA;
 
       // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
-      if (x >= 6 && x < 9 && y >= 6 && y < 9) {
-        tipoterreno = TERRENO.ISLA;
-      }
+      //if (x >= 6 && x < 9 && y >= 6 && y < 9) {
+      //  tipoterreno = TERRENO.ISLA;
+      //}
 
       fila.push({ x, y, tipoterreno });
     }
@@ -40,6 +41,7 @@ const generarMapaInicial = () => {
 };
 
 function Combate() {
+    const navigate = useNavigate();
     const [mapa, setMapa] = useState(generarMapaInicial());
 
     //Valores de prueba de las barras de recursos,  se actualizarán dinámicamente según el estado del juego
@@ -68,6 +70,9 @@ function Combate() {
         }));
     };
 
+    // Estado para saber si estamos en modo ataque
+    const [modoAtaque, setModoAtaque] = useState(false);
+
     // Hook para manejar los movimientos de los barcos
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
@@ -77,8 +82,9 @@ function Combate() {
         rotarBarco,
         atacarCelda,
         cargarBarcosDesdeApi,
-        moverBarcoAdelante
-    } = useMovimientosBarco([]);
+        moverBarcoAdelante,
+        actualizarVidaBarco
+    } = useMovimientosBarco([], { setModoAtaque });
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
@@ -181,6 +187,30 @@ function Combate() {
                         notification.warning("¡Agua! Disparo fallido.");
                     }
                 }
+            },
+
+            onMatchFinished: (payload) => {
+                console.log("Partida finalizada", payload);
+                const miId = matchStateRef.current.matchInfo.yourId;
+                const soyGanador = payload.winnerId == miId;
+                
+                if (payload.reason == 'surrender') {
+                    notification.success(soyGanador ? "¡VICTORIA! El oponente se ha rendido." : "DERROTA. Te has rendido.");
+                } else {
+                    notification.success(soyGanador ? "¡VICTORIA! Todos los barcos enemigos destruidos." : "DERROTA. Tu flota ha sido destruida.");
+                }
+
+                // Esperamos 4 segundos y volvemos al menú inicial
+                // Antes de volver al menú inicial, eliminamos el estado de la partida
+                setTimeout(() => {
+                    eliminarEstadoPartida();
+                    navigate('/menuInicial');
+                }, 4000);
+            },
+
+            onMatchPaused: (payload) => {
+                console.log("Oponente ha solicitado pausar la partida:", payload);
+                notification.warning(`El jugador ${payload.from} ha pausado la partida.`);
             }
         };
 
@@ -202,9 +232,6 @@ function Combate() {
     
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
-
-    // Estado para saber si estamos en modo ataque
-    const [modoAtaque, setModoAtaque] = useState(false);
 
     // Función que se ejecutará al realizar un ataque en el mapa
     const handleAtaqueRealizado = () => {
@@ -290,6 +317,7 @@ function Combate() {
                             boat={barcoSeleccionado}
                             onAttackClick={activarModoAtaque}
                             modoAtaque={modoAtaque}
+                            combustible={barras.combustible}
                         />
                     )}
                 </div>

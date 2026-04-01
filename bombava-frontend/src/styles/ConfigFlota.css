@@ -1,7 +1,7 @@
 /* Contenedor principal de la pantalla de configuración */
 .mapa_config {
   position: relative;
-  top: 10%;
+  top: 5%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -97,6 +97,7 @@
 
 /*El botón para enviar flota al backend, el css es igual que el de los de poner barco pero flex para que vaya debajo*/
 .confirmar-btn {
+  margin-top: 3%;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,11 +1,12 @@
 // Se encarga de la comunicación con el backend mediante WebSocket
 import { io } from 'socket.io-client';
 import { TAMANO_TABLERO } from './constantes.js';
-
+import { notification } from '../services/notificationService.js';
 
 
 // URL del backend
-const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
+//const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
+const URL_WEBSOCKET = 'http://localhost:3000';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
@@ -24,6 +25,10 @@ socket.on('connect', () => {
 
 // Escucha los fallos que lleguen del servidor
 socket.on('game:error', (fail) => {
+  if(fail.message == "Ataque no disponible o munición insuficiente") {
+    notification.error("Ataque no disponible. Cada barco solo tiene un ataque por turno.");
+    return;
+  }
   alert('El Servidor ha rechazado tu acción:\n' + fail.message);
 });
 
@@ -53,7 +58,7 @@ export const peticionMoverse = (matchId, shipId, direction) => {
   //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
   if (localStorage.getItem('bombaVa_esHost') == 'true') {
     const opuestos = { 'N': 'S', 'S': 'N', 'E': 'E', 'W': 'W' };
-    dirFinal = opuestos[direction];
+    //dirFinal = opuestos[direction];
   }
 
   console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal}`);
@@ -62,6 +67,12 @@ export const peticionMoverse = (matchId, shipId, direction) => {
 
 // Función para pedir al backend que rote un barco
 export const peticionRotar = (matchId, shipId, degrees) => {
+
+  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
+  if (localStorage.getItem('bombaVa_esHost') == 'false') {
+    //degrees = -degrees;
+  }
+
   console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
   socket.emit('ship:rotate', { matchId, shipId, degrees });
 };
@@ -77,4 +88,16 @@ export const peticionAtacarCanon = (matchId, shipId, x, y) => {
   const targetY = traducirCoordY(y);
   console.log(`Petición al backend: cañonazo del barco ${shipId}}`);
   socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
+};
+
+// Función para pedir al backend abandonar la partida
+export const peticionAbandonarPartida = (matchId) => {
+    console.log(`Petición al backend: abandonar partida ${matchId}`);
+    socket.emit('match:surrender', { matchId });
+};
+
+// Función para pedir una pausa al otro jugador
+export const peticionPausarPartida = (matchId) => {
+    console.log(`Petición al backend: pausar la partida ${matchId}`);
+    socket.emit('match:pause_request', { matchId });
 };
