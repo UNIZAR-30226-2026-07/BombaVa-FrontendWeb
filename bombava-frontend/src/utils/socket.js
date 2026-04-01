@@ -5,8 +5,8 @@ import { notification } from '../services/notificationService.js';
 
 
 // URL del backend
-const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
-//const URL_WEBSOCKET = 'http://localhost:3000';
+//const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
+const URL_WEBSOCKET = 'http://localhost:3000';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
