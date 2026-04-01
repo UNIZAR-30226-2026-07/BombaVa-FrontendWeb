@@ -1,7 +1,8 @@
 import React from 'react';
 import '../styles/ActionButtons.css';
-import { TAMANO_TABLERO } from '../utils/constantes.js';
+import { TAMANO_TABLERO, COSTES } from '../utils/constantes.js';
 import { peticionMoverse, peticionRotar } from '../utils/socket.js';
+import { notification } from '../services/notificationService.js';
 import imgCanon from "../assets/armas/canon.png";
 import imgTorpedo from "../assets/armas/torpedoLanzador.png";
 import imgMina from "../assets/armas/mina.png";
@@ -22,11 +23,18 @@ function labelToImage(label) {
     return mapping[label] || '/assets/default-attack-icon.png';
 }
 
-function ActionButtons({ boat, onAttackClick, modoAtaque }) {
+function ActionButtons({ boat, onAttackClick, modoAtaque, combustible }) {
     const boatId = boat?.id;
 
     const moveFoward = () => {
         if (!boat) return;
+
+        // Comprobación de combustible
+        if (combustible < COSTES.MOVIMIENTO) {
+            notification.warning("No tienes suficiente combustible para moverte");
+            return;
+        }
+
         //Chekear si no se sale del límite:
         if(boat.orientacion === 'N' && boat.posicion.y === 0) return;
         if(boat.orientacion === 'E' && boat.posicion.x === TAMANO_TABLERO - 1) return;
@@ -43,6 +51,12 @@ function ActionButtons({ boat, onAttackClick, modoAtaque }) {
 
     const turnLeft = () => {
         if (!boat) return;
+
+        // Comprobación de combustible
+        if (combustible < COSTES.ROTACION) {
+            notification.warning("No tienes suficiente combustible para girar");
+            return;
+        }
         
         // Recuperamos el ID de la partida actual
         const estadoPartida = localStorage.getItem('bombaVa_matchState');
@@ -55,6 +69,12 @@ function ActionButtons({ boat, onAttackClick, modoAtaque }) {
 
     const turnRight = () => {
         if (!boat) return;
+
+        // Comprobación de combustible
+        if (combustible < COSTES.ROTACION) {
+            notification.warning("No tienes suficiente combustible para girar");
+            return;
+        }
 
         // Recuperamos el ID de la partida actual
         const estadoPartida = localStorage.getItem('bombaVa_matchState');

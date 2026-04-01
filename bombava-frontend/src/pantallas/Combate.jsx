@@ -317,6 +317,7 @@ function Combate() {
                             boat={barcoSeleccionado}
                             onAttackClick={activarModoAtaque}
                             modoAtaque={modoAtaque}
+                            combustible={barras.combustible}
                         />
                     )}
                 </div>
