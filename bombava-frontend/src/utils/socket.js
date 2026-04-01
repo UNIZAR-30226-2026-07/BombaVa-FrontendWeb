@@ -58,7 +58,7 @@ export const peticionMoverse = (matchId, shipId, direction) => {
   //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
   if (localStorage.getItem('bombaVa_esHost') == 'true') {
     const opuestos = { 'N': 'S', 'S': 'N', 'E': 'E', 'W': 'W' };
-    dirFinal = opuestos[direction];
+    //dirFinal = opuestos[direction];
   }
 
   console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal}`);
@@ -70,7 +70,7 @@ export const peticionRotar = (matchId, shipId, degrees) => {
 
   //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
   if (localStorage.getItem('bombaVa_esHost') == 'false') {
-    degrees = -degrees;
+    //degrees = -degrees;
   }
 
   console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
