@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS, ARMAS, CANON, TORPEDO, MINA, METRALLETA } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS, ARMAS, CANON, TORPEDO, MINA, METRALLETA, TIPOS_ARMAS_API } from '../../utils/constantes';
 import axios from 'axios';
 import { peticionAtacarCanon, peticionAtacarMina, peticionAtacarTorpedo, traducirCoordY } from '../../utils/socket';
 import { notification } from '../../services/notificationService';
@@ -186,6 +186,14 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // Recibe dos arrays, uno con los barcos del jugador y otro con los barcos enemigos
     // y los convierte a un formato que se pueda usar en el juego.
     const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
+        const obtenerArmas = (apiArmas = []) => {
+            const armas = [];
+            for (let i = 0; i < apiArmas.length; i++) {
+                armas.push(TIPOS_ARMAS_API[apiArmas[i].type].id);
+            }
+            return armas;
+        };
+
         const barcosMapeados = [
             ...playerFleet.map(ship => {
                 const tamano = ship.effectiveHeight == 1? ship.efectiveWidth : ship.effectiveHeight;
@@ -198,6 +206,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: tipo,
+                    armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp, 
                     esEnemigo: false
                 };
@@ -213,6 +222,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     orientacion: ship.orientation,
                     tamano: tamano, 
                     tipo: tipo,
+                    armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp,
                     esEnemigo: true
                 };

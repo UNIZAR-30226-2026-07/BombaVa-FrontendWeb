@@ -85,25 +85,39 @@ function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, co
         }
     };
 
-    const [buttonList, setButtonList] = React.useState([
-        { id: CANON, label: 'Cañón' },
-        { id: TORPEDO, label: 'Torpedo' },
-        { id: MINA, label: 'Mina' },
-        { id: METRALLETA, label: 'Ametralladora' },
-    ]);
+    const [buttonList, setButtonList] = React.useState([]);
     const [currentIndex, setCurrentIndex] = React.useState(0);
-    const [action, setAction] = React.useState(buttonList[0]);
+    const [action, setAction] = React.useState({ id: CANON, label: 'Cañón' });
+
+    // Cuando cambia el barco seleccionado, actualizamos la lista de armas 
+    // y reseteamos el índice a 0.
+    React.useEffect(() => {
+        if (!boat || boat.armas.length == 0) {
+            // Si el barco no tiene armas o no hay barco seleccionado, 
+            // dejamos el cañón por defecto
+            setButtonList([{ id: CANON, label: 'Cañón' }]);
+            setCurrentIndex(0);
+            return;
+        }
+
+        const armasBarco = [];
+        for (let i = 0; i < boat.armas.length; i++) {
+            const idArma = boat.armas[i];
+            armasBarco.push({ id: idArma, label: ARMAS[idArma].nombre });
+        }
+
+        setButtonList(armasBarco);
+        setCurrentIndex(0);
+    }, [boat]);
 
     React.useEffect(() => {
         if (!buttonList || buttonList.length === 0) {
-            setAction({ id: null, label: '' });
+            // Si el barco no tiene armas, dejamos el cañón por defecto
+            setAction({ id: CANON, label: 'Cañón' });
             return;
         }
         const selectedWeapon = buttonList[(currentIndex % buttonList.length)];
         setAction(selectedWeapon);
-        
-        // API: obtener la lista de acciones posibles
-        
         // Notificar a la pantalla de combate del cambio de arma
         notifyWeaponChange(selectedWeapon.id);
         

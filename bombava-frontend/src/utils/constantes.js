@@ -113,7 +113,7 @@ export const MODULOS_BARCO = {
 // Estadísticas de los barcos
 export const ESTADISTICAS_BARCOS = {
   [BARCO1x1]: {
-    vidaMax: 10,
+    vidaMax: 20,
     nombre: "Lancha"
   },
   [BARCO1x3]: {
@@ -126,9 +126,10 @@ export const ESTADISTICAS_BARCOS = {
   }
 };
 
-export const NOMBRES_ARMAS = {
-  [CANON]: "Cañón", 
-  [MINA]: "Mina",       
-  [TORPEDO]: "Torpedo",
-  [METRALLETA]: "Ametralladora"      
+// Armas del servidor al frontend
+export const TIPOS_ARMAS_API = {
+    'CANNON': { id: CANON, nombre: "Cañón" },
+    'MINE': { id: MINA, nombre: "Mina" },
+    'TORPEDO': { id: TORPEDO, nombre: "Torpedo" },
+    'MACHINEGUN': { id: METRALLETA, nombre: "Ametralladora" }
 };
