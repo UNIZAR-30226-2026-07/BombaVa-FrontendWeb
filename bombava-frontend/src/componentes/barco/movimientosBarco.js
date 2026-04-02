@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS, ARMAS, CANON, TORPEDO, MINA, METRALLETA } from '../../utils/constantes';
 import axios from 'axios';
-import { peticionAtacarCanon, traducirCoordY } from '../../utils/socket';
+import { peticionAtacarCanon, peticionAtacarMina, peticionAtacarTorpedo, traducirCoordY } from '../../utils/socket';
 import { notification } from '../../services/notificationService';
 
 // Función que calcula cual es la celda centrál del barco
@@ -247,19 +247,20 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     };
 
     // Función para atacar una celda con un barco atacante
-    // a una coordenada (targetX, targetY) con un daño específico y 
-    // un rango máximo.
+    // a una coordenada (targetX, targetY) con un arma específica.
     /*Parametros:
     * atacanteId: id del barco atacante
     * targetX: coordenada X de la celda objetivo
     * targetY: coordenada Y de la celda objetivo
-    * dano: daño que se aplica al módulo impactado
-    * rangoMaximo: rango máximo de ataque del barco atacante
+    * armaId: id del arma utilizada (CANON, TORPEDO, MINA, METRALLETA)
     * Devuelve: true si el ataque es válido, false en caso contrario
     */
-    const atacarCelda = (atacanteId, targetX, targetY, dano, rangoMaximo) => {
+    const atacarCelda = (atacanteId, targetX, targetY, armaId) => {
         const atacante = barcos.find(b => b.id == atacanteId);
         if (!atacante) return false;
+
+        const arma = ARMAS[armaId];
+        if (!arma) return false;
 
         // Calculamos el centro del barco atacante para medir la distancia desde ahí
         const { centroX, centroY } = calcularCentroBarco(atacante);
@@ -267,7 +268,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         // Comprobamos el rango usando la distancia Manhattan (distancia en línea recta).
         const distancia = Math.abs(centroX - targetX) + Math.abs(centroY - targetY);
 
-        if (distancia > rangoMaximo) {
+        if (distancia > arma.rango) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
             notification.warning("Fuera de rango");
 
@@ -282,7 +283,17 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const estadoPartida = localStorage.getItem('bombaVa_matchState');
         if (estadoPartida) {
             const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
-            peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            
+            if (armaId == CANON) {
+                peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            } else if (armaId == MINA) {
+                peticionAtacarMina(matchId, atacanteId, targetX, targetY);
+            } else if (armaId == TORPEDO) {
+                peticionAtacarTorpedo(matchId, atacanteId);
+            } else {
+                // Para otras armas usamos de manera TEMPORAL el cañon
+                peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            }
         }
 
         return true; // El ataque se mandó al servidor.

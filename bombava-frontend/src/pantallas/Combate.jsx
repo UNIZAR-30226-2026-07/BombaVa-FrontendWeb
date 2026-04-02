@@ -6,7 +6,7 @@ import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
 import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
-import { ATAQUE_BASE, TAMANO_TABLERO, TERRENO } from "../utils/constantes.js";
+import { TAMANO_TABLERO, TERRENO, ARMAS, CANON } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
 import { peticionPasarTurno } from '../utils/socket.js';
 import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego, eliminarEstadoPartida } from '../services/gameApi.js';
@@ -72,6 +72,9 @@ function Combate() {
 
     // Estado para saber si estamos en modo ataque
     const [modoAtaque, setModoAtaque] = useState(false);
+
+    // Estado para saber qué arma está seleccionada, por defecto el cañon
+    const [armaSeleccionada, setArmaSeleccionada] = useState(CANON);
 
     // Hook para manejar los movimientos de los barcos
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
@@ -253,7 +256,8 @@ function Combate() {
             setModoAtaque(false);
             return;
         }
-        if (barras.municion < ATAQUE_BASE.COSTE) {
+        const arma = ARMAS[armaSeleccionada];
+        if (barras.municion < arma.coste) {
             notification.warning("No hay suficiente munición para atacar");
             return;
         }
@@ -306,6 +310,7 @@ function Combate() {
                         setBarcoSeleccionado={setIdBarcoSeleccionado}
                         rotarBarco={rotarBarco}
                         atacarCelda={atacarCelda}
+                        armaSeleccionada={armaSeleccionada}
                     />
                 </div>
             </div>
@@ -323,6 +328,7 @@ function Combate() {
                         <ActionButtons
                             boat={barcoSeleccionado}
                             onAttackClick={activarModoAtaque}
+                            notifyWeaponChange={setArmaSeleccionada}
                             modoAtaque={modoAtaque}
                             combustible={barras.combustible}
                         />

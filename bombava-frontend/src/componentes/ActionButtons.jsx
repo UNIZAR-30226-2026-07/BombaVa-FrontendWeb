@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/ActionButtons.css';
-import { TAMANO_TABLERO, COSTES } from '../utils/constantes.js';
+import { TAMANO_TABLERO, COSTES, CANON, TORPEDO, MINA, METRALLETA, ARMAS } from '../utils/constantes.js';
 import { peticionMoverse, peticionRotar } from '../utils/socket.js';
 import { notification } from '../services/notificationService.js';
 import imgCanon from "../assets/armas/canon.png";
@@ -23,7 +23,7 @@ function labelToImage(label) {
     return mapping[label] || '/assets/default-attack-icon.png';
 }
 
-function ActionButtons({ boat, onAttackClick, modoAtaque, combustible }) {
+function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, combustible }) {
     const boatId = boat?.id;
 
     const moveFoward = () => {
@@ -86,10 +86,10 @@ function ActionButtons({ boat, onAttackClick, modoAtaque, combustible }) {
     };
 
     const [buttonList, setButtonList] = React.useState([
-        { id: 1, label: 'Cañón' },
-        { id: 2, label: 'Torpedo' },
-        { id: 3, label: 'Mina' },
-        { id: 4, label: 'Ametralladora' },
+        { id: CANON, label: 'Cañón' },
+        { id: TORPEDO, label: 'Torpedo' },
+        { id: MINA, label: 'Mina' },
+        { id: METRALLETA, label: 'Ametralladora' },
     ]);
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const [action, setAction] = React.useState(buttonList[0]);
@@ -99,10 +99,15 @@ function ActionButtons({ boat, onAttackClick, modoAtaque, combustible }) {
             setAction({ id: null, label: '' });
             return;
         }
-        setAction(buttonList[(currentIndex % buttonList.length)]);
-    }, [currentIndex, buttonList]);
-
-    // API: obtener la lista de acciones posibles
+        const selectedWeapon = buttonList[(currentIndex % buttonList.length)];
+        setAction(selectedWeapon);
+        
+        // API: obtener la lista de acciones posibles
+        
+        // Notificar a la pantalla de combate del cambio de arma
+        notifyWeaponChange(selectedWeapon.id);
+        
+    }, [currentIndex, buttonList, notifyWeaponChange]);
 
     return (
         <div className="action-buttons">

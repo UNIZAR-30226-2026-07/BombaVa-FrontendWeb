@@ -76,6 +76,19 @@ export const peticionAtacarCanon = (matchId, shipId, x, y) => {
   socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
 };
 
+// Función para pedir al backend que ataque con la mina
+export const peticionAtacarMina = (matchId, shipId, x, y) => {
+  const targetY = traducirCoordY(y);
+  console.log(`Petición al backend: mina del barco ${shipId}}`);
+  socket.emit('ship:attack:mine', { matchId, shipId, target: { x, y: targetY } });
+};
+
+// Función para pedir al backend que ataque con el torpedo
+export const peticionAtacarTorpedo = (matchId, shipId) => {
+  console.log(`Petición al backend: torpedo del barco ${shipId}}`);
+  socket.emit('ship:attack:torpedo', { matchId, shipId });
+};
+
 // Función para pedir al backend abandonar la partida
 export const peticionAbandonarPartida = (matchId) => {
     console.log(`Petición al backend: abandonar partida ${matchId}`);

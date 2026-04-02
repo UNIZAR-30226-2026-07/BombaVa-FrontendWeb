@@ -4,7 +4,7 @@ import Tablero from '../componentes/tablero/Tablero';
 import Barco from '../componentes/barco/Barco.jsx';
 import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5, Metralleta, Misiles, Torpedos, TAMANO_TABLERO, TERRENO, NOMBRES_ARMAS,SERVER_API } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5,  TAMANO_TABLERO, TERRENO, NOMBRES_ARMAS,SERVER_API } from '../utils/constantes.js'; 
 import { useNavigate } from 'react-router-dom';
 import { crearYActivarDeck } from '../services/decksApi.js';
 import { notification } from '../services/notificationService.js';

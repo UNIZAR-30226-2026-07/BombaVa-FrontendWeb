@@ -1,7 +1,7 @@
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
 import { calcularCentroBarco } from '../barco/movimientosBarco.js';
-import { ATAQUE_BASE, TAMANO_TABLERO } from '../../utils/constantes.js';
+import { TAMANO_TABLERO, ARMAS } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
 
 /*El mapa es la clase que engloba a todo el tablero de juego, para ello 
@@ -19,7 +19,8 @@ const Mapa = ({
   barcoSeleccionado,
   setBarcoSeleccionado,
   rotarBarco,
-  atacarCelda
+  atacarCelda,
+  armaSeleccionada
 }) => {
 
   /*const gestionarClickMapa = (x, y) => {
@@ -39,8 +40,7 @@ const Mapa = ({
           barcoSeleccionado,
           clickX,
           clickY,
-          ATAQUE_BASE.DANO,
-          ATAQUE_BASE.RANGO
+          armaSeleccionada
         );
         if (exito) {
           onAtaqueRealizado();
@@ -73,8 +73,7 @@ const Mapa = ({
           barcoSeleccionado,
           x,
           y,
-          ATAQUE_BASE.DANO,
-          ATAQUE_BASE.RANGO
+          armaSeleccionada
         );
         if (exito) {
           onAtaqueRealizado();
@@ -98,15 +97,18 @@ const Mapa = ({
     // Calculamos el centro del barco seleccionado
     const { centroX, centroY } = calcularCentroBarco(atacante);
 
+    const arma = ARMAS[armaSeleccionada];
+    if (!arma) return new Set();
+
     // Calculamos las celdas en el rango de ataque, y las agregamos a un Set(tabla hash)
     const celdas = new Set();
-    for (let x = centroX - ATAQUE_BASE.RANGO; x <= centroX + ATAQUE_BASE.RANGO; x++) {
-      for (let y = centroY - ATAQUE_BASE.RANGO; y <= centroY + ATAQUE_BASE.RANGO; y++) {
+    for (let x = centroX - arma.rango; x <= centroX + arma.rango; x++) {
+      for (let y = centroY - arma.rango; y <= centroY + arma.rango; y++) {
         // Si la celda está fuera del tablero, no la agregamos
         if (x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO) {
           const distancia = Math.abs(centroX - x) + Math.abs(centroY - y);
           // Si la celda está fuera del rango, no la agregamos
-          if (distancia <= ATAQUE_BASE.RANGO) {
+          if (distancia <= arma.rango) {
             celdas.add(`${x},${y}`);
           }
         }
