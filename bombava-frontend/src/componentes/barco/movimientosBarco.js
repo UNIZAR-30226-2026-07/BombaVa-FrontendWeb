@@ -48,7 +48,10 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
         let modulos = [];
-        let configuracionModulos = MODULOS_BARCO[barcoBase.tamano];
+        const tipoBarco = barcoBase.tamano == 1 ? BARCO1x1 : 
+                          barcoBase.tamano == 3 ? BARCO1x3 : 
+                          BARCO1x5;
+        let configuracionModulos = MODULOS_BARCO[tipoBarco];
         // Recorremos la configuracion de modulos y creamos los modulos,
         // colocamos la vida de cada modulo en base a la configuracion, al
         // igual que su nombre y su id.
@@ -67,7 +70,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const barco = {
             ...barcoBase,
             vida: barcoBase.vida,
-            vidaMax: ESTADISTICAS_BARCOS[barcoBase.tamano].vidaMax,
+            vidaMax: ESTADISTICAS_BARCOS[tipoBarco].vidaMax,
             modulos,
         };
         barco.celdas = calcularCeldasBarco(barco);
@@ -185,31 +188,36 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
         const barcosMapeados = [
             ...playerFleet.map(ship => {
-                const tamano = ship.size || 3; // La API no envía size
+                const tamano = ship.effectiveHeight == 1? ship.efectiveWidth : ship.effectiveHeight;
+                const tipo = tamano == 1? ESTADISTICAS_BARCOS[BARCO1x1].nombre : 
+                             tamano == 3? ESTADISTICAS_BARCOS[BARCO1x3].nombre : 
+                             tamano == 5? ESTADISTICAS_BARCOS[BARCO1x5].nombre : 'otro';
                 return {
                     id: ship.id,
                     posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
-                    tipo: ship.type || 'destructor', // La API no envía type
+                    tipo: tipo,
                     vida: ship.currentHp, 
                     esEnemigo: false
                 };
             }),
             ...enemyFleet.map(ship => {
-                const tamano = ship.size || 3; // La API no envía size
+                const tamano = ship.effectiveHeight == 1? ship.efectiveWidth : ship.effectiveHeight;
+                const tipo = tamano == 1? ESTADISTICAS_BARCOS[BARCO1x1].nombre : 
+                             tamano == 3? ESTADISTICAS_BARCOS[BARCO1x3].nombre : 
+                             tamano == 5? ESTADISTICAS_BARCOS[BARCO1x5].nombre : 'otro';
                 return {
                     id: ship.id,
                     posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
-                    tipo: ship.type || 'destructor', // La API no envía type
+                    tipo: tipo,
                     vida: ship.currentHp,
                     esEnemigo: true
                 };
             })
         ];
-        
         const barcosJuego = barcosMapeados.map(inicializarBarcoConModulos);
         setBarcos(barcosJuego);
     };

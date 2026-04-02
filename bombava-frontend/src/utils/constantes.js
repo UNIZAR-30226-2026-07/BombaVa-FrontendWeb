@@ -26,7 +26,9 @@ export const COLORES_TERRENO = {
 };
 
 export const BARCO1x1 = 1;
+export const BARCO1x2 = 2;
 export const BARCO1x3 = 3;
+export const BARCO1x4 = 4;
 export const BARCO1x5 = 5;
 
 export const CANON = 1;
@@ -84,10 +86,20 @@ export const MODULOS_BARCO = {
   [BARCO1x1]: [
     { id: 0, nombre: "Núcleo", vidaMax: 20 }
   ],
+  [BARCO1x2]: [
+    { id: 0, nombre: "-", vidaMax: 0 },
+    { id: 1, nombre: "-", vidaMax: 0 },
+  ],
   [BARCO1x3]: [
     { id: 0, nombre: "Sistema de Armas", vidaMax: 10 },
     { id: 1, nombre: "Puente de Mando", vidaMax: 10 },
     { id: 2, nombre: "Motor", vidaMax: 10 }
+  ],
+  [BARCO1x4]: [
+    { id: 0, nombre: "-", vidaMax: 0 },
+    { id: 1, nombre: "-", vidaMax: 0 },
+    { id: 2, nombre: "-", vidaMax: 0 },
+    { id: 3, nombre: "-", vidaMax: 0 },
   ],
   [BARCO1x5]: [
     { id: 0, nombre: "Sistema de Armas", vidaMax: 10 },
@@ -101,13 +113,16 @@ export const MODULOS_BARCO = {
 // Estadísticas de los barcos
 export const ESTADISTICAS_BARCOS = {
   [BARCO1x1]: {
-    vidaMax: 10
+    vidaMax: 10,
+    nombre: "Lancha"
   },
   [BARCO1x3]: {
-    vidaMax: 30
+    vidaMax: 30,
+    nombre: "Fragata"
   },
   [BARCO1x5]: {
-    vidaMax: 50
+    vidaMax: 50,
+    nombre: "Portaaviones"
   }
 };
 
