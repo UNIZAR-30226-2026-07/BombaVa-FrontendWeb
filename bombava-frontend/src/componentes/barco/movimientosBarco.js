@@ -332,12 +332,12 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 break;
         }
         if (barco.armas.length >= numArmas) {
-            alert("Este barco ya no tiene más ranuras disponibles.");
+            notification.warning("Este barco ya no tiene más ranuras disponibles.");
             return;
         }
         const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
         if (yaTieneEsaArma) {
-            alert("Este barco ya tiene equipado un " + arma.name);
+            notification.warning("Este barco ya tiene equipado un " + arma.name);
             return;
         }
         //hay que actualizar las armas del barco por si se utiliza en otro mazo
@@ -360,11 +360,11 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 return b;
             }));
 
-            alert(`${arma.name} equipado correctamente.`);
+            notification.success(`${arma.name} equipado correctamente.`);
 
         } catch (err) {
             console.error(err);
-            alert("Error de la API: " + (err.response?.data?.message || "No se pudo equipar"));
+            notification.error("Error de la API: " + (err.response?.data?.message || "No se pudo equipar"));
         }
     }
     //Quita las armas del barco que está seleccionado
@@ -372,7 +372,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const barco = barcos.find(b => b.id === barcoSeleccionado);
         const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
         if (!yaTieneEsaArma) {
-            alert("Este barco no tiene equipado un " + arma.name);
+            notification.warning("Este barco no tiene equipado un " + arma.name);
             return;
         }
         //hay que actualizar las armas del barco por si se utiliza en otro mazo
@@ -396,11 +396,11 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 return b;
             }));
 
-            alert(`${arma.name} quitada correctamente.`);
+            notification.success(`${arma.name} quitada correctamente.`);
 
         } catch (err) {
             console.error(err);
-            alert("Error de la API: " + (err.response?.data?.message || "No se pudo quitar"));
+            notification.error("Error de la API: " + (err.response?.data?.message || "No se pudo quitar"));
         }
     }
 

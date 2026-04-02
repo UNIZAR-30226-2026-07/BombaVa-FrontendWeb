@@ -113,3 +113,15 @@
 .boton_cerrar:hover {
     background-color: #cc0000;
 }
+
+.guardarNombre {
+    padding: 10px 20px;
+    background-color: #2ca80a;
+    color: white;
+}
+
+.editarNombre {
+    padding: 10px 20px;
+    background-color: #2ca80a;
+    color: white;
+}

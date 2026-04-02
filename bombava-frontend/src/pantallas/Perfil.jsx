@@ -9,6 +9,7 @@ function Perfil() {
   const navigate = useNavigate();
 
   const [usuario, setUsuario] = useState(null);
+  const [editando, setEditando] = useState(false);//Te dice si está editando el nombre de usuario
 
   const cerrarSesion = () => {
     limpiarToken()/*sale a antes de iniciar sesion y registrarse y borra el token de sesión actual*/
@@ -32,6 +33,21 @@ function Perfil() {
   // ESTO EVITA QUE LA WEB SE ROMPA MIENTRAS CARGA
   if (!usuario) return <h1 style={{color: 'white'}}>Cargando perfil...</h1>;
 
+  const cambiarUsuario = async (nuevoNombre) =>{
+    try {
+       await axios.patch(
+            SERVER_API + '/api/auth/me',
+            { headers: {
+              'Authorization': `Bearer ${token}`,
+              'username': nuevoNombre,
+              'email': usuario.email
+            } }
+        );
+    } catch (err) {
+      notification.error(err.message);
+    }
+  }
+  
   return ( 
     <div className="contenedor_perfil">
 
@@ -50,14 +66,35 @@ function Perfil() {
         </div>
         
         <div className="info_capitan">
-          <h2>{usuario.username}</h2>
           <p className="rango">Rango</p>
           
           <div className="estats">
+            <p><strong>Usuario: </strong> 
+              {editando ? (
+                <>
+                  <input 
+                    type="text" 
+                    value={nuevoNombre} 
+                    onChange={(e) => setNuevoNombre(e.target.value)}
+                    autoFocus
+                  />
+                  <button className="guardarNombre" onClick={() => {
+                    setUsuario({...usuario, username: nuevoNombre}); //Cambia el nombre de usuario en la web
+                    cambiarUsuario(nuevoNombre);
+                    setEditando(false); // Cierra el modo edición
+                  }}>GUARDAR</button>
+                </>
+              ) : (
+                <>
+                  {usuario.username} 
+                  <button className="editarNombre" onClick={() => {
+                    setEditando(true);
+                  }}>EDITAR</button>
+                </>
+              )}
+            </p>
+            
             <p><strong>Gmail: </strong>{usuario.email} </p>
-            <p><strong>Partidas: </strong> Partidas</p>
-            <p><strong>Victorias: </strong> Victorias</p>
-            <p><strong>Precisión: </strong> Precision</p>
           </div>
         </div>
 
