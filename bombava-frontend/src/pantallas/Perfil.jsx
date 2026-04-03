@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { obtenerPerfil, limpiarToken } from '../services/authApi.js';
 import { notification } from '../services/notificationService.js';
+import axios from 'axios';
+import {SERVER_API} from '../utils/constantes';
 import '../styles/Perfil.css';
 
 function Perfil() {
@@ -10,7 +12,7 @@ function Perfil() {
 
   const [usuario, setUsuario] = useState(null);
   const [editando, setEditando] = useState(false);//Te dice si está editando el nombre de usuario
-
+  const [nuevoNombre, setNuevoNombre] = useState("");
   const cerrarSesion = () => {
     limpiarToken()/*sale a antes de iniciar sesion y registrarse y borra el token de sesión actual*/
     navigate('/')
@@ -34,14 +36,20 @@ function Perfil() {
   if (!usuario) return <h1 style={{color: 'white'}}>Cargando perfil...</h1>;
 
   const cambiarUsuario = async (nuevoNombre) =>{
+    const token = localStorage.getItem('token');
+    const datosActualizados = {
+      username: nuevoNombre,
+      email: usuario.email
+    };
     try {
        await axios.patch(
             SERVER_API + '/api/auth/me',
-            { headers: {
-              'Authorization': `Bearer ${token}`,
-              'username': nuevoNombre,
-              'email': usuario.email
-            } }
+            datosActualizados,
+            { 
+              headers: { 
+                'Authorization': `Bearer ${token}` 
+              } 
+            }
         );
     } catch (err) {
       notification.error(err.message);
@@ -76,7 +84,6 @@ function Perfil() {
                     type="text" 
                     value={nuevoNombre} 
                     onChange={(e) => setNuevoNombre(e.target.value)}
-                    autoFocus
                   />
                   <button className="guardarNombre" onClick={() => {
                     setUsuario({...usuario, username: nuevoNombre}); //Cambia el nombre de usuario en la web
