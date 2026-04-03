@@ -28,7 +28,11 @@ socket.on('game:error', (fail) => {
   if(fail.message == "Ataque no disponible o munición insuficiente") {
     notification.error("Ataque no disponible. Cada barco solo tiene un ataque por turno.");
     return;
+  }else if(fail.message == "Colisión detectada: Casilla ocupada") {
+    notification.error("No puedes avanzar, la casilla está ocupada.");
+    return;
   }
+  console.log(fail.message);
   alert('El Servidor ha rechazado tu acción:\n' + fail.message);
 });
 
@@ -53,26 +57,12 @@ export const traducirCoordY = (y) => {
 
 // Función para pedir al backend que mueva un barco
 export const peticionMoverse = (matchId, shipId, direction) => {
-  let dirFinal = direction;
-  
-  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
-  if (localStorage.getItem('bombaVa_esHost') == 'true') {
-    const opuestos = { 'N': 'S', 'S': 'N', 'E': 'E', 'W': 'W' };
-    //dirFinal = opuestos[direction];
-  }
-
-  console.log(`Petición al backend: mover barco ${shipId} hacia ${dirFinal}`);
-  socket.emit('ship:move', { matchId, shipId, direction: dirFinal });
+  console.log(`Petición al backend: mover barco ${shipId} hacia ${direction}`);
+  socket.emit('ship:move', { matchId, shipId, direction });
 };
 
 // Función para pedir al backend que rote un barco
 export const peticionRotar = (matchId, shipId, degrees) => {
-
-  //QUITAR ES EL APAÑO PARA SOLUCIONAR DE MANERA TEMPORAL EL PROBLEMA DE LA API
-  if (localStorage.getItem('bombaVa_esHost') == 'false') {
-    //degrees = -degrees;
-  }
-
   console.log(`Petición al backend: rotar barco ${shipId}, ${degrees} grados`);
   socket.emit('ship:rotate', { matchId, shipId, degrees });
 };
@@ -88,6 +78,19 @@ export const peticionAtacarCanon = (matchId, shipId, x, y) => {
   const targetY = traducirCoordY(y);
   console.log(`Petición al backend: cañonazo del barco ${shipId}}`);
   socket.emit('ship:attack:cannon', { matchId, shipId, target: { x, y: targetY } });
+};
+
+// Función para pedir al backend que ataque con la mina
+export const peticionAtacarMina = (matchId, shipId, x, y) => {
+  const targetY = traducirCoordY(y);
+  console.log(`Petición al backend: mina del barco ${shipId}}`);
+  socket.emit('ship:attack:mine', { matchId, shipId, target: { x, y: targetY } });
+};
+
+// Función para pedir al backend que ataque con el torpedo
+export const peticionAtacarTorpedo = (matchId, shipId) => {
+  console.log(`Petición al backend: torpedo del barco ${shipId}}`);
+  socket.emit('ship:attack:torpedo', { matchId, shipId });
 };
 
 // Función para pedir al backend abandonar la partida

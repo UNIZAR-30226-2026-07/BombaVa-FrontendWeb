@@ -28,8 +28,8 @@ function InicioSesion() {
     <div className="contenedor-padre">
       <form className= "formulario-incio-sesion" onSubmit={enviarDatos}>
         <h2 className = "titulo">Iniciar Sesión</h2>
-        <input type="email" placeholder="Email" onChange={e => setCuenta({...cuenta, email: e.target.value})} />
-        <input type="password" placeholder="Password" onChange={e => setCuenta({...cuenta, contrasena: e.target.value})} />
+        <input type="email" className= "formulario-incio-sesion-email" placeholder="Email" onChange={e => setCuenta({...cuenta, email: e.target.value})} />
+        <input type="password" className= "formulario-incio-sesion-password" placeholder="Password" onChange={e => setCuenta({...cuenta, contrasena: e.target.value})} />
         <button type="submit">Entrar</button>
       </form>
     </div>

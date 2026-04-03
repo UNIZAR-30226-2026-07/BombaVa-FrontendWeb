@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS } from '../../utils/constantes';
+import { COLORES_TERRENO, MODULOS_BARCO, TAMANO_TABLERO, TERRENO, BARCO1x1, BARCO1x3, BARCO1x5, SERVER_API, ESTADISTICAS_BARCOS, ARMAS, CANON, TORPEDO, MINA, METRALLETA, TIPOS_ARMAS_API } from '../../utils/constantes';
 import axios from 'axios';
-import { peticionAtacarCanon, traducirCoordY } from '../../utils/socket';
+import { peticionAtacarCanon, peticionAtacarMina, peticionAtacarTorpedo, traducirCoordY } from '../../utils/socket';
 import { notification } from '../../services/notificationService';
 
 // Función que calcula cual es la celda centrál del barco
@@ -48,7 +48,10 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // Función para inicializar un barco con módulos
     const inicializarBarcoConModulos = (barcoBase) => {
         let modulos = [];
-        let configuracionModulos = MODULOS_BARCO[barcoBase.tamano];
+        const tipoBarco = barcoBase.tamano == 1 ? BARCO1x1 : 
+                          barcoBase.tamano == 3 ? BARCO1x3 : 
+                          BARCO1x5;
+        let configuracionModulos = MODULOS_BARCO[tipoBarco];
         // Recorremos la configuracion de modulos y creamos los modulos,
         // colocamos la vida de cada modulo en base a la configuracion, al
         // igual que su nombre y su id.
@@ -67,7 +70,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const barco = {
             ...barcoBase,
             vida: barcoBase.vida,
-            vidaMax: ESTADISTICAS_BARCOS[barcoBase.tamano].vidaMax,
+            vidaMax: ESTADISTICAS_BARCOS[tipoBarco].vidaMax,
             modulos,
         };
         barco.celdas = calcularCeldasBarco(barco);
@@ -183,33 +186,48 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // Recibe dos arrays, uno con los barcos del jugador y otro con los barcos enemigos
     // y los convierte a un formato que se pueda usar en el juego.
     const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
+        const obtenerArmas = (apiArmas = []) => {
+            const armas = [];
+            for (let i = 0; i < apiArmas.length; i++) {
+                armas.push(TIPOS_ARMAS_API[apiArmas[i].type].id);
+            }
+            return armas;
+        };
+
         const barcosMapeados = [
             ...playerFleet.map(ship => {
-                const tamano = ship.size || 3; // La API no envía size
+                const tamano = ship.effectiveHeight == 1? ship.efectiveWidth : ship.effectiveHeight;
+                const tipo = tamano == 1? ESTADISTICAS_BARCOS[BARCO1x1].nombre : 
+                             tamano == 3? ESTADISTICAS_BARCOS[BARCO1x3].nombre : 
+                             tamano == 5? ESTADISTICAS_BARCOS[BARCO1x5].nombre : 'otro';
                 return {
                     id: ship.id,
                     posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
-                    tipo: ship.type || 'destructor', // La API no envía type
+                    tipo: tipo,
+                    armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp, 
                     esEnemigo: false
                 };
             }),
             ...enemyFleet.map(ship => {
-                const tamano = ship.size || 3; // La API no envía size
+                const tamano = ship.effectiveHeight == 1? ship.efectiveWidth : ship.effectiveHeight;
+                const tipo = tamano == 1? ESTADISTICAS_BARCOS[BARCO1x1].nombre : 
+                             tamano == 3? ESTADISTICAS_BARCOS[BARCO1x3].nombre : 
+                             tamano == 5? ESTADISTICAS_BARCOS[BARCO1x5].nombre : 'otro';
                 return {
                     id: ship.id,
                     posicion: adaptarCentroApi(ship.x, traducirCoordY(ship.y), ship.orientation, tamano),
                     orientacion: ship.orientation,
                     tamano: tamano, 
-                    tipo: ship.type || 'destructor', // La API no envía type
+                    tipo: tipo,
+                    armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp,
                     esEnemigo: true
                 };
             })
         ];
-        
         const barcosJuego = barcosMapeados.map(inicializarBarcoConModulos);
         setBarcos(barcosJuego);
     };
@@ -247,19 +265,20 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     };
 
     // Función para atacar una celda con un barco atacante
-    // a una coordenada (targetX, targetY) con un daño específico y 
-    // un rango máximo.
+    // a una coordenada (targetX, targetY) con un arma específica.
     /*Parametros:
     * atacanteId: id del barco atacante
     * targetX: coordenada X de la celda objetivo
     * targetY: coordenada Y de la celda objetivo
-    * dano: daño que se aplica al módulo impactado
-    * rangoMaximo: rango máximo de ataque del barco atacante
+    * armaId: id del arma utilizada (CANON, TORPEDO, MINA, METRALLETA)
     * Devuelve: true si el ataque es válido, false en caso contrario
     */
-    const atacarCelda = (atacanteId, targetX, targetY, dano, rangoMaximo) => {
+    const atacarCelda = (atacanteId, targetX, targetY, armaId) => {
         const atacante = barcos.find(b => b.id == atacanteId);
         if (!atacante) return false;
+
+        const arma = ARMAS[armaId];
+        if (!arma) return false;
 
         // Calculamos el centro del barco atacante para medir la distancia desde ahí
         const { centroX, centroY } = calcularCentroBarco(atacante);
@@ -267,7 +286,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         // Comprobamos el rango usando la distancia Manhattan (distancia en línea recta).
         const distancia = Math.abs(centroX - targetX) + Math.abs(centroY - targetY);
 
-        if (distancia > rangoMaximo) {
+        if (distancia > arma.rango) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
             notification.warning("Fuera de rango");
 
@@ -282,7 +301,17 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const estadoPartida = localStorage.getItem('bombaVa_matchState');
         if (estadoPartida) {
             const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
-            peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            
+            if (armaId == CANON) {
+                peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            } else if (armaId == MINA) {
+                peticionAtacarMina(matchId, atacanteId, targetX, targetY);
+            } else if (armaId == TORPEDO) {
+                peticionAtacarTorpedo(matchId, atacanteId);
+            } else {
+                // Para otras armas usamos de manera TEMPORAL el cañon
+                peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
+            }
         }
 
         return true; // El ataque se mandó al servidor.

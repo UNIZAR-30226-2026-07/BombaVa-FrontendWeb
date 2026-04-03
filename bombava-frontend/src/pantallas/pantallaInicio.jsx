@@ -10,7 +10,7 @@ function Inicio(){
             <button className="boton-inicio-sesion"
                     onClick={() => navigate('/inicioSesion')}
                 >
-                    Iniciar Sesion
+                    Iniciar Sesión
             </button>
             <button className="boton-registrarse"
                     onClick={() => navigate('/registro')}
