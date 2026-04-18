@@ -80,13 +80,16 @@ function Combate() {
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
         barcos,
+        proyectiles,
         barcoSeleccionado: idBarcoSeleccionado,
         setBarcoSeleccionado: setIdBarcoSeleccionado,
         rotarBarco,
         atacarCelda,
         cargarBarcosDesdeApi,
         moverBarcoAdelante,
-        actualizarVidaBarco
+        actualizarVidaBarco,
+        quitarProyectil,
+        cargarProyectilesDesdeApi
     } = useMovimientosBarco([], { setModoAtaque });
 
     // Estado para saber si es mi turno o el del oponente
@@ -109,6 +112,7 @@ function Combate() {
 
         // Cargar barcos iniciales y verificar turno
         cargarBarcosDesdeApi(estadoPartida.playerFleet, estadoPartida.enemyFleet);
+        cargarProyectilesDesdeApi(estadoPartida.proyEnemigos, estadoPartida.proyPropios);
         setBarras(prev => ({
             ...prev,
             municion: estadoPartida.ammo,
@@ -121,7 +125,8 @@ function Combate() {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
                 cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
-                
+                cargarProyectilesDesdeApi(visionPayload.proyEnemigos, visionPayload.proyPropios);
+                cargar
                 if (matchStateRef.current) {
                     matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
                     matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
@@ -221,6 +226,28 @@ function Combate() {
             onMatchPaused: (payload) => {
                 console.log("Oponente ha solicitado pausar la partida:", payload);
                 notification.warning(`El jugador ${payload.from} ha pausado la partida.`);
+            },
+
+            onProyectileHit: (payload) => {
+                quitarProyectil(payload.proyectilColisionado);
+                // Restamos la vida quitada en React
+                actualizarVidaBarco(payload.shipId, payload.newHp);
+                notification.success("¡Impacto de proyectil!");
+                if (matchStateRef.current) {
+                    const actualizarLista = (lista) => lista.map(b => {
+                        if (b.id === payload.shipId) {
+                            return { ...b, hp: payload.newHp };
+                        }
+                        return b;
+                    });
+
+                    // Hay que cambiar la nuestra y la del enemigo
+                    matchStateRef.current.playerFleet = actualizarLista(matchStateRef.current.playerFleet);
+                    matchStateRef.current.enemyFleet = actualizarLista(matchStateRef.current.enemyFleet);
+                    // Guardamos el cambio en local
+                    guardarEstadoPartida(matchStateRef.current);
+                }
+            
             }
         };
 

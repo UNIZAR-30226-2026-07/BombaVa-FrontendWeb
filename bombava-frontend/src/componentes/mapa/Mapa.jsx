@@ -1,5 +1,6 @@
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
+import Proyectil from '../proyectil/Proyectil.jsx'
 import { calcularCentroBarco } from '../barco/movimientosBarco.js';
 import { TAMANO_TABLERO, ARMAS } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
@@ -20,7 +21,8 @@ const Mapa = ({
   setBarcoSeleccionado,
   rotarBarco,
   atacarCelda,
-  armaSeleccionada
+  armaSeleccionada,
+  proyectiles
 }) => {
 
   /*const gestionarClickMapa = (x, y) => {
@@ -131,6 +133,14 @@ const Mapa = ({
           onClick={(x, y) => gestionarClickBarco(barco, x, y)}
         />
       ))}
+      {proyectiles.map((p) => (
+        <Proyectil
+          key={p.id}
+          proyectil = {p}
+        />
+      ))
+
+      }
     </div>
   );
 };

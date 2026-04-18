@@ -92,6 +92,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const [barcos, setBarcos] = useState(barcosNormalizados);
     const [barcoSeleccionado, setBarcoSeleccionado] = useState(null);
 
+    const [proyectiles, setProyectiles] = [];
+
     // Función para rotar el barco "id" al sentido "sentido", pudiendo ser uno
     // uno de estos valores: ['N', 'E', 'S', 'W']. En caso de no indicar un 
     // sentido iterara al siguiete sentido de orientación de la lista.
@@ -433,6 +435,18 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         }
     }
 
+    //Se quita el proyectil que ya ha colisionado porque explota
+    const quitarProyectil = (proyectilId) => {
+        const proyectilesNuevos = proyectiles.filter(p => p.id !== proyectilId);
+        setProyectiles(proyectilesNuevos);
+    }
+
+    const cargarProyectilesDesdeApi = (proyEnemigos, proyPropios) => {
+        const todosLosProyectiles = [...proyEnemigos, ...proyPropios];
+    
+        setProyectiles(todosLosProyectiles);
+    }
+
     return {
         barcos,
         barcoSeleccionado,
@@ -446,6 +460,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         moverBarcoAdelante,
         equiparArma,
         limpiarArma,
-        actualizarVidaBarco
+        actualizarVidaBarco,
+        quitarProyectil,
+        cargarProyectilesDesdeApi
     };
 };

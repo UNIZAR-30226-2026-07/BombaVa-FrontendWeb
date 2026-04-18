@@ -24,7 +24,8 @@ export const setupGameListeners = (handlers) => {
         onTurnChanged,
         onShipAttacked,
         onMatchFinished,
-        onMatchPaused
+        onMatchPaused, 
+        onProyectileHit
     } = handlers;
 
     // Registrar todos los listeners
@@ -36,6 +37,7 @@ export const setupGameListeners = (handlers) => {
     if (onShipAttacked) socket.on('ship:attacked', onShipAttacked);
     if (onMatchFinished) socket.on('match:finished', onMatchFinished);
     if (onMatchPaused) socket.on('match:pause_requested', onMatchPaused);
+    if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
 
     // Retornar función de cleanup
     return () => {
@@ -47,6 +49,7 @@ export const setupGameListeners = (handlers) => {
         if (onShipAttacked) socket.off('ship:attacked', onShipAttacked);
         if (onMatchFinished) socket.off('match:finished', onMatchFinished);
         if (onMatchPaused) socket.off('match:pause_requested', onMatchPaused);
+        if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
     };
 };
 
@@ -57,7 +60,7 @@ export const setupGameListeners = (handlers) => {
 export const cargarEstadoPartida = () => {
     const estadoGuardado = localStorage.getItem('bombaVa_matchState');
     if (estadoGuardado) {
-        return JSON.parse(estadoGuardado);
+        return JSON.parse(estadoGuardado);//Vuelve a convertir el estado en un objeto de JavaScript
     }
     return null;
 };
