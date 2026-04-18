@@ -91,6 +91,9 @@ function Combate() {
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
+
+    // Estado para el rango de visión global proporcionado por la API
+    const [rangoVision, setrangoVision] = useState(5);
     
     // Varaible para guardar el estado de la partida
     const matchStateRef = useRef(null);
@@ -108,7 +111,9 @@ function Combate() {
         unirseASalaDeJuego(estadoPartida.matchInfo.matchId);
 
         // Cargar barcos iniciales y verificar turno
-        cargarBarcosDesdeApi(estadoPartida.playerFleet, estadoPartida.enemyFleet);
+        const rangoGlobal = estadoPartida.range || 5;
+        cargarBarcosDesdeApi(estadoPartida.playerFleet, estadoPartida.enemyFleet, rangoGlobal);
+        setrangoVision(rangoGlobal);
         setBarras(prev => ({
             ...prev,
             municion: estadoPartida.ammo,
@@ -120,11 +125,17 @@ function Combate() {
         const gameHandlers = {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
-                cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
+                // Actualizamos el rango de visión global. 
+                // CUIDADO: Solo se usaría si el rango es global cuando se implemente en el back-end.
+                const rango = visionPayload.range || 5;
+                setrangoVision(rango);
+                // Actualizamos los barcos
+                cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet, rango);
                 
                 if (matchStateRef.current) {
                     matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
                     matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
+                    matchStateRef.current.range = rango;
                     guardarEstadoPartida(matchStateRef.current);
                 }
             },
@@ -311,6 +322,7 @@ function Combate() {
                         rotarBarco={rotarBarco}
                         atacarCelda={atacarCelda}
                         armaSeleccionada={armaSeleccionada}
+                        rangoVision={rangoVision}
                     />
                 </div>
             </div>

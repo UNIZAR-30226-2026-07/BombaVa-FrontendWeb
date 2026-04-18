@@ -1,6 +1,8 @@
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
-import { calcularCentroBarco } from '../barco/movimientosBarco.js';
+import { calcularCentroBarco, calcularCeldasBarco } from '../barco/movimientosBarco.js';
+import { calcularCeldasVisiblesFlota } from '../../utils/visionUtils.js';
+import Niebla from './Niebla.jsx';
 import { TAMANO_TABLERO, ARMAS } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
 
@@ -10,6 +12,7 @@ incluye varias capas(de abajo a arriba sería):
     > Barcos(Barco.jsx)
     > Torpedos
     > Proyectiles
+    > Niebla(Niebla.jsx)
 */
 const Mapa = ({
   mapa,
@@ -20,13 +23,9 @@ const Mapa = ({
   setBarcoSeleccionado,
   rotarBarco,
   atacarCelda,
-  armaSeleccionada
+  armaSeleccionada,
+  rangoVision
 }) => {
-
-  /*const gestionarClickMapa = (x, y) => {
-    console.log(`Click en celda: ${x}, ${y}`);
-    // Lógica de que pasa al clikar
-  };*/
 
   // Si pulsamos un barco lo seleccionamos y si pulsamos un 
   // barco ya seleccionado lo deseleccionamos
@@ -119,6 +118,9 @@ const Mapa = ({
 
   const celdasEnRango = calcularCeldasEnRango();
 
+  // Calcular todas las celdas visibles para la niebla de guerra
+  const celdasVisibles = calcularCeldasVisiblesFlota(barcos);
+
   return (
     <div className="mapa">
       <Tablero mapa={mapa} onCellClick={gestionarClickMapa} configurar={false} celdasEnRango={celdasEnRango} />
@@ -131,6 +133,9 @@ const Mapa = ({
           onClick={(x, y) => gestionarClickBarco(barco, x, y)}
         />
       ))}
+
+      {/* Capa de Niebla de Guerra sobre el resto de elementos */}
+      <Niebla celdasVisibles={celdasVisibles} />
     </div>
   );
 };
