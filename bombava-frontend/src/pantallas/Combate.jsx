@@ -76,6 +76,9 @@ function Combate() {
     // Estado para saber qué arma está seleccionada, por defecto el cañon
     const [armaSeleccionada, setArmaSeleccionada] = useState(CANON);
 
+    //Estado para borrar el proyectil el siguiente turno
+    const [ProyABorrar, setProyABorrar] = useState(null);
+
     // Hook para manejar los movimientos de los barcos
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
     const {
@@ -125,8 +128,6 @@ function Combate() {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
                 cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
-                cargarProyectilesDesdeApi(visionPayload.proyEnemigos, visionPayload.proyPropios);
-                cargar
                 if (matchStateRef.current) {
                     matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
                     matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
@@ -248,6 +249,27 @@ function Combate() {
                     guardarEstadoPartida(matchStateRef.current);
                 }
             
+            },
+
+            onProyectileUpdate: (payload) => {
+                actualizarProyectil(payload);
+                if (matchStateRef.current) {
+                    const actualizarLista = (lista) => lista.map(p => {
+                        if (p.id === payload.projectile) {
+                            if(payload.status == "ENDOFLIFE"){
+                                setProyABorrar(payload.projectile);
+                            }
+                            return { ...p, x: payload.x, y: payload.y, lifeDistance: payload.lifeDistance };
+                        }
+                        return p;
+                    });
+                    // Guardamos el cambio en local
+                    guardarEstadoPartida(matchStateRef.current);
+                }
+            },
+
+            onProyectileLaunch: (payload) => {
+                anadirProyectil(payload);
             }
         };
 

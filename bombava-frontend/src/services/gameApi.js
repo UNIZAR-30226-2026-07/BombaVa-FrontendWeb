@@ -25,7 +25,9 @@ export const setupGameListeners = (handlers) => {
         onShipAttacked,
         onMatchFinished,
         onMatchPaused, 
-        onProyectileHit
+        onProyectileHit,
+        onProyectileUpdate,
+        onProyectileLaunch
     } = handlers;
 
     // Registrar todos los listeners
@@ -38,6 +40,8 @@ export const setupGameListeners = (handlers) => {
     if (onMatchFinished) socket.on('match:finished', onMatchFinished);
     if (onMatchPaused) socket.on('match:pause_requested', onMatchPaused);
     if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
+    if (onProyectileUpdate) socket.on('projectile:updated', onProyectileUpdate);
+    if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
 
     // Retornar función de cleanup
     return () => {
@@ -50,6 +54,8 @@ export const setupGameListeners = (handlers) => {
         if (onMatchFinished) socket.off('match:finished', onMatchFinished);
         if (onMatchPaused) socket.off('match:pause_requested', onMatchPaused);
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
+        if (onProyectileUpdate) socket.off('projectile:updated', onProyectileUpdate);
+        if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
     };
 };
 
