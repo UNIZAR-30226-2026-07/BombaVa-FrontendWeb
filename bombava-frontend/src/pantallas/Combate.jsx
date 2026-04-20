@@ -257,7 +257,7 @@ function Combate() {
                     const actualizarLista = (lista) => lista.map(p => {
                         if (p.id === payload.projectile) {
                             if(payload.status == "ENDOFLIFE"){
-                                setProyABorrar(payload.projectile);
+                                setProyABorrar(payload.projectile);//Se borra en el siguiente turno
                             }
                             return { ...p, x: payload.x, y: payload.y, lifeDistance: payload.lifeDistance };
                         }
@@ -270,6 +270,31 @@ function Combate() {
 
             onProyectileLaunch: (payload) => {
                 anadirProyectil(payload);
+                // Lo guardamos localmente
+                if (matchStateRef.current) {
+                    // Actualizamos munición
+                    matchStateRef.current.ammo = payload.ammoCurrent;
+                    
+                    // Si es mi turno lo meto en la lista de mis proyectiles, si no en la de los del enemigo
+                    if (esMiTurno) {
+                        matchStateRef.current.proyPropios.push({
+                            id: payload.id,
+                            x: payload.x,
+                            y: payload.y,
+                            type: payload.type
+                        });
+                    }else{
+                        matchStateRef.current.proyEnemigos.push({
+                            id: payload.id,
+                            x: payload.x,
+                            y: payload.y,
+                            type: payload.type
+                        });
+                    }
+
+                    // Guardamos físicamente en el disco
+                    guardarEstadoPartida(matchStateRef.current);
+                }
             }
         };
 
