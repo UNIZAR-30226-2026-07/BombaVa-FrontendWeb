@@ -177,6 +177,13 @@ function Combate() {
                     matchStateRef.current.fuel = payload.resources.fuel;
                     matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
                     matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
+                    
+                    if(ProyABorrar){
+                        quitarProyectil(ProyABorrar);    
+                    }
+                    //Se quita en el local el proyectil
+
+                    //Se guarda el estado en local
                     guardarEstadoPartida(matchStateRef.current);
                 }
             },
@@ -245,6 +252,9 @@ function Combate() {
                     // Hay que cambiar la nuestra y la del enemigo
                     matchStateRef.current.playerFleet = actualizarLista(matchStateRef.current.playerFleet);
                     matchStateRef.current.enemyFleet = actualizarLista(matchStateRef.current.enemyFleet);
+                    
+                    //Se quita en el local el proyectil
+
                     // Guardamos el cambio en local
                     guardarEstadoPartida(matchStateRef.current);
                 }
