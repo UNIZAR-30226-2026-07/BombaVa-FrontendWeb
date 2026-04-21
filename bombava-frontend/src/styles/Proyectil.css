@@ -1,0 +1,31 @@
+.proyectil-entidad {
+  position: absolute;
+  /*pointer-events: none; Igual hay que ponerlo si queremos gestionar todos los cliks a traves de las celdas*/
+  /*Animación*/
+  /*transition: 1s;*/
+}
+
+.proyectil-visual {
+  position: absolute;
+  top: 6px;
+  bottom: 3px;
+  left: 6px;
+  right: 3px;
+  border-radius: 10px;
+  /*Animaciones:*/
+  transition: all 1s;
+}
+
+.proyectil-entidad.seleccionado .proyectil-visual {
+  box-shadow: 0 0 20px rgba(96, 96, 55, 0.5);
+  transform: scale(1.05); 
+}
+
+.proyectil-imagen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
