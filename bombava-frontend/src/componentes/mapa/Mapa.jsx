@@ -23,8 +23,7 @@ const Mapa = ({
   setBarcoSeleccionado,
   rotarBarco,
   atacarCelda,
-  armaSeleccionada,
-  rangoVision
+  armaSeleccionada
 }) => {
 
   // Si pulsamos un barco lo seleccionamos y si pulsamos un 

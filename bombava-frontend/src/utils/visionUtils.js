@@ -42,7 +42,7 @@ export const calcularCeldasVisiblesFlota = (barcos) => {
 
     // Obtenemos las celdas que ya vienen en el objeto del barco
     const celdasOcupadas = barco.celdas;
-    const rangoActual = barco.visionRange;
+    const rangoActual = barco.rangoVision;
     
     // Para cada celda que ocupa el barco, calculamos su visión
     for (const celdaOcupada of celdasOcupadas) {

@@ -185,8 +185,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // Función para cargar los barcos desde la API
     // Recibe dos arrays, uno con los barcos del jugador y otro con los barcos enemigos
     // y los convierte a un formato que se pueda usar en el juego.
-    // globalRange es el rango de visión global por defecto, que se usa si no se especifica un rango para un barco.
-    const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = [], globalRange) => {
+    const cargarBarcosDesdeApi = (playerFleet = [], enemyFleet = []) => {
         const obtenerArmas = (apiArmas = []) => {
             const armas = [];
             for (let i = 0; i < apiArmas.length; i++) {
@@ -210,7 +209,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp, 
                     esEnemigo: false,
-                    visionRange: ship.range || globalRange // Usamos el del barco si existe, sino el global
+                    rangoVision: ship.visionRange // Usamos el del barco que da la API
                 };
             }),
             ...enemyFleet.map(ship => {
@@ -227,7 +226,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp,
                     esEnemigo: true,
-                    visionRange: ship.range || globalRange // Usamos el del barco si existe, sino el global
+                    rangoVision: ship.visionRange // Usamos el del barco que da la API
                 };
             })
         ];
