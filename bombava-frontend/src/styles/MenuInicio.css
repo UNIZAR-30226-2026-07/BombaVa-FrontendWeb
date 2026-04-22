@@ -85,21 +85,62 @@
 
 .opcion-mapa:hover {
     transform: scale(1.1);
+    z-index: 100;
 }
 
 .opcion-mapa:hover .icono-opcion {
     filter: drop-shadow(0 0 20px rgba(255, 217, 0, 0.614)) brightness(1.1);
 }
 
+.pergamino {
+    position: absolute;
+    top: 50%;
+    left: 90%;
+    transform: translateY(-50%) translateX(-15px);
+    background-image: url('../assets/opciones/pergamino.png');
+    background-size: 100% 100%;
+    width: 260px;
+    min-height: 140px;
+    padding: 45px 55px;
+    color: #39291a;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease, clip-path 1s ease;
+    clip-path: inset(0 0 100% 0);
+    filter: drop-shadow(6px 6px 10px rgba(0,0,0,0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ajuste para que los pergaminos de la derecha salgan hacia la izquierda */
+.practica .pergamino,
+.unirse .pergamino {
+    left: auto;
+    right: 85%;
+    transform: translateY(-50%) translateX(15px);
+}
+
+.opcion-mapa:hover .pergamino {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    clip-path: inset(0 0 0 0);
+}
+
 /* Posicionamiento específico sobre el mapa */
 .config {
     top: 18%;
-    left: 29%;
+    left: 27%;
 }
 
 .competitivo {
     top: 55%;
-    left: 30%;
+    left: 28%;
 }
 
 .practica {
