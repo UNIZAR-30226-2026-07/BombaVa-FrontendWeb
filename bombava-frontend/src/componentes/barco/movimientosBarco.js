@@ -441,6 +441,60 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         setProyectiles(proyectilesNuevos);
     }
 
+    const anadirProyectil = (proyectilLaunched, esMiTurno) => {
+        const proyectilNuevo;
+        //Creo el proyectil y lo añado a la lista
+        if (esMiTurno) {
+            proyectilNuevo ={
+                id: proyectilLaunched.id,
+                lifeDistance: proyectilLaunched.lifeDistance,
+                x: proyectilLaunched.x,
+                y: proyectilLaunched.y,
+                type: proyectilLaunched.type,
+                esEnemigo: 0
+            };
+        }else{
+            proyectilNuevo ={
+                id: proyectilLaunched.id,
+                lifeDistance: proyectilLaunched.lifeDistance,
+                x: proyectilLaunched.x,
+                y: proyectilLaunched.y,
+                type: proyectilLaunched.type,
+                proyectilLaunched: 1
+            };
+        }
+        setBarcos(prevBarcos => 
+            prevBarcos.map(barco => {
+                if (barco.id === proyectilLaunched.ownerId) {
+                    // Actualizo la munición del barco que lo ha lanzado 
+                    return { ...barco, ammo: proyectilLaunched.ammoCurrent };
+                }
+                return barco;
+            })
+        );
+        setProyectiles(prevProyectiles => [...prevProyectiles, proyectilNuevo]);
+    }
+
+    const actualizarProyectil = (proyectil) =>{
+        setProyectiles(proyectilesAnteriores => 
+        proyectilesAnteriores.map(p => {
+            // Buscamos al que hay que actualizar
+            if (p.id === proyectil.projectile) {
+                // Lo cambiamos
+                return { 
+                    ...p, 
+                    x: proyectil.x, 
+                    y: proyectil.y, 
+                    lifeDistance: proyectil.lifeDistance,
+                    status: proyectil.status 
+                };
+            }
+            return p;
+        })
+    );
+
+    }
+
     const cargarProyectilesDesdeApi = (proyEnemigos, proyPropios) => {
         const todosLosProyectiles = [...proyEnemigos, ...proyPropios];
     
@@ -462,6 +516,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         limpiarArma,
         actualizarVidaBarco,
         quitarProyectil,
+        anadirProyectil,
+        actualizarProyectil,
         cargarProyectilesDesdeApi
     };
 };

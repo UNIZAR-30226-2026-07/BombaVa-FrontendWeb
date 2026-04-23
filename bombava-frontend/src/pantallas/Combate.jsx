@@ -92,6 +92,8 @@ function Combate() {
         moverBarcoAdelante,
         actualizarVidaBarco,
         quitarProyectil,
+        anadirProyectil,
+        actualizarProyectil,
         cargarProyectilesDesdeApi
     } = useMovimientosBarco([], { setModoAtaque });
 
@@ -182,7 +184,8 @@ function Combate() {
                         quitarProyectil(ProyABorrar);    
                     }
                     //Se quita en el local el proyectil
-
+                    estadoPartida.proyEnemigos.filter(p => p.id !== ProyABorrar);
+                    estadoPartida.proyPropios.filter(p => p.id !== ProyABorrar);
                     //Se guarda el estado en local
                     guardarEstadoPartida(matchStateRef.current);
                 }
@@ -279,7 +282,7 @@ function Combate() {
             },
 
             onProyectileLaunch: (payload) => {
-                anadirProyectil(payload);
+                anadirProyectil(payload,esMiTurno);
                 // Lo guardamos localmente
                 if (matchStateRef.current) {
                     // Actualizamos munición
@@ -289,16 +292,20 @@ function Combate() {
                     if (esMiTurno) {
                         matchStateRef.current.proyPropios.push({
                             id: payload.id,
+                            lifeDistance: payload.lifeDistance,
                             x: payload.x,
                             y: payload.y,
-                            type: payload.type
+                            type: payload.type,
+                            esEnemigo: 0
                         });
                     }else{
                         matchStateRef.current.proyEnemigos.push({
                             id: payload.id,
+                            lifeDistance: payload.lifeDistance,
                             x: payload.x,
                             y: payload.y,
-                            type: payload.type
+                            type: payload.type,
+                            esEnemigo: 1
                         });
                     }
 
@@ -395,6 +402,7 @@ function Combate() {
                         rotarBarco={rotarBarco}
                         atacarCelda={atacarCelda}
                         armaSeleccionada={armaSeleccionada}
+                        proyectiles={proyectiles}
                     />
                 </div>
             </div>

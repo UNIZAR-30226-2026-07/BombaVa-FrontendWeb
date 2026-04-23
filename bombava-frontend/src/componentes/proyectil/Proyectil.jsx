@@ -1,3 +1,15 @@
+import { TAMANO_TABLERO } from '../../utils/constantes.js';
+import '../../styles/Proyectil.css';
+
+import imgMina from '../../assets/proyectiles/mina.png';
+import imgTorpedo from '../../assets/proyectiles/torpedo.png';
+
+const IMAGENES_PROYECTILES = {
+    0: imgMina,
+    1: imgTorpedo
+};
+
+
 const Proyectil = ({ proyectil}) => {
     // Calculamos la posición y dimensiones en porcentajes relativos al tablero
       // Ya que el tablero será responsive, el tamaño de la celda cambia, por lo que hay que calcularlo
@@ -9,10 +21,19 @@ const Proyectil = ({ proyectil}) => {
       //Nombre de la clase basado en el estado y tipo del barco
       let nombreClase = 'proyectil-entidad';
       if (estaSeleccionado) nombreClase += ' seleccionado';
-      if (barco.esEnemigo) nombreClase += ' enemigo';
+      if (proyectil.esEnemigo) nombreClase += ' enemigo';
       else nombreClase += ' aliado';
-    
-    
+
+      let tipoProyectil = -1;
+      switch(proyectil.type){
+        case "MINE":
+          tipoProyectil=0;
+          break
+        case "TORPEDO":
+          tipoProyectil=1;
+          break
+      }
+
       return (
         <div
           className={nombreClase}
@@ -23,18 +44,12 @@ const Proyectil = ({ proyectil}) => {
         >
           {/*Divido la parte visual y la de la entidad de barco*/}
           <div 
-            className="barco-visual"
-            onClick={handleBarcoClick}
+            className="proyectil-visual"
           >
             
             <img 
-              src={IMAGENES_BARCOS[barco.tamano]} 
-              alt={`Barco tipo ${barco.tipo}`}
-              className={`barco-imagen ${barco.orientacion} ${barco.esEnemigo ? 'enemigo' : 'aliado'}`}
-              style={{
-                  width: esHorizontal ? '100%' : `${barco.tamano * 100}%`,
-                  height: esHorizontal ? `${barco.tamano * 120}%` : '100%'
-              }}
+              src={IMAGENES_PROYECTILES[tipoProyectil]} 
+              className={`proyectil-imagen ${barco.orientacion} ${proyectil.esEnemigo ? 'enemigo' : 'aliado'}`}
             />
     
           </div>

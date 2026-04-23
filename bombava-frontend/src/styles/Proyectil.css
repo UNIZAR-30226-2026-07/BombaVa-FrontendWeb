@@ -29,3 +29,11 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+
+.barco-imagen.enemigo {
+  filter: hue-rotate(310deg) saturate(2);
+}
+
+.barco-imagen.aliado {
+  filter: hue-rotate(0deg) saturate(1);
+}
