@@ -92,7 +92,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const [barcos, setBarcos] = useState(barcosNormalizados);
     const [barcoSeleccionado, setBarcoSeleccionado] = useState(null);
 
-    const [proyectiles, setProyectiles] = useState([]);;
+    const [proyectiles, setProyectiles] = useState([]);
 
     // Función para rotar el barco "id" al sentido "sentido", pudiendo ser uno
     // uno de estos valores: ['N', 'E', 'S', 'W']. En caso de no indicar un 
