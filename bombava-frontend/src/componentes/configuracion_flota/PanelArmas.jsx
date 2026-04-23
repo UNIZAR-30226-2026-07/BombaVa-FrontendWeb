@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/configuracion/PanelArmas.css';
+import '../../styles/configuracion_flota/PanelArmas.css';
 import { ESTADISTICAS_BARCOS } from '../../utils/constantes';
 
 /** 

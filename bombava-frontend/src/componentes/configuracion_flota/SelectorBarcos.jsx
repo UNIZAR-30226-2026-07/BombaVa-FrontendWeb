@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/configuracion/SelectorBarcos.css';
+import '../../styles/configuracion_flota/SelectorBarcos.css';
 import { BARCO1x1, BARCO1x3, BARCO1x5, ESTADISTICAS_BARCOS } from '../../utils/constantes';
 
 /**

@@ -8,9 +8,9 @@ import { BARCO1x1, BARCO1x3, BARCO1x5,  TAMANO_TABLERO, TERRENO, SERVER_API, EST
 import { useNavigate } from 'react-router-dom';
 import { crearYActivarDeck } from '../services/decksApi.js';
 import { notification } from '../services/notificationService.js';
-import SelectorBarcos from '../componentes/configuracion/SelectorBarcos';
-import PanelArmas from '../componentes/configuracion/PanelArmas';
-import TableroConfiguracion from '../componentes/configuracion/TableroConfiguracion';
+import SelectorBarcos from '../componentes/configuracion_flota/SelectorBarcos.js';
+import PanelArmas from '../componentes/configuracion_flota/PanelArmas.js';
+import TableroConfiguracion from '../componentes/configuracion_flota/TableroConfiguracion.jsx';
 
 
 const generarMapaConfiguracion = () => {

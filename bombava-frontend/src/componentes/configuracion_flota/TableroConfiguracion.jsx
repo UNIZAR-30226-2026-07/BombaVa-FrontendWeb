@@ -1,7 +1,7 @@
 import React from 'react';
-import Tablero from '../tablero/Tablero';
+import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
-import '../../styles/configuracion/TableroConfiguracion.css';
+import '../../styles/configuracion_flota/TableroConfiguracion.css';
 
 /**
 Panel donde se muestra el tablero y los barcos
