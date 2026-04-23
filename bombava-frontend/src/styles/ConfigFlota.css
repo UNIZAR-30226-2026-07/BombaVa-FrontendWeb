@@ -1,120 +1,65 @@
-/* Contenedor principal de la pantalla de configuración */
-.mapa_config {
-  position: relative;
-  top: 5%;
+.config-flota-main {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  height: 80vh;
-  width: 100vw;
   justify-content: center;
-  gap: 2%;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.panel-lateral {
-  background-color: #2c3e50;
-  color: white;
-  padding: 20px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 150px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.tablero-contenedor {
-  position: relative;
-  /* Los barcos usarán ESTE div como contenedor */
-  grid-column: 2;
-  width: 100%;
-  max-width: 550px;
-  /* Tamaño máximo */
-  aspect-ratio: 1 / 1;
-  /*Mantiene la proporción 1:1, la de un cuadrado, que es el tablero*/
-  background-color: rgb(30, 130, 220);
-  border: 2px solid rgb(0, 0, 0);
-  box-sizing: border-box;
-  margin: 0 auto;
-  /* Lo mantiene centrado */
-}
-
-/* Contenedor de los botones de selección de barco */
-.botones_barco_config {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-}
-
-/* Estilo para los botones */
-.ponerBarco-btn {
-  padding: 12px 24px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  background-color: #2980b9;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.ponerBarco-btn:hover {
-  background-color: #3498db;
-}
-
-.ponerBarco-btn:active {
-  transform: scale(0.95);
-}
-
-/*Lo hago para que el boton de eliminar sea de otro color*/
-.eliminarBarco-btn {
-  padding: 12px 24px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  background-color: #b92929;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.eliminarBarco-btn:hover {
-  background-color: #e04848;
-}
-
-.eliminarBarco-btn:active {
-  transform: scale(0.95);
-}
-
-/*El botón para enviar flota al backend, el css es igual que el de los de poner barco pero flex para que vaya debajo*/
-.confirmar-btn {
-  margin-top: 3%;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 12px 24px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  background-color: #07b907;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.2s, transform 0.1s;
-  width: 20vw;
-  align-self: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #0d1a26;
+  background-image: url('../assets/opciones/MenuFondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.contenedor-armas{
-  display: flex;
-  flex-direction: column;
+.mapa_config {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 15px;
+  max-width: 1400px;
+  align-items: start;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow-y: hidden;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 1100px){
+  .config-flota-main {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    padding: 20px 10px;
+  }
+  
+  .mapa_config {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .columna-izquierda-flota {
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    align-items: center;
+  }
+
+  .caja-estadisticas, .columna-selector-barcos {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .columna-izquierda {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .columna-derecha {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 40px;
+  }
+
 }

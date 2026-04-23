@@ -1,0 +1,105 @@
+.columna-derecha {
+  width: 300px;
+  min-height: 550px;
+  height: 100%;
+}
+
+.panel-lateral {
+  background: rgba(44, 62, 80, 0.98);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+  min-height: 600px;
+  border: 1px solid rgba(26, 15, 87, 0.5);
+  animation: Aparicion 0.5s ease;
+  scrollbar-color: rgba(33, 47, 61, 0.8) transparent;
+}
+
+@keyframes Aparicion {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.info-barco-seleccionado {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.ranura-arma {
+  font-size: 1em;
+  margin: 5px;
+}
+
+.arma-nombre {
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+.arma-vacia {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.lista-armas-disponibles {
+  overflow-y: auto;
+  max-height: 300px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contenedor-armas {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.botones-arma-barco {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ponerBarco-btn {
+  padding: 12px 24px;
+  font-family: 'Georgia';
+  font-weight: bold;
+  background: #2f93d6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.btn-opcion-arma {
+  padding: 8px 16px;
+  font-size: 0.8em;
+}
+
+.btn-opcion-arma:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.eliminarBarco-btn {
+  padding: 12px 24px;
+  font-family: 'Georgia';
+  font-weight: bold;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.eliminarBarco-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}

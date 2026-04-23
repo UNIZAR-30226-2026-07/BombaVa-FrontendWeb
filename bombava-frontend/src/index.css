@@ -8,7 +8,8 @@ body, html {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* Evita que aparezcan barras de scroll innecesarias */
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: #0a1f33; /* El azul oscuro de fondo */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
