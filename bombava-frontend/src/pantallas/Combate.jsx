@@ -184,8 +184,8 @@ function Combate() {
                         quitarProyectil(ProyABorrar);    
                     }
                     //Se quita en el local el proyectil
-                    estadoPartida.proyEnemigos.filter(p => p.id !== ProyABorrar);
-                    estadoPartida.proyPropios.filter(p => p.id !== ProyABorrar);
+                    matchStateRef.current.proyEnemigos = estadoPartida.proyEnemigos.filter(p => p.id !== ProyABorrar);
+                    matchStateRef.current.proyPropios = estadoPartida.proyPropios.filter(p => p.id !== ProyABorrar);
                     //Se guarda el estado en local
                     guardarEstadoPartida(matchStateRef.current);
                 }

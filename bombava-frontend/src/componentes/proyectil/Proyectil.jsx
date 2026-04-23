@@ -20,7 +20,6 @@ const Proyectil = ({ proyectil}) => {
     
       //Nombre de la clase basado en el estado y tipo del barco
       let nombreClase = 'proyectil-entidad';
-      if (estaSeleccionado) nombreClase += ' seleccionado';
       if (proyectil.esEnemigo) nombreClase += ' enemigo';
       else nombreClase += ' aliado';
 
@@ -49,7 +48,7 @@ const Proyectil = ({ proyectil}) => {
             
             <img 
               src={IMAGENES_PROYECTILES[tipoProyectil]} 
-              className={`proyectil-imagen ${barco.orientacion} ${proyectil.esEnemigo ? 'enemigo' : 'aliado'}`}
+              className={`proyectil-imagen ${proyectil.esEnemigo ? 'enemigo' : 'aliado'}`}
             />
     
           </div>

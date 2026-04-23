@@ -92,7 +92,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const [barcos, setBarcos] = useState(barcosNormalizados);
     const [barcoSeleccionado, setBarcoSeleccionado] = useState(null);
 
-    const [proyectiles, setProyectiles] = [];
+    const [proyectiles, setProyectiles] = useState([]);;
 
     // Función para rotar el barco "id" al sentido "sentido", pudiendo ser uno
     // uno de estos valores: ['N', 'E', 'S', 'W']. En caso de no indicar un 
@@ -442,7 +442,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     }
 
     const anadirProyectil = (proyectilLaunched, esMiTurno) => {
-        const proyectilNuevo;
+        let proyectilNuevo;
         //Creo el proyectil y lo añado a la lista
         if (esMiTurno) {
             proyectilNuevo ={
@@ -460,18 +460,9 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 x: proyectilLaunched.x,
                 y: proyectilLaunched.y,
                 type: proyectilLaunched.type,
-                proyectilLaunched: 1
+                esEnemigo: 1
             };
         }
-        setBarcos(prevBarcos => 
-            prevBarcos.map(barco => {
-                if (barco.id === proyectilLaunched.ownerId) {
-                    // Actualizo la munición del barco que lo ha lanzado 
-                    return { ...barco, ammo: proyectilLaunched.ammoCurrent };
-                }
-                return barco;
-            })
-        );
         setProyectiles(prevProyectiles => [...prevProyectiles, proyectilNuevo]);
     }
 
