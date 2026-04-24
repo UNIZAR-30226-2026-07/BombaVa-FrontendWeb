@@ -19,8 +19,11 @@ const PanelArmas = ({ barcoSeleccionado, barcos, inventarioArmas, anadirArma, bo
     // Se obtiene el barco seleccionado
     const barco = barcos.find(b => b.id === barcoSeleccionado);
     
+    // Si el barco no existe, no se muestra nada
+    if (!barco) return <div className="columna-derecha"></div>;
+
     // Se obtiene el numero de ranuras de armas del barco
-    const numRanuras = ESTADISTICAS_BARCOS[barco?.tamano]?.armasMax;
+    const numRanuras = ESTADISTICAS_BARCOS[barco.tamano]?.armasMax;
 
     const ranurasArmas = [];
     if (barco) {

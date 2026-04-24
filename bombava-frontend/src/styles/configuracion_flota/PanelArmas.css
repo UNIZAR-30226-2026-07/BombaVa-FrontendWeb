@@ -7,13 +7,13 @@
 .panel-lateral {
   background: rgba(44, 62, 80, 0.98);
   color: white;
-  padding: 30px;
+  padding: 5px 10px 10px 10px;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   height: 100%;
-  min-height: 600px;
+  min-height: 450px;
   border: 1px solid rgba(26, 15, 87, 0.5);
   animation: Aparicion 0.5s ease;
   scrollbar-color: rgba(33, 47, 61, 0.8) transparent;
@@ -24,11 +24,24 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
+.panel-lateral h3 {
+  margin: 5px 0 5px 0;
+  font-size: 1.4em;
+  text-align: center;
+}
+
 .info-barco-seleccionado {
   background: rgba(0, 0, 0, 0.2);
   padding: 10px;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+}
+
+.info-barco-seleccionado p {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #3498db;
+  font-size: 1em;
 }
 
 .ranura-arma {

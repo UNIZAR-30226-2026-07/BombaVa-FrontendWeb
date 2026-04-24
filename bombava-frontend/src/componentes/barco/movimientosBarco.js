@@ -238,11 +238,15 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         setBarcos([...barcos, barcoConModulos]);
     }
 
-    const borrarBarco = (barcoSeleccionado) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
+    const borrarBarco = (idABorrar) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
-        const nuevosBarcos = barcos.filter(b => b.id !== barcoSeleccionado);
+        const nuevosBarcos = barcos.filter(b => b.id !== idABorrar);
 
         setBarcos(nuevosBarcos);
+        // Si el barco que se borra era el seleccionado, lo deseleccionamos
+        if (barcoSeleccionado === idABorrar) {
+            setBarcoSeleccionado(null);
+        }
     }
 
     // Comprueba si un barco ocupa una coordenada (x, y), 

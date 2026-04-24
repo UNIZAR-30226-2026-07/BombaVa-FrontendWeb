@@ -35,20 +35,35 @@
   font-family: 'Georgia';
 }
 
-.confirmar-btn {
+.botones-accion {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.btn-confirmar, .btn-rotar {
   margin-top: 10px;
-  padding: 15px 50px;
-  font-size: 1.1em;
-  background: #27ae60;
+  padding: 15px 30px;
+  font-size: 1em;
   color: white;
   border: none;
   border-radius: 50px;
   transition: all 0.3s ease;
   font-family: 'Georgia';
-  font-style: bold;
+  font-weight: bold;
 }
 
-.confirmar-btn:hover {
+.btn-confirmar {
+  background: #27ae60;
+}
+
+.btn-rotar {
+  background: #2980b9;
+}
+
+.btn-confirmar:hover, .btn-rotar:hover {
   transform: translateY(-3px) scale(1.05);
   filter: brightness(1.1);
 }

@@ -18,7 +18,8 @@ const TableroConfiguracion = ({
     barcos, 
     barcoSeleccionado, 
     gestionarClickBarco, 
-    enviarFlota 
+    enviarFlota,
+    rotarBarco
 }) => {
     return (
         <div className="columna-izquierda">
@@ -42,12 +43,22 @@ const TableroConfiguracion = ({
 
             {/* Botón para guardar la flota, conecta con el backend para guardar*/}
             <div className="controles-inferiores">
-                <button 
-                    className="confirmar-btn" 
-                    onClick={(e) => { e.stopPropagation(); enviarFlota(); }}
-                >
-                    CONFIRMAR FLOTA
-                </button>
+                <div className="botones-accion">
+                    {barcoSeleccionado && (
+                        <button 
+                            className="btn-rotar" 
+                            onClick={(e) => { e.stopPropagation(); rotarBarco(barcoSeleccionado); }}
+                        >
+                            GIRAR BARCO
+                        </button>
+                    )}
+                    <button 
+                        className="btn-confirmar" 
+                        onClick={(e) => { e.stopPropagation(); enviarFlota(); }}
+                    >
+                        CONFIRMAR FLOTA
+                    </button>
+                </div>
             </div>
         </div>
     );

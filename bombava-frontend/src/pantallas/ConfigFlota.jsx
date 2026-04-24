@@ -189,6 +189,7 @@ const ConfigFlota = () => {
                     barcoSeleccionado={barcoSeleccionado}
                     gestionarClickBarco={gestionarClickBarco}
                     enviarFlota={enviarFlota}
+                    rotarBarco={rotarBarco}
                 />
 
                 {/*Panel de armas del barco seleccionado*/}
