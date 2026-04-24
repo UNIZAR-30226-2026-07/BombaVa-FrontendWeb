@@ -5,6 +5,10 @@
   min-height: 100vh;
   background-color: #0a1f33;
   font-family: Georgia;
+  background-image: url('../assets/opciones/MenuFondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .unirse-card {
