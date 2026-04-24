@@ -4,6 +4,9 @@ import '../../styles/Niebla.css';
 
 /**
  * Componente Niebla que representa la Niebla de Guerra.
+ * Recibe un conjunto de coordenadas visibles y crea una capa de niebla sobre el tablero, 
+ * ocultando las celdas que no son visibles. Las celdas visibles se muestran transparentes, 
+ * mientras que las celdas ocultas se muestran con un fondo oscuro. 
  * 
  * @param {Set<string>} celdasVisibles - Conjunto de coordenadas "x,y" que son visibles.
  */

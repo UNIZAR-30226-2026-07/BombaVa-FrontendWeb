@@ -209,7 +209,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp, 
                     esEnemigo: false,
-                    rangoVision: ship.visionRange // Usamos el del barco que da la API
+                    rangoVision: ship.visionRange
                 };
             }),
             ...enemyFleet.map(ship => {
@@ -226,7 +226,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp,
                     esEnemigo: true,
-                    rangoVision: ship.visionRange // Usamos el del barco que da la API
+                    rangoVision: ship.visionRange
                 };
             })
         ];
