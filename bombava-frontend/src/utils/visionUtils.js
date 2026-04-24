@@ -1,7 +1,7 @@
 import { TAMANO_TABLERO } from './constantes';
 
 /**
- * Calcula las celdas que están en un rango de distancia Manhattan desde un centro.
+ * Calcula las celdas que están en un rango de distancia Manhattan desde un punto.
  * 
  * @param {number} celdaX - Coordenada X de la celda
  * @param {number} celdaY - Coordenada Y de la celda
