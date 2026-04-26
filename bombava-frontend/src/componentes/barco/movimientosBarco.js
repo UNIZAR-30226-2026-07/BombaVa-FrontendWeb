@@ -494,6 +494,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
 
     return {
         barcos,
+        proyectiles,
         barcoSeleccionado,
         setBarcoSeleccionado,
         rotarBarco,

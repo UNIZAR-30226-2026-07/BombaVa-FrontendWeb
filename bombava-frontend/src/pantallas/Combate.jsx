@@ -240,6 +240,7 @@ function Combate() {
             },
 
             onProyectileHit: (payload) => {
+                console.log("Ha dado un proyectil", payload);
                 quitarProyectil(payload.proyectilColisionado);
                 // Restamos la vida quitada en React
                 actualizarVidaBarco(payload.shipId, payload.newHp);
@@ -272,6 +273,7 @@ function Combate() {
                             if(payload.status == "ENDOFLIFE"){
                                 setProyABorrar(payload.projectile);//Se borra en el siguiente turno
                             }
+                            notification.success("proyectil actualizado");
                             return { ...p, x: payload.x, y: payload.y, lifeDistance: payload.lifeDistance };
                         }
                         return p;
@@ -308,7 +310,7 @@ function Combate() {
                             esEnemigo: 1
                         });
                     }
-
+                    notification.success("Se ha lanzado el proyectil");
                     // Guardamos físicamente en el disco
                     guardarEstadoPartida(matchStateRef.current);
                 }
