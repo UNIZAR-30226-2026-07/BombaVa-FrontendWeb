@@ -13,10 +13,10 @@ function MenuInicio({ }) {
   const navigate = useNavigate();
 
   return (
-    <div className="menu-container-mapa">
+    <div className="menu-container">
       {/* Iconos superiores */}
       <div className="header-icons">
-        <button className="icon-btn">🛠️</button>
+        <button className="icon-btn" >🛠️</button>
         <button className="icon-btn" onClick={() => navigate('/profile')}>👤</button>
       </div>
 

@@ -18,10 +18,9 @@ const generarMapaConfiguracion = () => {
   for (let y = 0; y < TAMANO_TABLERO; y++) {
     const fila = [];
     for (let x = 0; x < TAMANO_TABLERO; x++) {
-      //Mapa con todo agua y una isla central
+      //Mapa dividio en 3 partes: zona del jugador, zona neutra y zona enemiga
       let tipoterreno = TERRENO.AGUA;
 
-      // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
       if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
       } else if (y >= 5) {
