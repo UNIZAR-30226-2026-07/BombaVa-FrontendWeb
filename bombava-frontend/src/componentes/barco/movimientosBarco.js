@@ -468,21 +468,21 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
 
     const actualizarProyectil = (proyectil) =>{
         setProyectiles(proyectilesAnteriores => 
-        proyectilesAnteriores.map(p => {
-            // Buscamos al que hay que actualizar
-            if (p.id === proyectil.projectile) {
-                // Lo cambiamos
-                return { 
-                    ...p, 
-                    x: proyectil.x, 
-                    y: proyectil.y, 
-                    lifeDistance: proyectil.lifeDistance,
-                    status: proyectil.status 
-                };
-            }
-            return p;
-        })
-    );
+            proyectilesAnteriores.map(p => {
+                // Buscamos al que hay que actualizar
+                if (p.id === proyectil.projectile) {
+                    // Lo cambiamos
+                    return { 
+                        ...p, 
+                        x: proyectil.x, 
+                        y: proyectil.y, 
+                        lifeDistance: proyectil.lifeDistance,
+                        status: proyectil.status 
+                    };
+                }
+                return p;
+            })
+        );
 
     }
 

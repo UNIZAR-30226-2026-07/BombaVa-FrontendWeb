@@ -289,10 +289,11 @@ function Combate() {
                 if (matchStateRef.current) {
                     // Actualizamos munición
                     matchStateRef.current.ammo = payload.ammoCurrent;
-                    
+                    let proyectilNuevo;
                     // Si es mi turno lo meto en la lista de mis proyectiles, si no en la de los del enemigo
                     if (esMiTurno) {
-                        matchStateRef.current.proyPropios.push({
+                        
+                        proyectilNuevo = ({
                             id: payload.id,
                             lifeDistance: payload.lifeDistance,
                             x: payload.x,
@@ -300,8 +301,9 @@ function Combate() {
                             type: payload.type,
                             esEnemigo: 0
                         });
+                        matchStateRef.current.proyPropios = [...matchStateRef.current.proyPropios, proyectilNuevo];
                     }else{
-                        matchStateRef.current.proyEnemigos.push({
+                        proyectilNuevo = ({
                             id: payload.id,
                             lifeDistance: payload.lifeDistance,
                             x: payload.x,
@@ -309,6 +311,7 @@ function Combate() {
                             type: payload.type,
                             esEnemigo: 1
                         });
+                        matchStateRef.current.proyEnemigos = [...matchStateRef.current.proyEnemigos, proyectilNuevo];
                     }
                     notification.success("Se ha lanzado el proyectil");
                     // Guardamos físicamente en el disco
