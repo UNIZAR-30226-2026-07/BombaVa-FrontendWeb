@@ -40,7 +40,7 @@ export const setupGameListeners = (handlers) => {
     if (onMatchFinished) socket.on('match:finished', onMatchFinished);
     if (onMatchPaused) socket.on('match:pause_requested', onMatchPaused);
     if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
-    if (onProyectileUpdate) socket.on('projectile:updated', onProyectileUpdate);
+    if (onProyectileUpdate) socket.on('projectile:update', onProyectileUpdate);
     if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
 
     // Retornar función de cleanup
@@ -54,8 +54,8 @@ export const setupGameListeners = (handlers) => {
         if (onMatchFinished) socket.off('match:finished', onMatchFinished);
         if (onMatchPaused) socket.off('match:pause_requested', onMatchPaused);
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
-        if (onProyectileUpdate) socket.off('projectile:updated', onProyectileUpdate);
-        if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
+        if (onProyectileUpdate) socket.off('projectile:update', onProyectileUpdate);
+        if (onProyectileLaunch) socket.off('projectile:launched', onProyectileLaunch);
     };
 };
 
@@ -95,16 +95,84 @@ export const unirseASalaDeJuego = (gameId) => {
 };
 
 /**
- * Actualiza el estado de la partida con nuevos datos
+ * Actualiza el estado de la partida con nuevos datos y lo guarda
  * @param {object} matchState - Estado actual de la partida
  * @param {object} updates - Objeto con los campos a actualizar
  * @returns {object} Estado actualizado
  */
 export const actualizarEstadoPartida = (matchState, updates) => {
+    if (!matchState) return null;
+    
+    // Crea el estado actualizad
     const estadoActualizado = {
         ...matchState,
         ...updates
     };
+    guardarEstadoPartida(estadoActualizado);
+    return estadoActualizado;
+};
+
+/**
+ * Actualiza la posición y estado de un proyectil en el estado de la partida
+ * @param {object} matchState - Estado actual de la partida
+ * @param {object} payload - Datos del proyectil del servidor
+ * @returns {object} Estado actualizado
+ */
+export const actualizarProyectilEnEstado = (matchState, payload) => {
+    if (!matchState) return null;
+
+    const actualizarEnLista = (lista) => lista.map(p => {
+        if (p.id === payload.projectile) {
+            return { 
+                ...p, 
+                x: payload.x, 
+                y: payload.y, 
+                lifeDistance: payload.lifeDistance 
+            };
+        }
+        return p;
+    });
+
+    const estadoActualizado = {
+        ...matchState,
+        proyEnemigos: actualizarEnLista(matchState.proyEnemigos || []),
+        proyPropios: actualizarEnLista(matchState.proyPropios || [])
+    };
+
+    guardarEstadoPartida(estadoActualizado);
+    return estadoActualizado;
+};
+
+/**
+ * Añade un nuevo proyectil lanzado al estado de la partida
+ * @param {object} matchState - Estado actual de la partida
+ * @param {object} payload - Datos del lanzamiento
+ * @param {boolean} esMiTurno - Si es el turno del jugador actual
+ * @returns {object} Estado actualizado
+ */
+export const actualizarProyectilLanzadoEnEstado = (matchState, payload, esMiTurno) => {
+    if (!matchState) return null;
+
+    const proyData = {
+        id: payload.id,
+        lifeDistance: payload.lifeDistance,
+        x: payload.x,
+        y: payload.y,
+        type: payload.type,
+        ownerId: payload.ownerId
+    };
+
+    const estadoActualizado = { ...matchState };
+    //Actualiza la munición
+    estadoActualizado.ammo = payload.ammoCurrent;
+    
+    // Añade el proyectil a la lista correspondiente
+    if (esMiTurno) {
+        estadoActualizado.proyPropios = [...(matchState.proyPropios || []), proyData];
+    } else {
+        estadoActualizado.proyEnemigos = [...(matchState.proyEnemigos || []), proyData];
+    }
+
     guardarEstadoPartida(estadoActualizado);
     return estadoActualizado;
 };

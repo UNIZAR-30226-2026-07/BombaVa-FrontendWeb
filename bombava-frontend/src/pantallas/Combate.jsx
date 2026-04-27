@@ -6,10 +6,10 @@ import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
 import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
-import { TAMANO_TABLERO, TERRENO, ARMAS, CANON } from "../utils/constantes.js";
+import { TAMANO_TABLERO, TERRENO, ARMAS, CANON, TORPEDO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
 import { peticionPasarTurno } from '../utils/socket.js';
-import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego, eliminarEstadoPartida } from '../services/gameApi.js';
+import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego, eliminarEstadoPartida, actualizarEstadoPartida, actualizarProyectilEnEstado, actualizarProyectilLanzadoEnEstado } from '../services/gameApi.js';
 import { notification } from '../services/notificationService.js';
 import '../styles/Combate.css';
 
@@ -76,8 +76,8 @@ function Combate() {
     // Estado para saber qué arma está seleccionada, por defecto el cañon
     const [armaSeleccionada, setArmaSeleccionada] = useState(CANON);
 
-    //Estado para borrar el proyectil el siguiente turno
-    const [ProyABorrar, setProyABorrar] = useState(null);
+    // Estado para borrar proyectiles al cambiar de turno (cuando explotan o caducan)
+    const [proyectilesABorrar, setProyectilesABorrar] = useState([]);
 
     // Hook para manejar los movimientos de los barcos
     // Inicializamos con un array de barcos vacío. Se rellenará al recibir match:startInfo
@@ -99,6 +99,8 @@ function Combate() {
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
+    // Ref para acceder al valor actual de esMiTurno
+    const esMiTurnoRef = useRef(false);
     
     // Varaible para guardar el estado de la partida
     const matchStateRef = useRef(null);
@@ -123,17 +125,27 @@ function Combate() {
             municion: estadoPartida.ammo,
             combustible: estadoPartida.fuel
         }));
-        setEsMiTurno(estadoPartida.matchInfo.currentTurnPlayer == estadoPartida.matchInfo.yourId);
+        const turnoInicial = estadoPartida.matchInfo.currentTurnPlayer == estadoPartida.matchInfo.yourId;
+        setEsMiTurno(turnoInicial);
+        esMiTurnoRef.current = turnoInicial;
 
         // Definir handlers para los eventos del servidor
         const gameHandlers = {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
                 cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
+                // Cargar los proyectiles
+                cargarProyectilesDesdeApi(
+                    visionPayload.proyEnemigos || [],
+                    visionPayload.proyPropios || []
+                );
                 if (matchStateRef.current) {
-                    matchStateRef.current.playerFleet = visionPayload.myFleet || matchStateRef.current.playerFleet;
-                    matchStateRef.current.enemyFleet = visionPayload.visibleEnemyFleet || matchStateRef.current.enemyFleet;
-                    guardarEstadoPartida(matchStateRef.current);
+                    matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, {
+                        playerFleet: visionPayload.myFleet,
+                        enemyFleet: visionPayload.visibleEnemyFleet,
+                        proyEnemigos: visionPayload.proyEnemigos,
+                        proyPropios: visionPayload.proyPropios
+                    });
                 }
             },
 
@@ -145,8 +157,7 @@ function Combate() {
                         setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
                     }
                     moverBarcoAdelante(payload.shipId);
-                    matchStateRef.current.fuel = payload.fuelReserve;
-                    guardarEstadoPartida(matchStateRef.current);
+                    matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, { fuel: payload.fuelReserve });
                 }
             },
 
@@ -158,8 +169,7 @@ function Combate() {
                         setBarras(prev => ({ ...prev, combustible: payload.fuelReserve }));
                     }
                     rotarBarco(payload.shipId, payload.orientation);
-                    matchStateRef.current.fuel = payload.fuelReserve;
-                    guardarEstadoPartida(matchStateRef.current);
+                    matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, { fuel: payload.fuelReserve });
                 }
             },
 
@@ -167,27 +177,41 @@ function Combate() {
                 console.log("Turno cambiado:", payload);
                 if (matchStateRef.current) {
                     const miId = matchStateRef.current.matchInfo.yourId;
-                    setEsMiTurno(payload.nextPlayerId == miId);
-                    if (payload.nextPlayerId == miId) {
+                    const ahora = payload.nextPlayerId == miId;
+                    setEsMiTurno(ahora);
+                    esMiTurnoRef.current = ahora;
+                    if (ahora) {
                         setBarras(prev => ({
                             ...prev,
                             municion: payload.resources.ammo,
                             combustible: payload.resources.fuel
                         }));
                     }
-                    matchStateRef.current.ammo = payload.resources.ammo;
-                    matchStateRef.current.fuel = payload.resources.fuel;
-                    matchStateRef.current.matchInfo.currentTurnPlayer = payload.nextPlayerId;
-                    matchStateRef.current.matchInfo.turnNumber = payload.turnNumber;
-                    
-                    if(ProyABorrar){
-                        quitarProyectil(ProyABorrar);    
+
+                    // Actualizar proyectiles que deben borrarse
+                    let proyEnemigos = matchStateRef.current.proyEnemigos;
+                    let proyPropios = matchStateRef.current.proyPropios;
+
+                    if (proyectilesABorrar.length > 0) {
+                        for (const id of proyectilesABorrar) {
+                            quitarProyectil(id);
+                            proyEnemigos = proyEnemigos.filter(p => p.id !== id);
+                            proyPropios = proyPropios.filter(p => p.id !== id);
+                        }
+                        setProyectilesABorrar([]);
                     }
-                    //Se quita en el local el proyectil
-                    matchStateRef.current.proyEnemigos = estadoPartida.proyEnemigos.filter(p => p.id !== ProyABorrar);
-                    matchStateRef.current.proyPropios = estadoPartida.proyPropios.filter(p => p.id !== ProyABorrar);
-                    //Se guarda el estado en local
-                    guardarEstadoPartida(matchStateRef.current);
+
+                    matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, {
+                        ammo: payload.resources.ammo,
+                        fuel: payload.resources.fuel,
+                        proyEnemigos,
+                        proyPropios,
+                        matchInfo: {
+                            ...matchStateRef.current.matchInfo,
+                            currentTurnPlayer: payload.nextPlayerId,
+                            turnNumber: payload.turnNumber
+                        }
+                    });
                 }
             },
 
@@ -197,8 +221,8 @@ function Combate() {
                     const miId = matchStateRef.current.matchInfo.yourId;
                     if (payload.attackerId == miId) {
                         setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
-                        matchStateRef.current.ammo = payload.ammoCurrent;
-                        guardarEstadoPartida(matchStateRef.current);
+                        matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, { ammo: payload.ammoCurrent });
+                        
                         //Mensajes al atacante:
                         if (payload.hit) {
                             notification.success(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Barco impactado! Vida: ${payload.targetHp}`);
@@ -252,14 +276,10 @@ function Combate() {
                         return b;
                     });
 
-                    // Hay que cambiar la nuestra y la del enemigo
-                    matchStateRef.current.playerFleet = actualizarLista(matchStateRef.current.playerFleet);
-                    matchStateRef.current.enemyFleet = actualizarLista(matchStateRef.current.enemyFleet);
-                    
-                    //Se quita en el local el proyectil
-
-                    // Guardamos el cambio en local
-                    guardarEstadoPartida(matchStateRef.current);
+                    matchStateRef.current = actualizarEstadoPartida(matchStateRef.current, {
+                        playerFleet: actualizarLista(matchStateRef.current.playerFleet),
+                        enemyFleet: actualizarLista(matchStateRef.current.enemyFleet)
+                    });
                 }
             
             },
@@ -267,50 +287,25 @@ function Combate() {
             onProyectileUpdate: (payload) => {
                 actualizarProyectil(payload);
                 if (matchStateRef.current) {
-                    const actualizarLista = (lista) => lista.map(p => {
-                        if (p.id === payload.projectile) {
-                            if(payload.status == "ENDOFLIFE"){
-                                setProyABorrar(payload.projectile);//Se borra en el siguiente turno
-                            }
-                            return { ...p, x: payload.x, y: payload.y, lifeDistance: payload.lifeDistance };
-                        }
-                        return p;
-                    });
-                    // Guardamos el cambio en local
-                    guardarEstadoPartida(matchStateRef.current);
+                    if (payload.status == "ENDOFLIFE" || payload.status == "HIT") {
+                        setProyectilesABorrar(prev => [...prev, payload.projectile]);
+                    }
+                    matchStateRef.current = actualizarProyectilEnEstado(matchStateRef.current, payload);
                 }
             },
 
             onProyectileLaunch: (payload) => {
-                anadirProyectil(payload,esMiTurno);
+                console.log('Procesando lanzamiento:', payload);
+                const miTurno = esMiTurnoRef.current;
+                anadirProyectil(payload, miTurno);
                 // Lo guardamos localmente
                 if (matchStateRef.current) {
-                    // Actualizamos munición
-                    matchStateRef.current.ammo = payload.ammoCurrent;
-                    
-                    // Si es mi turno lo meto en la lista de mis proyectiles, si no en la de los del enemigo
-                    if (esMiTurno) {
-                        matchStateRef.current.proyPropios.push({
-                            id: payload.id,
-                            lifeDistance: payload.lifeDistance,
-                            x: payload.x,
-                            y: payload.y,
-                            type: payload.type,
-                            esEnemigo: 0
-                        });
-                    }else{
-                        matchStateRef.current.proyEnemigos.push({
-                            id: payload.id,
-                            lifeDistance: payload.lifeDistance,
-                            x: payload.x,
-                            y: payload.y,
-                            type: payload.type,
-                            esEnemigo: 1
-                        });
+                    const miTurno = esMiTurnoRef.current;
+                    if (miTurno) {
+                        setBarras(prev => ({ ...prev, municion: payload.ammoCurrent }));
                     }
-
-                    // Guardamos físicamente en el disco
-                    guardarEstadoPartida(matchStateRef.current);
+                    
+                    matchStateRef.current = actualizarProyectilLanzadoEnEstado(matchStateRef.current, payload, miTurno);
                 }
             }
         };
@@ -352,7 +347,18 @@ function Combate() {
             notification.warning("No hay suficiente munición para atacar");
             return;
         }
-        setModoAtaque(true);
+
+        // Si es un torpedo, se lanza directamente sin seleccionar objetivo
+        if (armaSeleccionada === TORPEDO) {
+            // Como no ataa una celda en concreto, le pasamos (-1, -1)
+            const exito = atacarCelda(idBarcoSeleccionado, -1, -1, TORPEDO);
+            if (exito) {
+                // No necesitamos entrar en modo ataque
+                setModoAtaque(false);
+            }
+        } else {
+            setModoAtaque(true);
+        }
     };
 
     return (

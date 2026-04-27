@@ -133,7 +133,7 @@ const Mapa = ({
           onClick={(x, y) => gestionarClickBarco(barco, x, y)}
         />
       ))}
-      {proyectiles.map((p) => (
+      {proyectiles && proyectiles.map((p) => (
         <Proyectil
           key={p.id}
           proyectil = {p}

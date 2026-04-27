@@ -1,39 +1,33 @@
 .proyectil-entidad {
   position: absolute;
-  /*pointer-events: none; Igual hay que ponerlo si queremos gestionar todos los cliks a traves de las celdas*/
-  /*Animación*/
-  /*transition: 1s;*/
+  pointer-events: none;
+  z-index: 10;
+  transition: all 0.5s ease;
 }
 
 .proyectil-visual {
   position: absolute;
-  top: 6px;
-  bottom: 3px;
-  left: 6px;
-  right: 3px;
-  border-radius: 10px;
-  /*Animaciones:*/
-  transition: all 1s;
-}
-
-.proyectil-entidad.seleccionado .proyectil-visual {
-  box-shadow: 0 0 20px rgba(96, 96, 55, 0.5);
-  transform: scale(1.05); 
+  top: 6%;
+  bottom: 3%;
+  left: 6%;
+  right: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .proyectil-imagen {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  width: 85%;
+  height: 85%;
   object-fit: contain;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
-.barco-imagen.enemigo {
+/* Filtros para diferenciar aliados de enemigos */
+.proyectil-imagen.aliado {
+  /*De momento, dejo la imagen original*/
+}
+
+.proyectil-imagen.enemigo {
   filter: hue-rotate(310deg) saturate(2);
-}
-
-.barco-imagen.aliado {
-  filter: hue-rotate(0deg) saturate(1);
 }
