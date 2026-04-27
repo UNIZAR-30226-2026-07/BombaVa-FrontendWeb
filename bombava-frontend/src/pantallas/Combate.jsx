@@ -264,6 +264,7 @@ function Combate() {
             },
 
             onProyectileHit: (payload) => {
+                console.log("Ha dado un proyectil", payload);
                 quitarProyectil(payload.proyectilColisionado);
                 // Restamos la vida quitada en React
                 actualizarVidaBarco(payload.shipId, payload.newHp);
