@@ -297,7 +297,6 @@ function Combate() {
             },
 
             onProyectileLaunch: (payload) => {
-                console.log('Procesando lanzamiento:', payload);
                 const miTurno = esMiTurnoRef.current;
                 anadirProyectil(payload, miTurno);
                 // Lo guardamos localmente
