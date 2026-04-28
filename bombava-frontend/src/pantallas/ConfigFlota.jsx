@@ -83,10 +83,13 @@ const ConfigFlota = () => {
     }, []);
 
     const gestionarClickBarco = (id) => {
-        // Si se hace click en el barco seleccionado, se deselecciona
-        // Si se hace click en otro barco, se selecciona
-        // Si se hace click en el mismo barco, se rota
-        barcoSeleccionado === id ? rotarBarco(id, null) : setBarcoSeleccionado(id);
+        // Si pulsas el barco seleccionado se rota
+        // si pulsas otro barco se pone como seleccionado
+        if(barcoSeleccionado == id){
+            rotarBarco(id, null);
+        }else{
+            setBarcoSeleccionado(id);
+        }
     };
 
     const gestionarClickMapa = (x, y) => {
