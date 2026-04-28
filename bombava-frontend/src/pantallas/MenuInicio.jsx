@@ -4,7 +4,7 @@ import '../styles/MenuInicio.css';
 function MenuInicio({ }) {
 
   const navigate = useNavigate();
-
+  
   return (
     <div className="menu-container">
       {/* Iconos superiores */}
@@ -16,7 +16,7 @@ function MenuInicio({ }) {
       {/* Botones principales */}
       <div className="grupo-botones">
         <button className="menu-btn" onClick={() => navigate('/configurar')}>CONFIGURAR FLOTA</button>{/*Aqui le pasas el argumento (pantalla a la que va)*/}
-        <button className="menu-btn" onClick={() => navigate('/combate')}>COMPETITIVO</button>
+        <button className="menu-btn" onClick={() => navigate('/un-jugador')}>UN JUGADOR</button>
         <button className="menu-btn" onClick={() => navigate('/sala-espera')}>PRÁCTICA</button>
         <button className="menu-btn" onClick={() => navigate('/unirse')}>UNIRSE</button>
       </div>
