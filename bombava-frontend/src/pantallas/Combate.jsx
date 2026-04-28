@@ -91,6 +91,8 @@ function Combate() {
 
     // Estado para saber si es mi turno o el del oponente
     const [esMiTurno, setEsMiTurno] = useState(false);
+
+
     
     // Varaible para guardar el estado de la partida
     const matchStateRef = useRef(null);
@@ -120,6 +122,7 @@ function Combate() {
         const gameHandlers = {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
+                // Actualizamos los barcos
                 cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
                 
                 if (matchStateRef.current) {

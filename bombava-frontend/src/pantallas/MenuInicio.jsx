@@ -11,7 +11,7 @@ import imagenTablon from '../assets/pantallaInicio/tablon.png';
 function MenuInicio({ }) {
 
   const navigate = useNavigate();
-
+  
   return (
     <div className="menu-container">
       {/* Iconos superiores */}
@@ -33,7 +33,7 @@ function MenuInicio({ }) {
         </div>
 
         {/* Competitivo */}
-        <div className="opcion-mapa competitivo" onClick={() => navigate('/combate')}>
+        <div className="opcion-mapa competitivo" onClick={() => navigate('/sala-espera')}>
           <div className="tablon-opcion">COMPETITIVO</div>
           <img src={iconoCalavera} alt="Calavera y dos espadas" className="icono-opcion" />
           <div className="pergamino">
@@ -42,8 +42,8 @@ function MenuInicio({ }) {
         </div>
 
         {/* Práctica */}
-        <div className="opcion-mapa practica" onClick={() => navigate('/sala-espera')}>
-          <div className="tablon-opcion">PRÁCTICA</div>
+        <div className="opcion-mapa practica" onClick={() => navigate('/un-jugador')}>
+          <div className="tablon-opcion">UN JUGADOR</div>
           <img src={iconoBarril} alt="Barril" className="icono-opcion" />
           <div className="pergamino">
             Perfecciona tu puntería sin riesgo.

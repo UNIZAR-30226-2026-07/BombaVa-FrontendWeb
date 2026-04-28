@@ -208,7 +208,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     tipo: tipo,
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp, 
-                    esEnemigo: false
+                    esEnemigo: false,
+                    rangoVision: ship.visionRange
                 };
             }),
             ...enemyFleet.map(ship => {
@@ -224,7 +225,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                     tipo: tipo,
                     armas: obtenerArmas(ship.weapons),
                     vida: ship.currentHp,
-                    esEnemigo: true
+                    esEnemigo: true,
+                    rangoVision: ship.visionRange
                 };
             })
         ];
