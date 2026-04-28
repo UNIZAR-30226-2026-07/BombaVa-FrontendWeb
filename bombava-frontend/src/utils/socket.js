@@ -2,11 +2,14 @@
 import { io } from 'socket.io-client';
 import { TAMANO_TABLERO } from './constantes.js';
 import { notification } from '../services/notificationService.js';
-
+import { useNavigate } from 'react-router-dom';
 
 // URL del backend
 //const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
 const URL_WEBSOCKET = 'http://localhost:3000';
+
+//Para navegar a la pantalla de combate al ver un juego que estaba en activo
+const navigate = useNavigate();
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
@@ -21,6 +24,18 @@ export const socket = io(URL_WEBSOCKET, {
 // Para ver cuando el usuario se conecta al servidor
 socket.on('connect', () => {
   console.log('Conectado al servidor WebSocket:', socket.id);
+  socket.emit('game:check_active');
+});
+
+//Revisa si hay una partida activa
+socket.on('game:active_found', (payload) =>{
+  console.log('Se ha encontrado una partida activa');
+  navigate('/unirse');
+  //socket.emit('game:join', payload.matchId); Ya se emite en la pantalla combate al llegarle la matchStartInfo
+}); 
+
+socket.on('game:no_active', () =>{
+  console.log('No se ha encontrado ningún juego activo');
 });
 
 // Escucha los fallos que lleguen del servidor
