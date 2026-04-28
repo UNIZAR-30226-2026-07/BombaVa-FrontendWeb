@@ -31,7 +31,7 @@ socket.on('connect', () => {
 socket.on('game:active_found', (payload) =>{
   console.log('Se ha encontrado una partida activa');
   navigate('/unirse');
-  //socket.emit('game:join', payload.matchId); Ya se emite en la pantalla combate al llegarle la matchStartInfo
+  socket.emit('game:join', payload.matchId); //se hace para que llegue el match:tartInfo
 }); 
 
 socket.on('game:no_active', () =>{
