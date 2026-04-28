@@ -133,6 +133,7 @@ function Combate() {
         const gameHandlers = {
             onVisionUpdate: (visionPayload) => {
                 console.log("Nueva visión recibida:", visionPayload);
+                // Actualizamos los barcos
                 cargarBarcosDesdeApi(visionPayload.myFleet, visionPayload.visibleEnemyFleet);
                 // Cargar los proyectiles
                 cargarProyectilesDesdeApi(
