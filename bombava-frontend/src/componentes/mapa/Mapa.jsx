@@ -1,5 +1,6 @@
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
+import Proyectil from '../proyectil/Proyectil.jsx'
 import { calcularCentroBarco, calcularCeldasBarco } from '../barco/movimientosBarco.js';
 import { calcularCeldasVisiblesFlota } from '../../utils/visionUtils.js';
 import Niebla from './Niebla.jsx';
@@ -23,7 +24,8 @@ const Mapa = ({
   setBarcoSeleccionado,
   rotarBarco,
   atacarCelda,
-  armaSeleccionada
+  armaSeleccionada,
+  proyectiles
 }) => {
 
   // Si pulsamos un barco lo seleccionamos y si pulsamos un 
@@ -132,6 +134,14 @@ const Mapa = ({
           onClick={(x, y) => gestionarClickBarco(barco, x, y)}
         />
       ))}
+      {proyectiles && proyectiles.map((p) => (
+        <Proyectil
+          key={p.id}
+          proyectil = {p}
+        />
+      ))
+
+      }
 
       {/* Capa de Niebla de Guerra sobre el resto de elementos */}
       <Niebla celdasVisibles={celdasVisibles} />

@@ -1,0 +1,33 @@
+.proyectil-entidad {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  transition: all 0.5s ease;
+}
+
+.proyectil-visual {
+  position: absolute;
+  top: 6%;
+  bottom: 3%;
+  left: 6%;
+  right: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.proyectil-imagen {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+/* Filtros para diferenciar aliados de enemigos */
+.proyectil-imagen.aliado {
+  /*De momento, dejo la imagen original*/
+}
+
+.proyectil-imagen.enemigo {
+  filter: hue-rotate(310deg) saturate(2);
+}
