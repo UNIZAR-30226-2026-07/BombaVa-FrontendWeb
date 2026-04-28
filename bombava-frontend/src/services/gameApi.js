@@ -66,7 +66,7 @@ export const setupGameListeners = (handlers) => {
 export const cargarEstadoPartida = () => {
     const estadoGuardado = localStorage.getItem('bombaVa_matchState');
     if (estadoGuardado) {
-        return JSON.parse(estadoGuardado);//Vuelve a convertir el estado en un objeto de JavaScript
+        return JSON.parse(estadoGuardado);
     }
     return null;
 };

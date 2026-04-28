@@ -266,7 +266,7 @@ function Combate() {
             onProyectileHit: (payload) => {
                 console.log("Ha dado un proyectil", payload);
                 quitarProyectil(payload.proyectilColisionado);
-                // Restamos la vida quitada en React
+                // Restamos la vida quitada
                 actualizarVidaBarco(payload.shipId, payload.newHp);
                 notification.success("¡Impacto de proyectil!");
                 if (matchStateRef.current) {
@@ -350,7 +350,8 @@ function Combate() {
         }
 
         // Si es un torpedo, se lanza directamente sin seleccionar objetivo
-        if (armaSeleccionada === TORPEDO) {
+        // ya que un torpedo siempre se lanza hacia donde esté apuntando el barco
+        if (armaSeleccionada == TORPEDO) {
             // Como no ataa una celda en concreto, le pasamos (-1, -1)
             const exito = atacarCelda(idBarcoSeleccionado, -1, -1, TORPEDO);
             if (exito) {
