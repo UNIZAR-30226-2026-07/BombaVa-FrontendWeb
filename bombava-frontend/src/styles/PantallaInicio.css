@@ -7,7 +7,7 @@
     align-items: center;
     height: 100vh;
     width: 100vw;
-    background-image: url('../assets/inicio/camarote.png');
+    background-image: url('../assets/pantallaInicio/camarote.png');
     background-size: cover;
     background-position: center;
     gap: 50px; 
@@ -23,7 +23,7 @@
 
 .titulo-bombava {
     position: relative;
-    background-image: url('../assets/inicio/tablon.png');
+    background-image: url('../assets/pantallaInicio/tablon.png');
     background-size: 100% 100%;
     background-color: transparent;
     color: #ffcc33;
@@ -72,7 +72,7 @@
     top: -500px; 
     width: 40px;
     height: 550px;
-    background-image: url('../assets/inicio/cuerda.png');
+    background-image: url('../assets/pantallaInicio/cuerda.png');
     background-size: 100% auto;
     z-index: 1;
 }
@@ -88,7 +88,7 @@
 .boton-inicio-sesion, 
 .boton-registrarse {
     position: relative;
-    background-image: url('../assets/inicio/tablon.png');
+    background-image: url('../assets/pantallaInicio/tablon.png');
     color: #f4e4bc;
     font-size: 1.5rem;
     font-family: 'Georgia', cursive; 

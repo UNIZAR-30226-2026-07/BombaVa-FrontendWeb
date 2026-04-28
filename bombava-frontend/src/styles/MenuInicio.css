@@ -47,7 +47,7 @@
     min-height: 100vh;
     min-width: 177.78vh; /* (100 * 16 / 9) Calculos en base a una imagen de 16:9 */
     
-    background-image: url('../assets/opciones/MenuFondo.png');
+    background-image: url('../assets/imagenes_diseno/MenuFondo.png');
     background-size: 100% 100%;
     background-position: center;
 }
@@ -70,7 +70,7 @@
 }
 
 .tablon-opcion {
-    background-image: url('../assets/inicio/tablon.png');
+    background-image: url('../assets/pantallaInicio/tablon.png');
     background-size: 100% 100%;
     padding: 8px 20px;
     color: #ffd700;
@@ -97,7 +97,7 @@
     top: 50%;
     left: 90%;
     transform: translateY(-50%) translateX(-15px);
-    background-image: url('../assets/opciones/pergamino.png');
+    background-image: url('../assets/imagenes_diseno/pergamino.png');
     background-size: 100% 100%;
     width: 260px;
     min-height: 140px;

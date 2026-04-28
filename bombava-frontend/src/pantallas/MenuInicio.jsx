@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import '../styles/MenuInicio.css';
 
-import fondoMenu from '../assets/opciones/MenuFondo.png';
-import iconoMartillo from '../assets/opciones/martillo.png';
-import iconoCalavera from '../assets/opciones/calavera.png';
-import iconoBarril from '../assets/opciones/barril.png';
-import iconoBrujula from '../assets/opciones/brujula.png';
-import imagenTablon from '../assets/inicio/tablon.png';
+import fondoMenu from '../assets/imagenes_diseno/MenuFondo.png';
+import iconoMartillo from '../assets/imagenes_diseno/martillo.png';
+import iconoCalavera from '../assets/imagenes_diseno/calavera.png';
+import iconoBarril from '../assets/imagenes_diseno/barril.png';
+import iconoBrujula from '../assets/imagenes_diseno/brujula.png';
+import imagenTablon from '../assets/pantallaInicio/tablon.png';
 
 function MenuInicio({ }) {
 
