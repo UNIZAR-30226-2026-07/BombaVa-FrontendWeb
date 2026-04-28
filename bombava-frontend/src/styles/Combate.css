@@ -8,8 +8,11 @@
     align-items: flex-start;
     padding: 1.5%;
     gap: 4%;
-    /* Separación entre las tres columnas */
     background-color: #0a1f33;
+    background-image: url('../assets/imagenes_diseno/MenuFondo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     box-sizing: border-box;
     min-height: 100vh;
 }

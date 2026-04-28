@@ -111,18 +111,37 @@ export const MODULOS_BARCO = {
 };
 
 // Estadísticas de los barcos
+import corbetaImg from '../assets/barcos/corbeta.png';
+import cruceroImg from '../assets/barcos/crucero.png';
+import portaavionesImg from '../assets/barcos/portaaviones.png';
+
 export const ESTADISTICAS_BARCOS = {
   [BARCO1x1]: {
     vidaMax: 20,
-    nombre: "Lancha"
+    nombre: "Corbeta",
+    rangoVision: 2,
+    celdas: 1,
+    armasMax: 1,
+    imagen: corbetaImg,
+    tamano: "1x1"
   },
   [BARCO1x3]: {
     vidaMax: 30,
-    nombre: "Fragata"
+    nombre: "Fragata",
+    rangoVision: 3,
+    celdas: 3, 
+    armasMax: 2,
+    imagen: cruceroImg,
+    tamano: "1x3"
   },
   [BARCO1x5]: {
     vidaMax: 50,
-    nombre: "Portaaviones"
+    nombre: "Portaaviones",
+    rangoVision: 4,
+    celdas: 5,
+    armasMax: 3,
+    imagen: portaavionesImg,
+    tamano: "1x5"
   }
 };
 
