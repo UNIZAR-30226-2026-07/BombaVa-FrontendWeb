@@ -12,13 +12,14 @@ import InicioSesion from "./pantallas/IncioSesion.jsx";
 import ActionButtons from './componentes/ActionButtons.jsx';
 import Unirse from './pantallas/Unirse';
 import SalaEspera from './pantallas/SalaEspera';
-import { NotificationContainer } from './componentes/Notification.jsx';
+import { NotificationContainer, ToastContainer } from './componentes/Notification.jsx';
 
 
 function App() {
   return (
     <>
       <NotificationContainer />
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/inicioSesion" element={<InicioSesion />} />

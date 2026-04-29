@@ -26,10 +26,10 @@ socket.on('connect', () => {
 // Escucha los fallos que lleguen del servidor
 socket.on('game:error', (fail) => {
   if(fail.message == "Ataque no disponible o munición insuficiente") {
-    notification.error("Ataque no disponible. Cada barco solo tiene un ataque por turno.");
+    notification.top("Ataque no disponible. Cada barco solo tiene un ataque por turno.", 'error');
     return;
   }else if(fail.message == "Colisión detectada: Casilla ocupada") {
-    notification.error("No puedes avanzar, la casilla está ocupada.");
+    notification.top("No puedes avanzar, la casilla está ocupada.", 'error');
     return;
   }
   console.log(fail.message);
