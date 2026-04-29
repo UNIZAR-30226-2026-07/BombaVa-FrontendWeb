@@ -7,16 +7,31 @@ function Inicio(){
 
     return(
         <div className='contenedor-padre'>
-            <button className="boton-inicio-sesion"
-                    onClick={() => navigate('/inicioSesion')}
-                >
-                    Iniciar Sesión
-            </button>
-            <button className="boton-registrarse"
-                    onClick={() => navigate('/registro')}
-                >
-                    Registrar Usuario
-            </button>
+            <div className="contenedor-titulo">
+                <div className="cuerda cuerda-izq"></div>
+                <div className="cuerda cuerda-der"></div>
+                <h1 className="titulo-bombava">BombaVa</h1>
+            </div>
+
+            <div className="contenedor-botones-horizontales">
+                <div className="contenedor-boton-colgante boton-izquierda">
+                    <div className="cuerda cuerda-izq"></div>
+                    <div className="cuerda cuerda-der"></div>
+                    <button className="boton-inicio-sesion"
+                            onClick={() => navigate('/inicioSesion')}>
+                            Iniciar Sesión
+                    </button>
+                </div>
+
+                <div className="contenedor-boton-colgante boton-derecha">
+                    <div className="cuerda cuerda-izq"></div>
+                    <div className="cuerda cuerda-der"></div>
+                    <button className="boton-registrarse"
+                            onClick={() => navigate('/registro')}>
+                            Registrar Usuario
+                    </button>
+                </div>
+            </div>
         </div>
         
     );

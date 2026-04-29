@@ -1,0 +1,131 @@
+.columna-izquierda-flota {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 250px;
+  scrollbar-color: #b8860b transparent;
+}
+
+.caja-estadisticas {
+  background: rgba(30, 20, 10, 0.85);
+  border: 2px solid #b8860b;
+  border-radius: 10px;
+  padding: 12px;
+  color: #e0d0b0;
+  font-family: 'Georgia';
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.caja-estadisticas h1 {
+  color: #ffd700;
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(184, 134, 11, 0.4);
+  padding-bottom: 4px;
+}
+
+.estadisticas-contenido p {
+  margin: 5px 0;
+}
+
+.no-selection {
+  text-align: center;
+}
+
+.consejo {
+  font-size: 0.9rem;
+  color: #ffd700;
+  margin-top: 10px;
+}
+
+.columna-selector-barcos {
+  background: rgba(30, 20, 10, 0.85);
+  border: 2px solid #b8860b;
+  border-radius: 10px;
+  padding: 12px;
+  color: #e0d0b0;
+  font-family: 'Georgia';
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 400px;
+}
+
+.barra-selector {
+  width: 100%;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.columna-selector-barcos h1 {
+  color: #ffd700;
+  font-size: 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(184, 134, 11, 0.4);
+  padding-bottom: 4px;
+}
+
+.botones-barco-config {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.btn-seleccionar-barco {
+  aspect-ratio: 1 / 1;
+  max-width: 140px;
+  margin: 3px auto;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-seleccionar-barco img {
+  width: 90%;
+  height: 60%;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.btn-seleccionar-barco span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.btn-seleccionar-barco:hover{
+  background: rgba(255, 255, 255, 0.1);
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  border-color: #3498db;
+}
+
+.btn-seleccionar-barco.activo {
+  background:  rgba(41, 128, 185, 0.6);
+  border-color: #3498db;
+  box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+}
+
+.btn-seleccionar-barco.puesto {
+  opacity: 0.3;
+  filter: brightness(0.5);
+  pointer-events: none;
+}

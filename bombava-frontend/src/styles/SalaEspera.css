@@ -6,6 +6,10 @@
   width: 100vw;
   background-color: #0a1f33;
   font-family: Georgia, serif;
+  background-image: url('../assets/imagenes_diseno/MenuFondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .sala-espera-tarjeta {

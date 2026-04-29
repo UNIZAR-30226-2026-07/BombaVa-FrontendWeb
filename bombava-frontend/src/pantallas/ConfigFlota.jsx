@@ -4,10 +4,13 @@ import Tablero from '../componentes/tablero/Tablero';
 import Barco from '../componentes/barco/Barco.jsx';
 import { useMovimientosBarco} from '../componentes/barco/movimientosBarco.js';
 import '../styles/ConfigFlota.css';
-import { BARCO1x1, BARCO1x3, BARCO1x5,  TAMANO_TABLERO, TERRENO, SERVER_API } from '../utils/constantes.js'; 
+import { BARCO1x1, BARCO1x3, BARCO1x5,  TAMANO_TABLERO, TERRENO, SERVER_API, ESTADISTICAS_BARCOS } from '../utils/constantes.js'; 
 import { useNavigate } from 'react-router-dom';
 import { crearYActivarDeck } from '../services/decksApi.js';
 import { notification } from '../services/notificationService.js';
+import SelectorBarcos from '../componentes/configuracion_flota/SelectorBarcos.jsx';
+import PanelArmas from '../componentes/configuracion_flota/PanelArmas.jsx';
+import TableroConfiguracion from '../componentes/configuracion_flota/TableroConfiguracion.jsx';
 
 
 const generarMapaConfiguracion = () => {
@@ -15,10 +18,9 @@ const generarMapaConfiguracion = () => {
   for (let y = 0; y < TAMANO_TABLERO; y++) {
     const fila = [];
     for (let x = 0; x < TAMANO_TABLERO; x++) {
-      //Mapa con todo agua y una isla central
+      //Mapa dividio en 3 partes: zona del jugador, zona neutra y zona enemiga
       let tipoterreno = TERRENO.AGUA;
 
-      // Ejemplo de mapa con un isla -> Habría que cambiarlo para que sea mejor.
       if (y >= 10) {
         tipoterreno = TERRENO.AGUA;
       } else if (y >= 5) {
@@ -64,39 +66,32 @@ const ConfigFlota = () => {
         equiparArma,
         limpiarArma
     } = useMovimientosBarco([], { mapa }); // Empezamos con el tablero vacío
-
-    //Al abrir la pantalla se cargan todos los tipos de barcos y armas que hay guardados en el backend
+    // Cargar inventarios al inicio
     useEffect(() => {
-        const cargarInventarioArmas = async () => {
+        const cargarDatos = async () => {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`${SERVER_API}/api/inventory/weapons`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setInventarioArmas(res.data); // Aquí están las armas con sus datos
+            const headers = { headers: { Authorization: `Bearer ${token}` } };
+            
+            const [resWeapons, resShips] = await Promise.all([
+                axios.get(`${SERVER_API}/api/inventory/weapons`, headers),
+                axios.get(`${SERVER_API}/api/inventory/ships`, headers)
+            ]);
+            setInventarioArmas(resWeapons.data);
+            setInventarioBarcos(resShips.data);
         };
-        
-        const cargarInventarioBarcos = async () => {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${SERVER_API}/api/inventory/ships`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setInventarioBarcos(res.data); // Aquí están los barcos con sus datos
-        };
-        cargarInventarioBarcos();
-        cargarInventarioArmas();
+        cargarDatos();
     }, []);
 
-    // Si pulsamos un barco podremos cambiar sus armas y sale un panel con sus datos 
     const gestionarClickBarco = (id) => {
-        if (barcoSeleccionado == id) {
-            // Si clicamos el barco que ya estaba seleccionado, se rota
+        // Si pulsas el barco seleccionado se rota
+        // si pulsas otro barco se pone como seleccionado
+        if(barcoSeleccionado == id){
             rotarBarco(id, null);
-        } else {
+        }else{
             setBarcoSeleccionado(id);
         }
     };
 
-    // Función para poner un barco, la celda en la que haces click te devuelve su x e y
     const gestionarClickMapa = (x, y) => {
         
         if(barcoAPoner != 0 ){
@@ -155,7 +150,6 @@ const ConfigFlota = () => {
         }
     };
 
-    //Función para enviar todos los datos de la flota a la API
     const enviarFlota = async () => {
         try {
             await crearYActivarDeck(barcos);
@@ -179,82 +173,39 @@ const ConfigFlota = () => {
     };  
 
     return (
-        <div className='main-content'>
-            <div className="mapa_config" onClick={() => setBarcoSeleccionado()}>
+        <div className='config-flota-main'>
+            <div className="mapa_config" onClick={() => setBarcoSeleccionado(null)}>
+                {/* Seleccion de barcos y panel de info de barcos*/}
+                <SelectorBarcos 
+                    barcoSeleccionado={barcoSeleccionado}
+                    barcoAPoner={barcoAPoner}
+                    setBarcoAPoner={setBarcoAPoner}
+                    barcos={barcos}
+                />
 
-                <div className="main-content">
+                {/* Tablero de juego */}
+                <TableroConfiguracion 
+                    mapa={mapa}
+                    gestionarClickMapa={gestionarClickMapa}
+                    barcos={barcos}
+                    barcoSeleccionado={barcoSeleccionado}
+                    gestionarClickBarco={gestionarClickBarco}
+                    enviarFlota={enviarFlota}
+                    rotarBarco={rotarBarco}
+                />
 
-                    {/* Zona del Tablero */}
-                    <div className="tablero-contenedor">
+                {/*Panel de armas del barco seleccionado*/}
+                <PanelArmas 
+                    barcoSeleccionado={barcoSeleccionado}
+                    barcos={barcos}
+                    inventarioArmas={inventarioArmas}
+                    anadirArma={anadirArma}
+                    borrarArmaBarco={borrarArmaBarco}
+                    borrarBarco={borrarBarco}
+                />
 
-                        <Tablero mapa= {mapa} onCellClick={gestionarClickMapa} configurar={true} celdasEnRango={new Set()} />
-                        {barcos.map((barco) => (
-                        <Barco 
-                            key={barco.id} 
-                            barco={barco} 
-                            estaSeleccionado={barcoSeleccionado === barco.id}
-                            onClick={(x, y) => { gestionarClickBarco(barco.id); }}
-                        />
-                        ))}
-
-                    </div>
-
-                    <div className="botones_barco_config">
-                        <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x1)}>PONER BARCO 1x1</button>
-                        <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x3)}>PONER BARCO 1x3</button>
-                        <button className="ponerBarco-btn" onClick={() => setBarcoAPoner(BARCO1x5)}>PONER BARCO 1x5</button>
-                    </div>
-
-                    <button className="confirmar-btn" onClick={() => enviarFlota()}>CONFIRMAR FLOTA</button>
-                </div>
-
-                {/* Panel Lateral Derecho (Solo se ve si hay un barco seleccionado) */}
-                {barcoSeleccionado && (
-                    <div className="panel-lateral">
-
-                        <h3>EQUIPAR ARMAS</h3>
-                        {barcos.filter(b => b.id === barcoSeleccionado).map((barco) => (
-                            <div key={barco.id}>{/*Usamos key para identificar qué elementos han cambiado y no tener que renderizar toda la lista*/}
-                            {/* Imprimimos las armas actuales del barco */}
-                            {barco.armas.map((arma, index) => (
-                                <p key={index}>Ranura {index + 1}: {arma.name || "Vacío"}</p>
-                            ))}
-                            </div>
-                        ))}
-                        
-                        {inventarioArmas.map((arma) => (
-                            <div key={arma.slug} className="contenedor-armas">
-                                {/* El arma que es*/}
-                                <p><strong>{arma.name}</strong> (Daño: {arma.damage})</p>
-                                
-                                <div className="botones-arma-barco">
-                                    <button 
-                                        className="ponerBarco-btn"
-                                        onClick={() => anadirArma(barcoSeleccionado, arma)}
-                                    >
-                                        Equipar {/*Para equipársela al barco */}
-                                    </button>
-                                    
-                                    <button
-                                        className="eliminarBarco-btn" 
-                                        onClick={() => borrarArmaBarco(barcoSeleccionado, arma)}
-                                    >
-                                        Quitar {/*Para quitársela al barco */}
-                                    </button>
-                                </div>
-
-                            </div>
-))}
-                        <button className="eliminarBarco-btn" onClick={() => borrarBarco(barcoSeleccionado, setbarcosPuestos, barcosPuestos)}>Eliminar Barco</button>
-                        
-                        
-                    </div>
-                )}
-                
             </div>
-            
-    </div>
-
+        </div>
     );
 };
 

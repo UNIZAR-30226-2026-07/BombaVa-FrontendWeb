@@ -45,6 +45,23 @@ socket.on('disconnect', () => {
   console.log('Desconectado del servidor WebSocket');
 });
 
+// LOGS DE DEBUG PARA PROYECTILES
+socket.on('projectile:launched', (payload) => {
+  console.log('Nuevo proyectil desplegado:', payload);
+});
+
+socket.on('projectile:update', (payload) => {
+  console.log('Proyectil actualizado:', payload);
+});
+
+socket.on('projectile:hit', (payload) => {
+  console.log('Proyectil impactó:', payload);
+});
+
+socket.on('ship:attacked', (payload) => {
+  console.log('Ataque de cañón:', payload);
+});
+
 // Función que traduce el eje Y entre el frontend (0,0 Arriba-Izq) y el backend (0,0 Abajo-Izq)
 export const traducirCoordY = (y) => {
   return (TAMANO_TABLERO - 1) - y;

@@ -13,6 +13,7 @@ import ActionButtons from './componentes/ActionButtons.jsx';
 import Unirse from './pantallas/Unirse';
 import SalaEspera from './pantallas/SalaEspera';
 import { NotificationContainer, ToastContainer } from './componentes/Notification.jsx';
+import UnJugador from "./pantallas/UnJugador.jsx";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         </Route>
         <Route path="/profile" element={<Perfil />} />
         <Route path="/configurar" element={<ConfigFlota/>}/>
+        <Route path="/un-jugador" element={<UnJugador/>}/>
         <Route path="/combate" element={<Combate/>}/>
         <Route path="/unirse" element={<Unirse/>}/>
         <Route path="/sala-espera" element={<SalaEspera/>}/>

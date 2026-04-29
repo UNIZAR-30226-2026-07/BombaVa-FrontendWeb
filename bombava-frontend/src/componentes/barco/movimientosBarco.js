@@ -92,6 +92,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const [barcos, setBarcos] = useState(barcosNormalizados);
     const [barcoSeleccionado, setBarcoSeleccionado] = useState(null);
 
+    const [proyectiles, setProyectiles] = useState([]);
+
     // Función para rotar el barco "id" al sentido "sentido", pudiendo ser uno
     // uno de estos valores: ['N', 'E', 'S', 'W']. En caso de no indicar un 
     // sentido iterara al siguiete sentido de orientación de la lista.
@@ -240,11 +242,15 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         setBarcos([...barcos, barcoConModulos]);
     }
 
-    const borrarBarco = (barcoSeleccionado) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
+    const borrarBarco = (idABorrar) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
-        const nuevosBarcos = barcos.filter(b => b.id !== barcoSeleccionado);
+        const nuevosBarcos = barcos.filter(b => b.id !== idABorrar);
 
         setBarcos(nuevosBarcos);
+        // Si el barco que se borra era el seleccionado, lo deseleccionamos
+        if (barcoSeleccionado === idABorrar) {
+            setBarcoSeleccionado(null);
+        }
     }
 
     // Comprueba si un barco ocupa una coordenada (x, y), 
@@ -270,14 +276,15 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     // a una coordenada (targetX, targetY) con un arma específica.
     /*Parametros:
     * atacanteId: id del barco atacante
-    * targetX: coordenada X de la celda objetivo
-    * targetY: coordenada Y de la celda objetivo
+    * targetX: coordenada X de la celda objetivo (ignorado para TORPEDO)
+    * targetY: coordenada Y de la celda objetivo (ignorado para TORPEDO)
     * armaId: id del arma utilizada (CANON, TORPEDO, MINA, METRALLETA)
     * Devuelve: true si el ataque es válido, false en caso contrario
     */
     const atacarCelda = (atacanteId, targetX, targetY, armaId) => {
         const atacante = barcos.find(b => b.id == atacanteId);
-        if (!atacante) {
+        if (!atacante){
+            console.log('No se encontro el barco atacante', atacanteId);
             notification.toast("Este barco no puede atacar", 'warning');
             return false;
         }
@@ -285,7 +292,19 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const arma = ARMAS[armaId];
         if (!arma) {
             notification.toast("Arma no disponible", 'warning');
+            console.log('Arma no encontrada:', armaId);
             return false;
+        }
+
+        // El torpedo se lanza en la dirección del barco, no necesita coordenadas ni comprobación de rango
+        if (armaId == TORPEDO) {
+            console.log(`Lanzando torpedo desde barco ${atacanteId} en dirección ${atacante.orientacion}`);
+            const estadoPartida = localStorage.getItem('bombaVa_matchState');
+            if (estadoPartida) {
+                const matchId = JSON.parse(estadoPartida).matchInfo.matchId;
+                peticionAtacarTorpedo(matchId, atacanteId);
+            }
+            return true;
         }
 
         // Calculamos el centro del barco atacante para medir la distancia desde ahí
@@ -314,8 +333,6 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
             } else if (armaId == MINA) {
                 peticionAtacarMina(matchId, atacanteId, targetX, targetY);
-            } else if (armaId == TORPEDO) {
-                peticionAtacarTorpedo(matchId, atacanteId);
             } else {
                 // Para otras armas usamos de manera TEMPORAL el cañon
                 peticionAtacarCanon(matchId, atacanteId, targetX, targetY);
@@ -441,8 +458,144 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         }
     }
 
+    //Se quita el proyectil que ya ha colisionado porque explota
+    const quitarProyectil = (proyectilId) => {
+        const proyectilesNuevos = proyectiles.filter(p => p.id !== proyectilId);
+        setProyectiles(proyectilesNuevos);
+    }
+
+    const anadirProyectil = (proyectilLaunched, esMiTurno) => {
+        // Traducimos la coordenada Y del backend (0 abajo) al frontend (0 arriba)
+        const yTraducida = traducirCoordY(proyectilLaunched.y);
+        
+        const proyectilNuevo = {
+            id: proyectilLaunched.id,
+            lifeDistance: proyectilLaunched.lifeDistance,
+            x: proyectilLaunched.x,
+            y: yTraducida,
+            type: proyectilLaunched.type,
+            esEnemigo: !esMiTurno // Si es mi turno, el proyectil lanzado es mío, si no es enemigo
+        };
+        
+        const proyectilesNuevos = [...proyectiles, proyectilNuevo];
+        setProyectiles(proyectilesNuevos);
+    }
+
+    const actualizarProyectil = (proyectil) =>{
+        // Traducimos la coordenada Y
+        const yTraducida = traducirCoordY(proyectil.y);
+
+        setProyectiles(proyectilesAnteriores => 
+            proyectilesAnteriores.map(p => {
+            // Buscamos al que hay que actualizar
+                if (p.id === proyectil.projectile) {
+                // Lo cambiamos
+                    return { 
+                        ...p, 
+                        x: proyectil.x, 
+                        y: yTraducida, 
+                        lifeDistance: proyectil.lifeDistance,
+                        status: proyectil.status 
+                    };
+                }
+                return p;
+            })
+        );
+
+    }
+
+    const cargarProyectilesDesdeApi = (proyEnemigos = [], proyPropios = []) => {
+        const mapearProyectil = (p, esEnemigo) => ({
+            id: p.id,
+            lifeDistance: p.lifeDistance,
+            x: p.x,
+            y: traducirCoordY(p.y),
+            type: p.type,
+            esEnemigo: esEnemigo
+        });
+
+        const todosLosProyectiles = [];
+        for (const p of proyEnemigos) {
+            todosLosProyectiles.push(mapearProyectil(p, true));
+        }
+        for (const p of proyPropios) {
+            todosLosProyectiles.push(mapearProyectil(p, false));
+        }
+    
+        setProyectiles(todosLosProyectiles);
+    }
+
+    //Se quita el proyectil que ya ha colisionado porque explota
+    const quitarProyectil = (proyectilId) => {
+        const proyectilesNuevos = proyectiles.filter(p => p.id !== proyectilId);
+        setProyectiles(proyectilesNuevos);
+    }
+
+    const anadirProyectil = (proyectilLaunched, esMiTurno) => {
+        // Traducimos la coordenada Y del backend (0 abajo) al frontend (0 arriba)
+        const yTraducida = traducirCoordY(proyectilLaunched.y);
+        
+        const proyectilNuevo = {
+            id: proyectilLaunched.id,
+            lifeDistance: proyectilLaunched.lifeDistance,
+            x: proyectilLaunched.x,
+            y: yTraducida,
+            type: proyectilLaunched.type,
+            esEnemigo: !esMiTurno // Si es mi turno, el proyectil lanzado es mío, si no es enemigo
+        };
+        
+        const proyectilesNuevos = [...proyectiles, proyectilNuevo];
+        setProyectiles(proyectilesNuevos);
+    }
+
+    const actualizarProyectil = (proyectil) =>{
+        // Traducimos la coordenada Y
+        const yTraducida = traducirCoordY(proyectil.y);
+
+        setProyectiles(proyectilesAnteriores => 
+            proyectilesAnteriores.map(p => {
+            // Buscamos al que hay que actualizar
+                if (p.id === proyectil.projectile) {
+                // Lo cambiamos
+                    return { 
+                        ...p, 
+                        x: proyectil.x, 
+                        y: yTraducida, 
+                        lifeDistance: proyectil.lifeDistance,
+                        status: proyectil.status 
+                    };
+                }
+                return p;
+            })
+        );
+
+    }
+
+    const cargarProyectilesDesdeApi = (proyEnemigos = [], proyPropios = []) => {
+        const mapearProyectil = (p, esEnemigo) => ({
+            id: p.id,
+            lifeDistance: p.lifeDistance,
+            x: p.x,
+            y: traducirCoordY(p.y),
+            type: p.type,
+            esEnemigo: esEnemigo
+        });
+
+        const todosLosProyectiles = [];
+        for (const p of proyEnemigos) {
+            todosLosProyectiles.push(mapearProyectil(p, true));
+        }
+        for (const p of proyPropios) {
+            todosLosProyectiles.push(mapearProyectil(p, false));
+        }
+    
+        setProyectiles(todosLosProyectiles);
+    }
+
     return {
         barcos,
+        proyectiles,
+        proyectiles,
         barcoSeleccionado,
         setBarcoSeleccionado,
         rotarBarco,
@@ -454,6 +607,10 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         moverBarcoAdelante,
         equiparArma,
         limpiarArma,
-        actualizarVidaBarco
+        actualizarVidaBarco,
+        quitarProyectil,
+        anadirProyectil,
+        actualizarProyectil,
+        cargarProyectilesDesdeApi
     };
 };
