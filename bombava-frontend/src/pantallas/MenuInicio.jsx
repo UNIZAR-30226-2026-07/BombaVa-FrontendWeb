@@ -34,7 +34,7 @@ function MenuInicio({ }) {
 
         {/* Competitivo */}
         <div className="opcion-mapa competitivo" onClick={() => navigate('/sala-espera')}>
-          <div className="tablon-opcion">COMPETITIVO</div>
+          <div className="tablon-opcion">CREAR PARTIDA</div>
           <img src={iconoCalavera} alt="Calavera y dos espadas" className="icono-opcion" />
           <div className="pergamino">
             Enfréntate a otros capitanes en batallas navales.

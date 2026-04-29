@@ -285,11 +285,13 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const atacante = barcos.find(b => b.id == atacanteId);
         if (!atacante){
             console.log('No se encontro el barco atacante', atacanteId);
+            notification.toast("Este barco no puede atacar", 'warning');
             return false;
         }
 
         const arma = ARMAS[armaId];
         if (!arma) {
+            notification.toast("Arma no disponible", 'warning');
             console.log('Arma no encontrada:', armaId);
             return false;
         }
@@ -313,7 +315,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
 
         if (distancia > arma.rango) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
-            notification.warning("Fuera de rango");
+            notification.toast("Fuera de rango", 'warning');
 
             // Salir de modo ataque
             if (setModoAtaque){
@@ -384,12 +386,12 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 break;
         }
         if (barco.armas.length >= numArmas) {
-            notification.warning("Este barco ya no tiene más ranuras disponibles.");
+            notification.top("Este barco ya no tiene más ranuras disponibles.", 'warning');
             return;
         }
         const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
         if (yaTieneEsaArma) {
-            notification.warning("Este barco ya tiene equipado un " + arma.name);
+            notification.top("Este barco ya tiene equipado un " + arma.name, 'warning');
             return;
         }
         //hay que actualizar las armas del barco por si se utiliza en otro mazo
@@ -412,11 +414,11 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 return b;
             }));
 
-            notification.success(`${arma.name} equipado correctamente.`);
+            notification.top(`${arma.name} equipado correctamente.`, 'success');
 
         } catch (err) {
             console.error(err);
-            notification.error("Error de la API: " + (err.response?.data?.message || "No se pudo equipar"));
+            notification.top("Error de la API: " + (err.response?.data?.message || "No se pudo equipar"), 'error');
         }
     }
     //Quita las armas del barco que está seleccionado
@@ -424,7 +426,7 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         const barco = barcos.find(b => b.id === barcoSeleccionado);
         const yaTieneEsaArma = barco.armas.some(a => a.slug === arma.slug);
         if (!yaTieneEsaArma) {
-            notification.warning("Este barco no tiene equipado un " + arma.name);
+            notification.top("Este barco no tiene equipado un " + arma.name, 'warning');
             return;
         }
         //hay que actualizar las armas del barco por si se utiliza en otro mazo
@@ -448,11 +450,11 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 return b;
             }));
 
-            notification.success(`${arma.name} quitada correctamente.`);
+            notification.top(`${arma.name} quitada correctamente.`, 'success');
 
         } catch (err) {
             console.error(err);
-            notification.error("Error de la API: " + (err.response?.data?.message || "No se pudo quitar"));
+            notification.top("Error de la API: " + (err.response?.data?.message || "No se pudo quitar"), 'error');
         }
     }
 
