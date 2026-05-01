@@ -43,6 +43,10 @@ const generarMapaInicial = () => {
 function Combate() {
     const navigate = useNavigate();
     const [mapa, setMapa] = useState(generarMapaInicial());
+    //El cuadro que avisa si el otro jugador se ha desconectado
+    const [cuadroDesconectadoVisible, setCuadroDesconectadoVisible] = useState(false);
+    //Variable que guarda el tiempo que falta para que el rival se desconecte o acaba la partida
+    const [tiempoReconexion, setTiempoReconexion] = setTiempoReconexion(120);
 
     //Valores de prueba de las barras de recursos,  se actualizarán dinámicamente según el estado del juego
     const [barras, setBarras] = useState({
@@ -309,6 +313,17 @@ function Combate() {
                     
                     matchStateRef.current = actualizarProyectilLanzadoEnEstado(matchStateRef.current, payload, miTurno);
                 }
+            },
+
+            onPlayerDisconnected: (payload) => {
+                console.log(payload.message);
+                setCuadroDesconectadoVisible(true);
+                setTiempoReconexion(120); // Reiniciamos el tiempo a 2 minutos
+            },
+
+            onPlayerReconnected: (payload) => {
+                console.log(payload.message);
+                setCuadroDesconectadoVisible(false);
             }
         };
 
@@ -319,6 +334,30 @@ function Combate() {
         return cleanup;
     }, []);
 
+    //Hago otro useEffect para separar lo del cronómetro
+    useEffect(() => {
+        let intervalo = null;
+
+        if (cuadroDesconectadoVisible && tiempoReconexion > 0) {
+            intervalo = setInterval(() => {
+                setTiempoReconexion((prev) => prev - 1);
+            }, 1000);
+        } else if (tiempoReconexion === 0) {
+            // Lógica opcional: si el tiempo llega a 0, puedes finalizar la partida
+            console.log("Tiempo de espera agotado");
+            clearInterval(intervalo);
+        }
+
+        return () => clearInterval(intervalo); 
+    }, [cuadroDesconectadoVisible, tiempoReconexion]);
+
+    // Función auxiliar para formatear los segundos (ej: 115 -> 1:55)
+    const formatearTiempo = (segundos) => {
+        const mins = Math.floor(segundos / 60);
+        const secs = segundos % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+    
     const handlePasarTurno = () => {
         const estado = localStorage.getItem('bombaVa_matchState');
         if (estado) {
@@ -443,6 +482,19 @@ function Combate() {
             <div className="combate-columna-derecha">
                 <BoatInfoCard boat={barcoSeleccionado} />
             </div>
+            {/* CUADRO DE DESCONEXIÓN (ARRIBA DE TODO) */}
+            {cuadroDesconectadoVisible && (
+                <div className="menu-pausa-fondo" style={{ zIndex: 10000 }}>
+                    <div className="menu-pausa">
+                        <h2>Rival desconectado</h2>
+                        <p>Esperando reconexión...</p>
+                        <div style={{ fontSize: '2rem', fontWeight: 'bold', margin: '20px 0' }}>
+                            {formatearTiempo(tiempoReconexion)}
+                        </div>
+                        <p>(La partida se cancelará si no vuelve en 2 minutos)</p>
+                    </div>
+                </div>
+        )}
         </div>
     );
 }

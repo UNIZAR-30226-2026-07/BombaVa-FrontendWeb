@@ -28,8 +28,8 @@ export const setupGameListeners = (handlers) => {
         onProyectileHit,
         onProyectileUpdate,
         onProyectileLaunch,
-        onHayJuegoInterrumpido,
-        onNoHayJuegoInterrumpido
+        onPlayerDisconnected,
+        onPlayerReconnected
     } = handlers;
 
     // Registrar todos los listeners
@@ -44,6 +44,8 @@ export const setupGameListeners = (handlers) => {
     if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
     if (onProyectileUpdate) socket.on('projectile:update', onProyectileUpdate);
     if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
+    if (onPlayerDisconnected) socket.on('match:player_disconnected', onPlayerDisconnected);
+    if (onPlayerReconnected) socket.on('match:player_reconnected', onPlayerReconnected);
 
     // Retornar función de cleanup
     return () => {
@@ -58,6 +60,8 @@ export const setupGameListeners = (handlers) => {
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
         if (onProyectileUpdate) socket.off('projectile:update', onProyectileUpdate);
         if (onProyectileLaunch) socket.off('projectile:launched', onProyectileLaunch);
+        if (onPlayerDisconnected) socket.off('match:player_disconnected', onPlayerDisconnected);
+        if (onPlayerReconnected) socket.off('match:player_reconnected', onPlayerReconnected);
 
     };
 };
