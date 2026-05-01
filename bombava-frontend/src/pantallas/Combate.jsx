@@ -380,7 +380,9 @@ function Combate() {
             )}
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
-            <MenuPausa />
+            <MenuPausa 
+                matchId= {matchStateRef.current.matchInfo.matchId}
+            />
             {/*COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) */}
             <div className="combate-columna-izquierda">
                 {/* Barras de recursos */}
