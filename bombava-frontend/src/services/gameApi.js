@@ -27,7 +27,9 @@ export const setupGameListeners = (handlers) => {
         onMatchPaused, 
         onProyectileHit,
         onProyectileUpdate,
-        onProyectileLaunch
+        onProyectileLaunch,
+        onHayJuegoInterrumpido,
+        onNoHayJuegoInterrumpido
     } = handlers;
 
     // Registrar todos los listeners
@@ -56,6 +58,7 @@ export const setupGameListeners = (handlers) => {
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
         if (onProyectileUpdate) socket.off('projectile:update', onProyectileUpdate);
         if (onProyectileLaunch) socket.off('projectile:launched', onProyectileLaunch);
+
     };
 };
 
