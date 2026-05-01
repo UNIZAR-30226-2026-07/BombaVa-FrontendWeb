@@ -4,9 +4,8 @@ import { TAMANO_TABLERO } from './constantes.js';
 import { notification } from '../services/notificationService.js';
 
 
-// URL del backend
-//const URL_WEBSOCKET = 'https://bombava-backend-vbgv.onrender.com';
-const URL_WEBSOCKET = 'http://localhost:3000';
+// URL del backend desde variables de entorno (definida en .env con prefijo VITE_)
+const URL_WEBSOCKET = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 // Se crea una instancia de socket para toda la aplicación
 export const socket = io(URL_WEBSOCKET, {
@@ -26,10 +25,10 @@ socket.on('connect', () => {
 // Escucha los fallos que lleguen del servidor
 socket.on('game:error', (fail) => {
   if(fail.message == "Ataque no disponible o munición insuficiente") {
-    notification.error("Ataque no disponible. Cada barco solo tiene un ataque por turno.");
+    notification.top("Ataque no disponible. Cada barco solo tiene un ataque por turno.", 'error');
     return;
   }else if(fail.message == "Colisión detectada: Casilla ocupada") {
-    notification.error("No puedes avanzar, la casilla está ocupada.");
+    notification.top("No puedes avanzar, la casilla está ocupada.", 'error');
     return;
   }
   console.log(fail.message);
