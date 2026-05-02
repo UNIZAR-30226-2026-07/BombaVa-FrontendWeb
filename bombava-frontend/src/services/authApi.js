@@ -85,3 +85,23 @@ export const guardarToken = (token, socket = null) => {
 export const limpiarToken = () => {
     removeToken();
 };
+
+/**
+ * Obtiene el ranking global de los mejores jugadores
+ * @returns {Promise<Array>} Lista de jugadores con su ELO
+ * @throws {Error} Si hay un error al obtener el ranking
+ */
+export const obtenerRanking = async () => {
+    try {
+        const respuesta = await axios.get(
+            SERVER_API + '/api/auth/ranking',
+            { headers: getAuthHeaders() }
+        );
+        return respuesta.data;
+    } catch (error) {
+        const mensaje = error.response?.data?.message 
+                       || error.response?.data?.errors?.[0]?.msg 
+                       || "Error al obtener el ranking";
+        throw new Error(mensaje);
+    }
+};
