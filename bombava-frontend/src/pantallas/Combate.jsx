@@ -46,7 +46,7 @@ function Combate() {
     //El cuadro que avisa si el otro jugador se ha desconectado
     const [cuadroDesconectadoVisible, setCuadroDesconectadoVisible] = useState(false);
     //Variable que guarda el tiempo que falta para que el rival se desconecte o acaba la partida
-    const [tiempoReconexion, setTiempoReconexion] = setTiempoReconexion(120);
+    const [tiempoReconexion, setTiempoReconexion] = useState(120);
 
     //Valores de prueba de las barras de recursos,  se actualizarán dinámicamente según el estado del juego
     const [barras, setBarras] = useState({
@@ -419,9 +419,7 @@ function Combate() {
             )}
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
-            <MenuPausa 
-                matchId= {matchStateRef.current.matchInfo.matchId}
-            />
+            <MenuPausa />
             {/*COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) */}
             <div className="combate-columna-izquierda">
                 {/* Barras de recursos */}
