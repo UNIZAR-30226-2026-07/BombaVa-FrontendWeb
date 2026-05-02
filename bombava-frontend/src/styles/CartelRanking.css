@@ -1,0 +1,38 @@
+.contenido_ranking {
+    position: absolute;
+    z-index: 2;
+    top: 48%; 
+    bottom: 10%; 
+    left: 15%;
+    right: 10%;
+    display: flex;
+    flex-direction: column;
+    color: #3e2723;
+}
+
+.lista_ranking {
+    overflow-y: auto;
+    scrollbar-color: #5d4037 rgba(0,0,0,0);
+}
+
+.lista_ranking table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.lista_ranking th { 
+    text-align: left; 
+    border-bottom: 2px solid #3e2723; 
+    padding-bottom: 8px; 
+    font-size: 1.1rem; 
+}
+
+.lista_ranking td { 
+    padding: 8px 0; 
+    font-size: 1.1rem; 
+}
+
+.resaltado {
+    background-color: rgba(93, 64, 55, 0.2);
+    font-weight: bold;
+}
