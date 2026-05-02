@@ -12,6 +12,7 @@ import { peticionPasarTurno } from '../utils/socket.js';
 import { setupGameListeners, cargarEstadoPartida, guardarEstadoPartida, unirseASalaDeJuego, eliminarEstadoPartida, actualizarEstadoPartida, actualizarProyectilEnEstado, actualizarProyectilLanzadoEnEstado } from '../services/gameApi.js';
 import { notification } from '../services/notificationService.js';
 import '../styles/Combate.css';
+import { socket } from '../utils/socket';
 
 /*ESTRUCTURA DE LA PANTALLA DE COMBATE:
     > COLUMNA IZQUIERDA: Recursos (arriba) y Mapa (abajo) 
@@ -108,7 +109,7 @@ function Combate() {
     
     // Varaible para guardar el estado de la partida
     const matchStateRef = useRef(null);
-
+    
     useEffect(() => {
         // Cargar estado inicial de la partida
         const estadoPartida = cargarEstadoPartida();
@@ -314,7 +315,6 @@ function Combate() {
                     matchStateRef.current = actualizarProyectilLanzadoEnEstado(matchStateRef.current, payload, miTurno);
                 }
             },
-
             onPlayerDisconnected: (payload) => {
                 console.log(payload.message);
                 setCuadroDesconectadoVisible(true);
@@ -334,39 +334,6 @@ function Combate() {
         return cleanup;
     }, []);
 
-    //Hago otro useEffect para separar lo del cronómetro
-    useEffect(() => {
-        let intervalo = null;
-
-        if (cuadroDesconectadoVisible && tiempoReconexion > 0) {
-            intervalo = setInterval(() => {
-                setTiempoReconexion((prev) => prev - 1);
-            }, 1000);
-        } else if (tiempoReconexion === 0) {
-            // Lógica opcional: si el tiempo llega a 0, puedes finalizar la partida
-            console.log("Tiempo de espera agotado");
-            clearInterval(intervalo);
-        }
-
-        return () => clearInterval(intervalo); 
-    }, [cuadroDesconectadoVisible, tiempoReconexion]);
-
-    // Función auxiliar para formatear los segundos (ej: 115 -> 1:55)
-    const formatearTiempo = (segundos) => {
-        const mins = Math.floor(segundos / 60);
-        const secs = segundos % 60;
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    };
-    
-    const handlePasarTurno = () => {
-        const estado = localStorage.getItem('bombaVa_matchState');
-        if (estado) {
-            const matchId = JSON.parse(estado).matchInfo.matchId;
-            peticionPasarTurno(matchId);
-            setEsMiTurno(false);
-        }
-    };
-    
     // Estado para obtener el objeto del barco seleccionado
     const barcoSeleccionado = barcos.find(b => b.id === idBarcoSeleccionado);
 
@@ -402,6 +369,99 @@ function Combate() {
             setModoAtaque(true);
         }
     };
+
+    const handlePasarTurno = () => {
+        const estado = localStorage.getItem('bombaVa_matchState');
+        if (estado) {
+            const matchId = JSON.parse(estado).matchInfo.matchId;
+            peticionPasarTurno(matchId);
+            setEsMiTurno(false);
+        }
+    };
+
+    //-------------------------------------------------------------ZONA DE LÓGICA DE DESCONEXION----------------------------------------------
+    //Hago otro useEffect para separar lo del cronómetro
+    useEffect(() => {
+        let intervalo = null;
+
+        if (cuadroDesconectadoVisible && tiempoReconexion > 0) {
+            intervalo = setInterval(() => {
+                setTiempoReconexion((prev) => prev - 1);
+            }, 1000);
+        } else if (tiempoReconexion === 0) {
+            // Lógica opcional: si el tiempo llega a 0, puedes finalizar la partida
+            console.log("Tiempo de espera agotado");
+            clearInterval(intervalo);
+        }
+
+        return () => clearInterval(intervalo); 
+    }, [cuadroDesconectadoVisible, tiempoReconexion]);
+
+    // Función auxiliar para formatear los segundos (ej: 115 -> 1:55)
+    const formatearTiempo = (segundos) => {
+        const mins = Math.floor(segundos / 60);
+        const secs = segundos % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+
+//-----------------------------------ZONA DE LOGICA DE PAUSA----------------------------------------------------------------------------
+    // Enseña el cuadro para decidir si aceptar la solictud de pausa o no
+    const [cuadroDecidirSiPausarVisible, setCuadroDecidirSiPausarVisible] = useState(false);
+
+    //UseEffect para la pausa
+    useEffect(() => {
+        //Recibe la señal de que han pedido pausar con el nombre del usuario que la ha aceptado
+        const handlePauseRequested = (payload) => {
+            notification.info(payload.from + "ha pedido pausar.");
+            setCuadroDecidirSiPausarVisible(true);
+        };
+
+        // Se ha pausado la partida, o yo he aceptado o el otro ha aceptado pausar
+        const handleMatchPaused = (payload) => {
+            notification.info(payload.message);
+            navigate('/menuInicial');
+        };
+
+        // Si rechaza el otro pausar la partida
+        const handlePauseReject = (payload) => {
+            notification.info(payload.message);
+            
+        };
+
+        // Escuchamos los siguientes eventos:
+        socket.on('match:pause_requested', handlePauseRequested);
+        socket.on('match:paused', handleMatchPaused);
+        socket.on('match:pause_rejected', handlePauseReject);
+
+        // Cerramos los listeners al salir de la pantalla
+        return () => {
+            socket.off('match:pause_requested', handlePauseRequested);
+            socket.off('match:paused', handleMatchPaused);
+            socket.off('match:pause_rejected', handlePauseReject);
+        };
+
+    }, []);
+
+    const aceptarPausa = () =>{
+        const estado = cargarEstadoPartida();
+        if (estado) {
+            const matchId = estado.matchInfo.matchId;
+            socket.emit('match:pause_accept', matchId);
+            setCuadroDecidirSiPausarVisible(false);
+        }
+        
+    };
+
+    const rechazarPausa = () =>{
+        const estado = cargarEstadoPartida();
+        if (estado) {
+            const matchId = estado.matchInfo.matchId;
+            socket.emit('match:pause_reject', matchId);
+            setCuadroDecidirSiPausarVisible(false);
+        }
+    };
+    
+    //------------------------------------------------------------------------------------------------------------------------------
 
     return (
         <div className="combate-contenedor">
@@ -475,7 +535,23 @@ function Combate() {
                     )}
                 </div>
             </div>
-
+            {/* CUADRO PARA EL JUGADOR QUE RECIBE LA PETICIÓN */}
+            {cuadroDecidirSiPausarVisible && (
+                <div className="menu-pausa-fondo">
+                    <div className="menu-pausa">
+                        <h2>El oponente quiere pausar la partida</h2>
+                        <p>¿Aceptas guardar el estado actual y salir?</p>
+                        <div className="menu-botones">
+                            <button className="btn-menu btn-continuar" onClick={aceptarPausa}>
+                                Aceptar y Salir
+                            </button>
+                            <button className="btn-menu btn-abandonar" onClick={rechazarPausa}>
+                                Rechazar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* COLUMNA DERECHA: Información del barco seleccionado */}
             <div className="combate-columna-derecha">
                 <BoatInfoCard boat={barcoSeleccionado} />
