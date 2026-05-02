@@ -6,6 +6,7 @@ import BoatInfoCard from "../componentes/BoatInfoCard.jsx";
 import MenuPausa from "../componentes/botones/MenuPausa.jsx";
 import BtnPasarTurno from "../componentes/botones/BtnPasarTurno.jsx";
 import ActionButtons from "../componentes/ActionButtons.jsx";
+import ContadorTurnos from "../componentes/ContadorTurnos.jsx";
 import { TAMANO_TABLERO, TERRENO, ARMAS, CANON, TORPEDO } from "../utils/constantes.js";
 import { useMovimientosBarco } from "../componentes/barco/movimientosBarco.js";
 import { peticionPasarTurno } from '../utils/socket.js';
@@ -101,6 +102,9 @@ function Combate() {
     const [esMiTurno, setEsMiTurno] = useState(false);
     // Ref para acceder al valor actual de esMiTurno
     const esMiTurnoRef = useRef(false);
+
+    // Estado para el número de turno actual
+    const [numTurno, setNumTurno] = useState(1);
     
     // Varaible para guardar el estado de la partida
     const matchStateRef = useRef(null);
@@ -128,6 +132,7 @@ function Combate() {
         const turnoInicial = estadoPartida.matchInfo.currentTurnPlayer == estadoPartida.matchInfo.yourId;
         setEsMiTurno(turnoInicial);
         esMiTurnoRef.current = turnoInicial;
+        setNumTurno(estadoPartida.matchInfo.turnNumber || 1);
 
         // Definir handlers para los eventos del servidor
         const gameHandlers = {
@@ -181,6 +186,7 @@ function Combate() {
                     const ahora = payload.nextPlayerId == miId;
                     setEsMiTurno(ahora);
                     esMiTurnoRef.current = ahora;
+                    setNumTurno(payload.turnNumber);
                     if (ahora) {
                         setBarras(prev => ({
                             ...prev,
@@ -378,6 +384,9 @@ function Combate() {
             {esMiTurno && (
                 <BtnPasarTurno onPasarTurno={handlePasarTurno} />
             )}
+
+            {/* Contador de turnos */}
+            <ContadorTurnos turno={numTurno} />
 
             {/*Botón para pausar la partida. Esta en el esquina superior derecha */}
             <MenuPausa />
