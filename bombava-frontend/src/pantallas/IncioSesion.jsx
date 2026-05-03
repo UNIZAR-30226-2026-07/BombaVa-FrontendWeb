@@ -40,7 +40,7 @@ function InicioSesion() {
     e.preventDefault();//Sirve para que al enviar no se recargue la página, perdiendo el estado de toda la web (volvería a pantalla inicial)
     try {
       const res = await login(cuenta);
-      notification.success("¡Sesión iniciada! Bienvenido, capitán.");
+      notification.top("¡Sesión iniciada! Bienvenido, capitán.", 'success');
       
       // Guarda el token y reconecta el socket con el nuevo token
       guardarToken(res.token, socket);
@@ -50,7 +50,7 @@ function InicioSesion() {
 
       
     } catch (err) {
-      notification.error(err.message);
+      notification.top(err.message, 'error');
     }
   };
 
