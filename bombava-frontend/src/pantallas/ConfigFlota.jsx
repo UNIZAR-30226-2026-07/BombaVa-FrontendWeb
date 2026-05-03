@@ -153,10 +153,10 @@ const ConfigFlota = () => {
     const enviarFlota = async () => {
         try {
             await crearYActivarDeck(barcos);
-            notification.success("¡Flota guardada y activada!");
+            notification.top("¡Flota guardada y activada!", 'success');
             navigate('/menuInicial');
         } catch (error) {
-            notification.error(error.message);
+            notification.top(error.message, 'error');
         }
     };
 

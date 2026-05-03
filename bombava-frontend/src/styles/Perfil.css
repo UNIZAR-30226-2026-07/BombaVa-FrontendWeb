@@ -1,129 +1,147 @@
 .contenedor_perfil {
-    height: 100vh;
+    height: 100vh; 
     width: 100vw;
-
-    background-color: #0a1f33;
+    background-image: url('../assets/perfil/fondoPerfil.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
     display:flex;
     flex-direction: column;
     align-items: center;
-
-    overflow-y: auto;
-    scrollbar-color: #021324 transparent;
-    scrollbar-width: thin;
-
     position: relative;
+    overflow-y: auto; 
+    font-family: Georgia, serif;
+    padding-top: 10px; 
+    padding-bottom: 40px; 
 }
 
-.titulo_perfil {
-    font-size: 40px;
-    color:#7a3b0b;
-    text-shadow: 2px 4px rgba(0,0,0,0.5);
-    text-align: center;
-
-    min-width:1000px;
-    overflow: hidden;
-
+.cargando {
+    color: white;
 }
 
-.contenedor_perfil .main-content {
-    width: 50%;
-
-
+.acciones_superiores {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 5;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
-
-    min-height: auto;
-}
-
-.circulo_perfil {
-    text-align: center;
-    background-color: #8b4513;
-    width: 240px;             
-    height: 240px;     
-    min-height: 240px;       
-    border-radius: 50%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    font-size: 160px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    border: 5px solid #4a2508;
-
-}
-
-.info_capitan {
-    text-align: center;
-    color: white;
-}
-
-.info_capitan h2 {
-    color: #d2b48c;  
-    font-size: 30px;
-    margin-bottom: 5px;
-    overflow: visible;
-}
-    
-
-.rango {
-    font-style: italic;
-    color: #aaa;
-    margin-bottom: 20px;
-}
-
-.estats {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #4a2508;
-}
-
-.boton_volver {
-    margin-top: 30px;
-    padding: 10px 20px;
-    background-color: #743506;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.boton_volver:hover {
-    background-color: #552909;
+    gap: 15px;
 }
 
 .boton_cerrar {
-    position: fixed; 
-    top: 20px;
-    right: 20px;
-    
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
+    background-color: #dc5959;
+    border: 2px solid #934c4c;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    border-radius: 8px;
+    padding: 10px 20px;
+
+    color: #000000;
     font-weight: bold;
-    cursor: pointer;
+    font-family: Georgia, serif;
+    transition: all 0.3s ease;
+    min-width: 150px;
 }
 
-.boton_cerrar:hover {
-    background-color: #cc0000;
-}
-
-.guardarNombre {
-    padding: 10px 20px;
-    background-color: #2ca80a;
+.boton_editar {
+    background: linear-gradient(to bottom, #b68d68, #8b5e3c);
+    border: 2px solid #543924;
     color: white;
-    margin-left: 15px;/*Para que no se peguen el boton y el nombre*/
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+
+    color: #ffffff;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    transition: all 0.3s ease;
+    min-width: 150px;
 }
 
-.editarNombre {
-    padding: 10px 20px;
-    background-color: #2ca80a;
+.boton_editar:hover {
+    background-color: #777777;
+}
+
+.boton_cerrar:hover:not(.boton_editar) {
+    background-color: #b84a4a;
+    transform: scale(1.05);
+}
+
+.boton_editar:hover {
+    transform: scale(1.05);
+}
+
+/* Estilos para los inputs de edición */
+.input_perfil {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-bottom: 2px solid #5d4037;
+    font-family: Georgia, serif;
+    font-size: inherit;
+    color: #3e2723;
+    width: 80%;
+    text-align: center;
+    padding: 2px 5px;
+}
+
+.informacion_perfil {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 50px;
+    justify-content: center;
+}
+
+.columna_izquierda, .columna_derecha {
+    display: flex;
+    justify-content: center;
+}
+
+.cartel_contenedor {
+    position: relative;
+    width: 420px;  /* Ancho fijo */
+    height: 680px; /* Alto fijo */
+    display: flex;
+    overflow: hidden;
+}
+
+.cartel_fondo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.boton_volver {
+    margin-top: 20px;
+    background: linear-gradient(to bottom, #b68d68, #8b5e3c);
+    border: 2px solid #543924;
     color: white;
-    margin-left: 15px;/*Para que no se peguen el boton y el nombre*/
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    z-index: 3;
+}
+
+.boton_volver:hover {
+    background-color: #3e2723;
+    transform: translateY(-3px);
+}
+
+/* Para que sea responsive */
+@media (max-width: 950px) {
+    .informacion_perfil {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
 }

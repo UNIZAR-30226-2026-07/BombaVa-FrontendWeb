@@ -231,14 +231,14 @@ function Combate() {
                         
                         //Mensajes al atacante:
                         if (payload.hit) {
-                            notification.success(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Barco impactado! Vida: ${payload.targetHp}`);
+                            notification.toast(payload.targetHp == 0 ? "¡Barco hundido!" : `¡Barco impactado! Vida: ${payload.targetHp}`, 'success');
                         } else {
-                            notification.warning("¡Agua! Disparo fallido.");
+                            notification.toast("¡Agua! Disparo fallido.", 'warning');
                         }
                     }else{
                         //Mensajes al atacado:
                         if (payload.hit) {
-                            notification.info(payload.targetHp == 0 ? "Te han hundido un barco" : `Te han impactado un barco. Vida: ${payload.targetHp}`);
+                            notification.toast(payload.targetHp == 0 ? "Te han hundido un barco" : `Te han impactado un barco. Vida: ${payload.targetHp}`, 'info');
                         } 
                     }
                     
@@ -251,9 +251,9 @@ function Combate() {
                 const soyGanador = payload.winnerId == miId;
                 
                 if (payload.reason == 'surrender') {
-                    notification.success(soyGanador ? "¡VICTORIA! El oponente se ha rendido." : "DERROTA. Te has rendido.");
+                    notification.top(soyGanador ? "¡VICTORIA! El oponente se ha rendido." : "DERROTA. Te has rendido.", soyGanador ? 'success' : 'error');
                 } else {
-                    notification.success(soyGanador ? "¡VICTORIA! Todos los barcos enemigos destruidos." : "DERROTA. Tu flota ha sido destruida.");
+                    notification.top(soyGanador ? "¡VICTORIA! Todos los barcos enemigos destruidos." : "DERROTA. Tu flota ha sido destruida.", soyGanador ? 'success' : 'error');
                 }
 
                 // Esperamos 4 segundos y volvemos al menú inicial
@@ -264,12 +264,17 @@ function Combate() {
                 }, 4000);
             },
 
+            onMatchPaused: (payload) => {
+                console.log("Oponente ha solicitado pausar la partida:", payload);
+                notification.top(`El jugador ${payload.from} ha pausado la partida.`, 'warning');
+            },
+
             onProyectileHit: (payload) => {
                 console.log("Ha dado un proyectil", payload);
                 quitarProyectil(payload.proyectilColisionado);
                 // Restamos la vida quitada
                 actualizarVidaBarco(payload.shipId, payload.newHp);
-                notification.success("¡Impacto de proyectil!");
+                notification.toast("¡Impacto de proyectil!", success);
                 if (matchStateRef.current) {
                     const actualizarLista = (lista) => lista.map(b => {
                         if (b.id === payload.shipId) {
@@ -347,7 +352,7 @@ function Combate() {
         }
         const arma = ARMAS[armaSeleccionada];
         if (barras.municion < arma.coste) {
-            notification.warning("No hay suficiente munición para atacar");
+            notification.top("No hay suficiente munición para atacar", 'warning');
             return;
         }
 
