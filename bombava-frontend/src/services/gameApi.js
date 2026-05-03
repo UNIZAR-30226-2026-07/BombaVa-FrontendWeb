@@ -40,7 +40,6 @@ export const setupGameListeners = (handlers) => {
     if (onTurnChanged) socket.on('match:turn_changed', onTurnChanged);
     if (onShipAttacked) socket.on('ship:attacked', onShipAttacked);
     if (onMatchFinished) socket.on('match:finished', onMatchFinished);
-    if (onMatchPaused) socket.on('match:pause_requested', onMatchPaused);
     if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
     if (onProyectileUpdate) socket.on('projectile:update', onProyectileUpdate);
     if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
@@ -56,7 +55,6 @@ export const setupGameListeners = (handlers) => {
         if (onTurnChanged) socket.off('match:turn_changed', onTurnChanged);
         if (onShipAttacked) socket.off('ship:attacked', onShipAttacked);
         if (onMatchFinished) socket.off('match:finished', onMatchFinished);
-        if (onMatchPaused) socket.off('match:pause_requested', onMatchPaused);
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
         if (onProyectileUpdate) socket.off('projectile:update', onProyectileUpdate);
         if (onProyectileLaunch) socket.off('projectile:launched', onProyectileLaunch);

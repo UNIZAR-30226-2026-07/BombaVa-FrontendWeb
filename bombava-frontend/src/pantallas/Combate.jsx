@@ -264,11 +264,6 @@ function Combate() {
                 }, 4000);
             },
 
-            onMatchPaused: (payload) => {
-                console.log("Oponente ha solicitado pausar la partida:", payload);
-                notification.warning(`El jugador ${payload.from} ha pausado la partida.`);
-            },
-
             onProyectileHit: (payload) => {
                 console.log("Ha dado un proyectil", payload);
                 quitarProyectil(payload.proyectilColisionado);
@@ -412,7 +407,7 @@ function Combate() {
     useEffect(() => {
         //Recibe la señal de que han pedido pausar con el nombre del usuario que la ha aceptado
         const handlePauseRequested = (payload) => {
-            notification.info(payload.from + "ha pedido pausar.");
+            notification.info(payload.from + " ha pedido pausar.");
             setCuadroDecidirSiPausarVisible(true);
         };
 
@@ -445,8 +440,8 @@ function Combate() {
     const aceptarPausa = () =>{
         const estado = cargarEstadoPartida();
         if (estado) {
-            const matchId = estado.matchInfo.matchId;
-            socket.emit('match:pause_accept', matchId);
+            const idPartida = estado.matchInfo.matchId;
+            socket.emit('match:pause_accept', {matchId : idPartida});
             setCuadroDecidirSiPausarVisible(false);
         }
         
@@ -455,8 +450,8 @@ function Combate() {
     const rechazarPausa = () =>{
         const estado = cargarEstadoPartida();
         if (estado) {
-            const matchId = estado.matchInfo.matchId;
-            socket.emit('match:pause_reject', matchId);
+            const idPartida = estado.matchInfo.matchId;
+            socket.emit('match:pause_reject', {matchId: idPartida});
             setCuadroDecidirSiPausarVisible(false);
         }
     };
