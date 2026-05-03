@@ -43,7 +43,7 @@ function CartelPerfil({ usuario, editando, nuevoNombre, setNuevoNombre, nuevoEma
           </p>
           <p><strong>Reputación:</strong> {usuario.elo_rating} ELO</p>
           {/*Habría que completar con las victorias del jugador, ahora lo he puesto con 0*/}
-          <p><strong>Victorias:</strong> {"0"}%</p>
+          <p><strong>Victorias:</strong> {usuario.winRate}%</p>
         </div>
       </div>
     </div>
