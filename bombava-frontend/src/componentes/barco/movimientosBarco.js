@@ -236,12 +236,14 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
         setBarcos(barcosJuego);
     };
 
+    //Se añade un barco en la configuración de flota
     const anadirBarco = (nuevoBarco) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         const barcoConModulos = inicializarBarcoConModulos(nuevoBarco);
         // Como no puedo modificar la lista de barcos creo otra con todos los que hay más el nuevo
         setBarcos([...barcos, barcoConModulos]);
     }
 
+    //Se borra un barco en la configuración de flota
     const borrarBarco = (idABorrar) => { /*Dentro de la funcion principal para poder editar la lista de barcos para añadirla*/
         // Creamos un nuevo array con todos los barcos CUYO id NO SEA el de barcoSeleccionado
         const nuevosBarcos = barcos.filter(b => b.id !== idABorrar);
@@ -465,13 +467,31 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
     const anadirProyectil = (proyectilLaunched, esMiTurno) => {
         // Traducimos la coordenada Y del backend (0 abajo) al frontend (0 arriba)
         const yTraducida = traducirCoordY(proyectilLaunched.y);
-        
+        let vectorXProyectil = proyectilLaunched.vectorX;
+        let vectorYProyectil = proyectilLaunched.vectorY;
+        let direccion;
+        if(vectorXProyectil == 0){
+            if(vectorYProyectil == 1){
+                direccion = 'N';
+            }else{
+                direccion = 'S';
+            }
+        }else if(vectorXProyectil == 1){
+            if(vectorYProyectil == 0){
+                direccion = 'E';
+            }
+        }else{
+            if(vectorYProyectil == 0){
+                direccion = 'W';
+            }
+        }
         const proyectilNuevo = {
             id: proyectilLaunched.id,
             lifeDistance: proyectilLaunched.lifeDistance,
             x: proyectilLaunched.x,
             y: yTraducida,
             type: proyectilLaunched.type,
+            orientacion: direccion,
             esEnemigo: !esMiTurno // Si es mi turno, el proyectil lanzado es mío, si no es enemigo
         };
         

@@ -31,3 +31,19 @@
 .proyectil-imagen.enemigo {
   filter: hue-rotate(310deg) saturate(2);
 }
+
+.proyectil-imagen.N {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.proyectil-imagen.S {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.proyectil-imagen.E {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.proyectil-imagen.W {
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
