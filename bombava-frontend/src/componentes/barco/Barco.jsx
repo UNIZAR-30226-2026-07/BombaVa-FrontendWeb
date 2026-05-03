@@ -5,9 +5,9 @@ import imgCrucero from '../../assets/barcos/crucero.png';
 import imgPortaaviones from '../../assets/barcos/portaaviones.png';
 import imgCorbeta from '../../assets/barcos/corbeta.png';
 
-import imgCruceroDagnado from '../../assets/barcos/cruceroDagnado.jpeg';
-import imgPortaavionesDagnado from '../../assets/barcos/portaavionesDagnado.jpeg';
-import imgCorbetaDagnada from '../../assets/barcos/corbetaDagnada.jpeg';
+import imgCruceroDagnado from '../../assets/barcos/cruceroDagnado.png';
+import imgPortaavionesDagnado from '../../assets/barcos/portaavionesDagnado.png';
+import imgCorbetaDagnada from '../../assets/barcos/corbetaDagnada.png';
 
 const IMAGENES_BARCOS = {
     1: imgCorbeta,
