@@ -5,10 +5,20 @@ import imgCrucero from '../../assets/barcos/crucero.png';
 import imgPortaaviones from '../../assets/barcos/portaaviones.png';
 import imgCorbeta from '../../assets/barcos/corbeta.png';
 
+import imgCruceroDagnado from '../../assets/barcos/cruceroDagnado.png';
+import imgPortaavionesDagnado from '../../assets/barcos/portaavionesDagnado.png';
+import imgCorbetaDagnada from '../../assets/barcos/corbetaDagnada.png';
+
 const IMAGENES_BARCOS = {
     1: imgCorbeta,
     3: imgCrucero,
     5: imgPortaaviones
+};
+
+const IMAGENES_BARCOS_DANADOS = {
+    1: imgCorbetaDagnada,
+    3: imgCruceroDagnado,
+    5: imgPortaavionesDagnado
 };
 
 /* Estructura de 'barco':
@@ -79,6 +89,22 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
     onClick(celdaClicadaX, celdaClicadaY);
   };
 
+    //Calculamos la imagen que hay que poner (agrietada o no) según la vida del barco
+    let umbralConsiderarDagnado;
+    switch (barco.tamano){
+      case 1:
+        umbralConsiderarDagnado = 10;
+        break;
+      case 2:
+        umbralConsiderarDagnado = 15;
+        break;
+      case 3:
+        umbralConsiderarDagnado = 25;
+        break;
+    }
+    const estaDagnado = barco.vida <= umbralConsiderarDagnado;
+    const setImagenes = estaDagnado ? IMAGENES_BARCOS_DANADOS : IMAGENES_BARCOS;
+
   return (
     <div
       className={nombreClase}
@@ -96,7 +122,7 @@ const Barco = ({ barco, estaSeleccionado, onClick }) => {
       >
         
         <img 
-          src={IMAGENES_BARCOS[barco.tamano]} 
+          src={setImagenes[barco.tamano]} 
           alt={`Barco tipo ${barco.tipo}`}
           className={`barco-imagen ${barco.orientacion} ${barco.esEnemigo ? 'enemigo' : 'aliado'}`}
           style={{

@@ -2,7 +2,7 @@
 import { io } from 'socket.io-client';
 import { TAMANO_TABLERO } from './constantes.js';
 import { notification } from '../services/notificationService.js';
-
+import { useNavigate } from 'react-router-dom';
 
 // URL del backend desde variables de entorno (definida en .env con prefijo VITE_)
 const URL_WEBSOCKET = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';

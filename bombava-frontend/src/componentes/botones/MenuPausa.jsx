@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { peticionAbandonarPartida, peticionPausarPartida } from '../../utils/socket';
 import { cargarEstadoPartida, eliminarEstadoPartida } from '../../services/gameApi';
 import '../../styles/MenuPausa.css';
+import { notification } from '../../services/notificationService';
 
 function MenuPausa() {
     // Estado para controlar si el pop-up del menú de pausa está visible
     const [cuadroPausaVisible, setCuadroPausaVisible] = useState(false);
 
     const navigate = useNavigate();
+
 
     // Función para abrir el menú
     const abrirMenu = () => {
@@ -35,15 +37,16 @@ function MenuPausa() {
     };
 
     // Función para guardar el estado de la partida y seguir luego
-    const GuardarYSeguirLuego = () => {
+    const IntentarGuardarYSeguirLuego = () => {
         const estado = cargarEstadoPartida();
         if (estado) {
             const matchId = estado.matchInfo.matchId;
             peticionPausarPartida(matchId);
+            notification.info("Peticion de pausa enviada");
+            cerrarMenu();
         }
-        
-        console.log("Pausando la partida.");
-        navigate('/menuInicial');
+        //Una vez ya he pedido al backend que le diga si quiere pausar la partida al otro jugador espero a que llegue
+        //confirmación de ese jugador en handlePauseAccept para pausar o no hace nada
     };
 
     return (
@@ -62,15 +65,15 @@ function MenuPausa() {
                 <div className="menu-pausa-fondo" onClick={cerrarMenu}>
                     {/* El menu de diálogo (stopPropagation evita que se cierre el menu al clicar en un botón) */}
                     <div className="menu-pausa" onClick={(e) => e.stopPropagation()}>
-                        <h2>Partida Pausada</h2>
+                        <h2>¿Qué quiere hacer capitán?</h2>
 
                         <div className="menu-botones">
                             <button className="btn-menu btn-continuar" onClick={cerrarMenu}>
                                 Continuar la partida
                             </button>
 
-                            <button className="btn-menu btn-guardar" onClick={GuardarYSeguirLuego}>
-                                Seguir en otro momento
+                            <button className="btn-menu btn-guardar" onClick={IntentarGuardarYSeguirLuego}>
+                                Pausar la partida
                             </button>
 
                             <button className="btn-menu btn-abandonar" onClick={AbandonarPartida}>
@@ -79,6 +82,7 @@ function MenuPausa() {
                         </div>
                     </div>
                 </div>
+                
             )}
         </>
     );

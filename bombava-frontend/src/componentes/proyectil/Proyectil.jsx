@@ -49,7 +49,7 @@ const Proyectil = ({ proyectil}) => {
                 <img 
                     src={imagenProyectil} 
                     alt={proyectil.type}
-                    className={`proyectil-imagen ${proyectil.esEnemigo ? 'enemigo' : 'aliado'}`}
+                    className={`proyectil-imagen ${proyectil.orientacion} ${proyectil.esEnemigo ? 'enemigo' : 'aliado'}`}
                 />
             </div>
         </div>

@@ -27,7 +27,9 @@ export const setupGameListeners = (handlers) => {
         onMatchPaused, 
         onProyectileHit,
         onProyectileUpdate,
-        onProyectileLaunch
+        onProyectileLaunch,
+        onPlayerDisconnected,
+        onPlayerReconnected
     } = handlers;
 
     // Registrar todos los listeners
@@ -38,10 +40,11 @@ export const setupGameListeners = (handlers) => {
     if (onTurnChanged) socket.on('match:turn_changed', onTurnChanged);
     if (onShipAttacked) socket.on('ship:attacked', onShipAttacked);
     if (onMatchFinished) socket.on('match:finished', onMatchFinished);
-    if (onMatchPaused) socket.on('match:pause_requested', onMatchPaused);
     if (onProyectileHit) socket.on('projectile:hit', onProyectileHit);
     if (onProyectileUpdate) socket.on('projectile:update', onProyectileUpdate);
     if (onProyectileLaunch) socket.on('projectile:launched', onProyectileLaunch);
+    if (onPlayerDisconnected) socket.on('match:player_disconnected', onPlayerDisconnected);
+    if (onPlayerReconnected) socket.on('match:player_reconnected', onPlayerReconnected);
 
     // Retornar función de cleanup
     return () => {
@@ -52,10 +55,12 @@ export const setupGameListeners = (handlers) => {
         if (onTurnChanged) socket.off('match:turn_changed', onTurnChanged);
         if (onShipAttacked) socket.off('ship:attacked', onShipAttacked);
         if (onMatchFinished) socket.off('match:finished', onMatchFinished);
-        if (onMatchPaused) socket.off('match:pause_requested', onMatchPaused);
         if (onProyectileHit) socket.off('projectile:hit', onProyectileHit);
         if (onProyectileUpdate) socket.off('projectile:update', onProyectileUpdate);
         if (onProyectileLaunch) socket.off('projectile:launched', onProyectileLaunch);
+        if (onPlayerDisconnected) socket.off('match:player_disconnected', onPlayerDisconnected);
+        if (onPlayerReconnected) socket.off('match:player_reconnected', onPlayerReconnected);
+
     };
 };
 

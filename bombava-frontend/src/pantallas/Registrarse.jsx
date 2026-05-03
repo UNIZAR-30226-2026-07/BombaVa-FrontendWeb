@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '../utils/socket.js';
 import { registrar, guardarToken } from '../services/authApi.js';
@@ -9,6 +9,33 @@ function Registro() {
   const [cuenta, setCuenta] = useState({ username: '', email: '', contrasena: '' });
   const navigate = useNavigate();
 
+  // Configurar los listeners del socket al llegar a la pantalla
+  useEffect(() => {
+
+    // Handler por si había un juego del que se salió el usuario
+    const handleHayJuegoInterrumpido = (payload) => {
+        console.log('Se ha encontrado una partida activa');
+        navigate('/unirse');
+        socket.emit('game:join', payload.matchId); //se hace para que llegue el match:tartInfo
+    };
+
+    // Handler para cuando no hay juego al que unirse 
+    const handleNoHayJuegoInterrumpido = () => {
+      console.log('No se ha encontrado ningún juego activo');
+      navigate('/menuInicial');
+    };
+
+    // Escuchamos los siguientes eventos:
+    socket.on('game:active_found', handleHayJuegoInterrumpido);
+    socket.on('game:no_active', handleNoHayJuegoInterrumpido);
+
+    // Cerramos los listeners al salir de la pantalla
+    return () => {
+      socket.off('game:active_found', handleHayJuegoInterrumpido);
+      socket.off('game:no_active', handleNoHayJuegoInterrumpido);
+    };
+  }, [navigate]);
+  
   const enviarDatos = async (e) => {
     e.preventDefault();//Sirve para que al enviar no se recargue la página, perdiendo el estado de toda la web (volvería a pantalla inicial)
     try {
@@ -18,7 +45,10 @@ function Registro() {
       // Guarda el token y reconecta el socket con el nuevo token
       guardarToken(res.token, socket);
 
-      navigate('/menuInicial');
+      //Ahora que tiene valor token el socket va bien así que emito la señal
+      socket.emit('game:check_active');
+      
+      
     } catch (err) {
       notification.top(err.message, 'error');
     }
