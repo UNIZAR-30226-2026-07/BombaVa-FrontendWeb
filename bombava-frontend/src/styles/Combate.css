@@ -1,33 +1,86 @@
-/* Contenedor principal de la pantalla de combate */
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #422000; 
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2c1500; 
+}
+
 .combate-contenedor {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    /* Permite que si la pantalla es muy pequeña, los elementos se adapten 
-    y se pongan en una sola columna */
+    flex-wrap: wrap; 
     align-items: flex-start;
-    padding: 1.5%;
-    gap: 4%;
+    justify-content: center;
+    padding: 1.5%; 
+    gap: 4%; 
     background-color: #0a1f33;
     background-image: url('../assets/imagenes_diseno/MenuFondo.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     box-sizing: border-box;
     min-height: 100vh;
+    width: 100%;
 }
 
-/*COLUMNA IZQUIERDA: Barras de recuros y el Mapa */
+.menu-pausa, 
+.btn-pasar-turno-contenedor, 
+.contador-turnos-posicion {
+    position: fixed;
+    z-index: 9999 !important; 
+}
+
+
+.menu-pausa { 
+    right: 35px !important;
+    top: 20px !important;
+}
+
 .combate-columna-izquierda {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    /*espacio entre los elementos*/
     flex: 1.5;
-    /*Tamaño relativo de la columna, 1.5 la de la izquierda y 1 la central y la derecha*/
     min-width: 300px;
-    /*Ancho minimo de la columna*/
     box-sizing: border-box;
+    z-index: 1; 
+}
+
+.combate-columna-central {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #b68d68, #8b5e3c);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    align-self: center;
+    flex: 1;
+    min-width: 250px;
+    box-sizing: border-box;
+}
+
+.combate-columna-derecha {
+    flex: 1;
+    min-width: 250px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    margin-top: 110px; 
 }
 
 .recursos-contendor {
@@ -49,23 +102,6 @@
     box-sizing: border-box;
 }
 
-/*COLUMNA CENTRAL: Botones de ataque/movimiento */
-.combate-columna-central {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(to bottom, #b68d68, #8b5e3c);
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    align-self: center;
-    flex: 1;
-    /*Tamaño relativo de la columna*/
-    min-width: 250px;
-    /*Ancho minimo de la columna*/
-    box-sizing: border-box;
-}
-
 .titulo-acciones {
     color: white;
     margin-top: 0;
@@ -74,35 +110,30 @@
     font-family: Georgia;
 }
 
-.acciones {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-}
-
-.boton-temporal {
-    padding: 5%;
-    background-color: #2a2a4a;
-    color: #858585;
-    border-radius: 10px;
-}
-
-/*COLUMNA DERECHA (BoatInfoCard) */
-.combate-columna-derecha {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    /*Tamaño relativo de la columna*/
-    min-width: 250px;
-    /*Ancho minimo de la columna*/
-    box-sizing: border-box;
-}
-
 .turno-indicador {
     color: yellow;
     font-size: 1rem;
     font-weight: bold;
     text-align: center;
     margin-top: 5px;
+}
+
+/*Solo se aplican para cuando la pantalla es demasiado estrecha*/
+@media (max-width: 900px) {
+    .combate-contenedor {
+        padding-top: 80px; /*Hueco para no superponerse con botones de pausa y turnos */
+    }
+
+    .combate-columna-izquierda, 
+    .combate-columna-central, 
+    .combate-columna-derecha {
+        flex: 1 1 100%; 
+        max-width: 100%;
+        min-width: 0;
+        margin-bottom: 30px;
+    }
+
+    .combate-columna-derecha {
+        margin-top: 20px;
+    }
 }
