@@ -131,3 +131,75 @@
 .boat-info-card .info-card-content ul li:first-child {
     border-top: none;
 }
+
+/* Estilos para la sección de visión */
+.boat-stat {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+}
+
+.boat-stat p {
+    margin: 0;
+    font-size: 1em;
+    color: rgb(66, 32, 0);
+    font-weight: bold;
+}
+
+/* Estilos para la sección de armas */
+.boat-weapons {
+    width: 100%;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 2px solid rgb(66, 32, 0);
+}
+
+.boat-weapons > p {
+    margin: 0.5rem 0 0.5rem 0 !important;
+    font-size: 1rem;
+    color: rgb(66, 32, 0);
+    font-weight: bold;
+    text-align: center;
+}
+
+.boat-weapons .weapons-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.boat-weapons .weapon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgb(66, 32, 0);
+    margin: 0;
+}
+
+.boat-weapons .weapon-item:last-child {
+    border-bottom: none;
+}
+
+.boat-weapons .weapon-name {
+    font-weight: bold;
+    color: rgb(12, 6, 0);
+    font-size: 0.95rem;
+}
+
+.boat-weapons .weapon-range {
+    color: rgb(66, 32, 0);
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+}
+
+.boat-weapons .no-weapons {
+    width: 90%;
+    font-size: 0.9em;
+    color: rgb(66, 32, 0);
+    font-style: italic;
+    margin: 0.5rem 0;
+    text-align: center;
+}
