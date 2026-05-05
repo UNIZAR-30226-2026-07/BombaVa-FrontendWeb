@@ -232,7 +232,8 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
                 };
             })
         ];
-        const barcosJuego = barcosMapeados.map(inicializarBarcoConModulos);
+        const barcosVivos = barcosMapeados.filter(barco => barco.vida > 0);
+        const barcosJuego = barcosVivos.map(inicializarBarcoConModulos);
         setBarcos(barcosJuego);
     };
 
