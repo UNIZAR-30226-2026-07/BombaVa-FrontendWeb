@@ -5,49 +5,71 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    width: 100%;
     background-image: url('../assets/pantallaInicio/camarote.png');
     background-size: cover;
     background-position: center;
-    gap: 50px; 
-    overflow: hidden;
+    gap: 100px;
+    overflow-x: hidden;
+    padding: 100px 0;
+    box-sizing: border-box;
 }
+
+.cuerda-anclaje-izq { left: 20%; }
+.cuerda-anclaje-der { right: 20%; }
 
 .contenedor-titulo {
     position: relative;
     display: flex;
+    justify-content: center;
     align-items: center;
-    z-index: 2;
+    width: 600px;
+    max-width: 90vw;
+    height: 160px;
+    z-index: 30; 
 }
 
 .titulo-bombava {
     position: relative;
     background-image: url('../assets/pantallaInicio/tablon.png');
     background-size: 100% 100%;
-    background-color: transparent;
     color: #ffcc33;
-    padding: 20px 80px;
-    font-size: 4.5rem;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-family: 'Pirata One', cursive;
     text-transform: uppercase;
-    letter-spacing: 8px;
-    width: 650px;
-    height: 160px;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     text-shadow: 5px 5px 0px #231714;
-    z-index: 2;
-    margin: 0px;
+    z-index: 2; 
+    margin: 0;
 }
+
+.contenedor-titulo::before,
+.contenedor-titulo::after {
+    content: '';
+    position: absolute;
+    top: -1000px;
+    width: 30px;
+    height: 1020px;
+    background-image: url('../assets/pantallaInicio/cuerda.png');
+    background-size: 100% auto;
+    z-index: 1; 
+}
+.contenedor-titulo::before { left: 20%; }
+.contenedor-titulo::after { right: 20%; }
+
 
 .contenedor-botones-horizontales {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 100px; 
+    gap: 80px; 
     width: 100%;
+    z-index: 20;
 }
 
 .contenedor-boton-colgante {
@@ -55,71 +77,86 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform-origin: top center; /* Punto de pivote */
-    width: fit-content;
+    width: 350px;
+    max-width: 45vw;
 }
 
-.boton-izquierda {
-    animation: balanceo 4s ease-in-out infinite;
-}
-
-.boton-derecha {
-    animation: balanceo-alterno 5s ease-in-out infinite;
-}
+.boton-izquierda { z-index: 25; animation: balanceo 4s ease-in-out infinite; }
+.boton-derecha { z-index: 24; animation: balanceo-alterno 5s ease-in-out infinite; }
 
 .cuerda {
     position: absolute;
-    top: -500px; 
-    width: 40px;
-    height: 550px;
+    width: 30px;
     background-image: url('../assets/pantallaInicio/cuerda.png');
     background-size: 100% auto;
-    z-index: 1;
+    z-index: -1; /* SIEMPRE detrás del botón actual */
 }
 
-.cuerda-izq {
-    left: 40px;
+@media (min-width: 851px) {
+    .cuerda {
+        top: -1000px;
+        height: 1050px;
+    }
 }
 
-.cuerda-der {
-    right: 40px;
-}
+.cuerda-izq { left: 20%; }
+.cuerda-der { right: 20%; }
 
 .boton-inicio-sesion, 
 .boton-registrarse {
     position: relative;
     background-image: url('../assets/pantallaInicio/tablon.png');
+    background-size: 100% 100%;
     color: #f4e4bc;
     font-size: 1.5rem;
     font-family: 'Georgia', cursive; 
     font-weight: bold;
     border: none;
-    width: 380px;
-    height: 100px;
+    width: 100%;
+    height: 90px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.8);
-    transition: 0.2s ease;
-    z-index: 2;
-    margin-top: 40px;
+    z-index: 2; 
 }
 
-.boton-inicio-sesion:hover, 
-.boton-registrarse:hover {
-    filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
-    transform: scale(1.05) rotate(0deg);
-}
+@media (max-width: 850px) {
+    .contenedor-padre {
+        gap: 100px;
+        padding-top: 150px;
+    }
 
+    .contenedor-botones-horizontales {
+        flex-direction: column;
+        align-items: center;
+        gap: 100px;
+    }
+
+    .contenedor-boton-colgante {
+        width: 300px;
+        max-width: 80vw;
+    }
+
+    .boton-derecha { z-index: 20; }
+    .boton-izquierda { z-index: 21; }
+
+    .cuerda {
+        top: -130px;
+        height: 160px;
+        display: block;
+    }
+
+    .boton-izquierda, .boton-derecha {
+        animation: none;
+    }
+}
 
 @keyframes balanceo {
-    0% { transform: rotate(-3deg); }
-    50% { transform: rotate(3deg); }
-    100% { transform: rotate(-3deg); }
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
 }
-
 @keyframes balanceo-alterno {
-    0% { transform: rotate(2deg); }
+    0%, 100% { transform: rotate(2deg); }
     50% { transform: rotate(-2deg); }
-    100% { transform: rotate(2deg); }
 }

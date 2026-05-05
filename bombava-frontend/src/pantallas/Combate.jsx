@@ -53,9 +53,9 @@ function Combate() {
     //Valores de prueba de las barras de recursos,  se actualizarán dinámicamente según el estado del juego
     const [barras, setBarras] = useState({
         municion: 10,
-        maxMunicion: 100,
-        combustible: 100,
-        maxCombustible: 100
+        maxMunicion: 10,
+        combustible: 10,
+        maxCombustible: 20
     });
 
     // Función para actualizar la munición, restando el coste de munición al valor actual

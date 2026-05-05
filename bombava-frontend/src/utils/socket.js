@@ -32,7 +32,7 @@ socket.on('game:error', (fail) => {
     return;
   }
   console.log(fail.message);
-  alert('El Servidor ha rechazado tu acción:\n' + fail.message);
+  notification.top('El Servidor ha rechazado tu acción:\n' + fail.message, 'error');
 });
 
 // Para ver cuando el usuario tiene un error al conectar con el servidor

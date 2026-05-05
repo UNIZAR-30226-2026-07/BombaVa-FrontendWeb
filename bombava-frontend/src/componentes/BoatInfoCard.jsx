@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/BoatInfoCard.css";
+import { ARMAS } from "../utils/constantes";
 
 function HealthBar({ maxHealth = 100, currentHealth = 0 }) {
     const healthPercentage = (maxHealth > 0) ? (currentHealth / maxHealth) * 100 : 0;
@@ -12,17 +13,10 @@ function HealthBar({ maxHealth = 100, currentHealth = 0 }) {
     );
 }
 
-function ModuleInfo({ moduleName, moduleImg, moduleAlt, moduleMaxHealth, moduleHealth }) {
-    return (
-        <div className='module-info'>
-            <h4>{moduleName}</h4>
-            <div className='module-display'>
-                <img src={moduleImg} alt={moduleAlt} />
-                <HealthBar maxHealth={moduleMaxHealth} currentHealth={moduleHealth} />
-            </div>
-        </div>
-    )
-}
+// Función para obtener la información del arma por ID
+const obtenerInfoArma = (idArma) => {
+    return ARMAS[idArma] || null;
+};
 
 function BoatInfoCard({ boat }) {
 
@@ -37,17 +31,8 @@ function BoatInfoCard({ boat }) {
         )
     }
 
-    let modulosArray = [];
-    if (boat.modulos) {
-        modulosArray = boat.modulos.map((mod) => ({
-            moduleId: mod.id,
-            moduleName: mod.nombre,
-            moduleImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
-            moduleAlt: `Imagen del módulo ${mod.nombre}`,
-            moduleMaxHealth: mod.vidaMax,
-            moduleHealth: mod.vida
-        }));
-    }
+    // Debug: verificar estructura del barco
+    console.log("Barco recibido en BoatInfoCard:", boat);
 
     // Datos del barco seleccionado
     const boatData = {
@@ -55,8 +40,14 @@ function BoatInfoCard({ boat }) {
         boatImg: "https://www.pngmart.com/files/23/Navy-Boat-PNG.png",
         boatMaxHealth: boat.vidaMax,
         boatHealth: boat.vida,
-        modules: modulosArray
+        boatSight: boat.rangoVision
     };
+
+    // Obtener información de las armas (que son IDs en el barco)
+    const armasEquipadas = boat.armas && boat.armas.length > 0
+        ? boat.armas.map(idArma => obtenerInfoArma(idArma)).filter(arma => arma !== null)
+        : [];
+
     // Caso de barco seleccionado.
     return (
         <div className='boat-info-card'>
@@ -64,19 +55,30 @@ function BoatInfoCard({ boat }) {
                 <h2>{boatData.boatName}</h2>
                 <img src={boatData.boatImg} alt='' className='boat-image' />
                 <HealthBar maxHealth={boatData.boatMaxHealth} currentHealth={boatData.boatHealth} />
-                <ul>
-                    {boatData.modules.map((module => (
-                        <li key={module.moduleId}>
-                            <ModuleInfo
-                                moduleName={module.moduleName}
-                                moduleImg={module.moduleImg}
-                                moduleAlt={module.moduleAlt}
-                                moduleMaxHealth={module.moduleMaxHealth}
-                                moduleHealth={module.moduleHealth}
-                            />
-                        </li>
-                    )))}
-                </ul>
+                
+                {/* Rango de visión */}
+                <div className="boat-stat">
+                    <p><strong>Rango de Visión:</strong> {boatData.boatSight}</p>
+                </div>
+
+                {/* Armas equipadas */}
+                <div className="boat-weapons">
+                    <p><strong>Armas Equipadas:</strong></p>
+                    {armasEquipadas.length > 0 ? (
+                        <ul className="weapons-list">
+                            {armasEquipadas.map((arma, index) => (
+                                <li key={index} className="weapon-item">
+                                    <span className="weapon-name">{arma.nombre}</span>
+                                    <span className="weapon-range">
+                                        Rango: {arma.rango}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="no-weapons">Sin armas equipadas</p>
+                    )}
+                </div>
             </div>
         </div>
     )
@@ -84,4 +86,4 @@ function BoatInfoCard({ boat }) {
 
 export default BoatInfoCard;
 
-export { HealthBar, ModuleInfo };
+export { HealthBar};
