@@ -13,7 +13,7 @@
   padding: 12px;
   color: #e0d0b0;
   font-family: 'Georgia';
-  min-height: 160px;
+  height: 200px;
   display: flex;
   flex-direction: column;
   font-size: 0.9rem;

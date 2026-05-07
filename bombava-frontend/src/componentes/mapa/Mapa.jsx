@@ -1,8 +1,7 @@
 import Tablero from '../tablero/Tablero.jsx';
 import Barco from '../barco/Barco.jsx';
 import Proyectil from '../proyectil/Proyectil.jsx'
-import { calcularCentroBarco, calcularCeldasBarco } from '../barco/movimientosBarco.js';
-import { calcularCeldasVisiblesFlota } from '../../utils/visionUtils.js';
+import { calcularCeldasVisiblesFlota, calcularCeldasEnRangoManhattan } from '../../utils/visionUtils.js';
 import Niebla from './Niebla.jsx';
 import { TAMANO_TABLERO, ARMAS } from '../../utils/constantes.js';
 import '../../styles/Mapa.css';
@@ -94,27 +93,24 @@ const Mapa = ({
     const atacante = barcos.find(b => b.id == barcoSeleccionado);
     if (!atacante) return new Set();
 
-    // Calculamos el centro del barco seleccionado
-    const { centroX, centroY } = calcularCentroBarco(atacante);
-
     const arma = ARMAS[armaSeleccionada];
     if (!arma) return new Set();
 
     // Calculamos las celdas en el rango de ataque, y las agregamos a un Set(tabla hash)
-    const celdas = new Set();
-    for (let x = centroX - arma.rango; x <= centroX + arma.rango; x++) {
-      for (let y = centroY - arma.rango; y <= centroY + arma.rango; y++) {
-        // Si la celda está fuera del tablero, no la agregamos
-        if (x >= 0 && x < TAMANO_TABLERO && y >= 0 && y < TAMANO_TABLERO) {
-          const distancia = Math.abs(centroX - x) + Math.abs(centroY - y);
-          // Si la celda está fuera del rango, no la agregamos
-          if (distancia <= arma.rango) {
-            celdas.add(`${x},${y}`);
-          }
-        }
+    const celdasEnRango = new Set();
+    
+    // Calculamos el rango desde todas las celdas del barco
+    const celdasDelBarco = atacante.celdas;
+    for (const celdaBarco of celdasDelBarco) {
+      const celdasEnRangoDesdeCelda = calcularCeldasEnRangoManhattan(celdaBarco.x, celdaBarco.y, arma.rango);
+      
+      // Las celdas en rango desde la celda del barco que se esta comprobando las agregamos al set
+      for (const celda of celdasEnRangoDesdeCelda) {
+        celdasEnRango.add(celda);
       }
     }
-    return celdas;
+    
+    return celdasEnRango;
   };
 
   const celdasEnRango = calcularCeldasEnRango();
@@ -144,7 +140,7 @@ const Mapa = ({
       }
 
       {/* Capa de Niebla de Guerra sobre el resto de elementos */}
-      <Niebla celdasVisibles={celdasVisibles} />
+      <Niebla celdasVisibles={celdasVisibles} celdasEnRango={celdasEnRango} />
     </div>
   );
 };

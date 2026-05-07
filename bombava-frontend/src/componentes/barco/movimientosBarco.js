@@ -310,13 +310,17 @@ export const useMovimientosBarco = (barcosIniciales, { mapa, setModoAtaque }) =>
             return true;
         }
 
-        // Calculamos el centro del barco atacante para medir la distancia desde ahí
-        const { centroX, centroY } = calcularCentroBarco(atacante);
+        // Comprobamos si el objetivo está en el rango de alguna de las celdas del barco
+        let enRango = false;
+        for (const celda of atacante.celdas) {
+            const distancia = Math.abs(celda.x - targetX) + Math.abs(celda.y - targetY);
+            if (distancia <= arma.rango) {
+                enRango = true;
+                break;
+            }
+        }
 
-        // Comprobamos el rango usando la distancia Manhattan (distancia en línea recta).
-        const distancia = Math.abs(centroX - targetX) + Math.abs(centroY - targetY);
-
-        if (distancia > arma.rango) {
+        if (!enRango) {
             // Indicamos que ese ataque esta fuera del rango de ataque.
             notification.toast("Fuera de rango", 'warning');
 
