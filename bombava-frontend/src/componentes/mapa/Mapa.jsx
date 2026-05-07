@@ -101,10 +101,10 @@ const Mapa = ({
     
     // Calculamos el rango desde todas las celdas del barco
     const celdasDelBarco = atacante.celdas;
-    for (const celdaOcupada of celdasDelBarco) {
-      const celdasEnRangoDesdeCelda = calcularCeldasEnRangoManhattan(celdaOcupada.x, celdaOcupada.y, arma.rango);
+    for (const celdaBarco of celdasDelBarco) {
+      const celdasEnRangoDesdeCelda = calcularCeldasEnRangoManhattan(celdaBarco.x, celdaBarco.y, arma.rango);
       
-      // Por cada celda en rango desde la celda ocupada, la agregamos al set
+      // Las celdas en rango desde la celda del barco que se esta comprobando las agregamos al set
       for (const celda of celdasEnRangoDesdeCelda) {
         celdasEnRango.add(celda);
       }
