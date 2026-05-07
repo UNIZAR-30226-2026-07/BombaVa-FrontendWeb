@@ -10,17 +10,19 @@ import '../../styles/Niebla.css';
  * 
  * @param {Set<string>} celdasVisibles - Conjunto de coordenadas "x,y" que son visibles.
  */
-const Niebla = ({ celdasVisibles }) => {
+const Niebla = ({ celdasVisibles, celdasEnRango }) => {
   const grid = [];
 
   for (let y = 0; y < TAMANO_TABLERO; y++) {
     for (let x = 0; x < TAMANO_TABLERO; x++) {
-      const esVisible = celdasVisibles.has(`${x},${y}`);
+      const coordenadas = `${x},${y}`;
+      const esVisible = celdasVisibles.has(coordenadas);
+      const enRangoAtaque = celdasEnRango?.has(coordenadas);
       
       grid.push(
         <div 
-          key={`${x},${y}`} 
-          className={`celda-niebla ${esVisible ? 'visible' : 'oculta'}`}
+          key={coordenadas} 
+          className={`celda-niebla ${esVisible ? 'visible' : 'oculta'} ${enRangoAtaque ? 'en-rango-ataque-niebla' : ''}`}
           style={{
             gridColumn: x + 1,
             gridRow: y + 1

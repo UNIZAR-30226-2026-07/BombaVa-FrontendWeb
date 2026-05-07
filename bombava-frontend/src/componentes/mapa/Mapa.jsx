@@ -144,7 +144,7 @@ const Mapa = ({
       }
 
       {/* Capa de Niebla de Guerra sobre el resto de elementos */}
-      <Niebla celdasVisibles={celdasVisibles} />
+      <Niebla celdasVisibles={celdasVisibles} celdasEnRango={celdasEnRango} />
     </div>
   );
 };
