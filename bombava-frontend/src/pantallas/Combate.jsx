@@ -418,19 +418,19 @@ function Combate() {
     useEffect(() => {
         //Recibe la señal de que han pedido pausar con el nombre del usuario que la ha aceptado
         const handlePauseRequested = (payload) => {
-            notification.info(payload.from + " ha pedido pausar.");
+            notification.top(payload.from + " ha pedido pausar.", 'info');
             setCuadroDecidirSiPausarVisible(true);
         };
 
         // Se ha pausado la partida, o yo he aceptado o el otro ha aceptado pausar
         const handleMatchPaused = (payload) => {
-            notification.info(payload.message);
+            notification.top(payload.message, 'info');
             navigate('/menuInicial');
         };
 
         // Si rechaza el otro pausar la partida
         const handlePauseReject = (payload) => {
-            notification.info(payload.message);
+            notification.top(payload.message, 'info');
             
         };
 
