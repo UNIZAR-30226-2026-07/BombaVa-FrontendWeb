@@ -93,9 +93,7 @@ function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, co
     // y reseteamos el índice a 0.
     React.useEffect(() => {
         if (!boat || boat.armas.length == 0) {
-            // Si el barco no tiene armas o no hay barco seleccionado, 
-            // dejamos el cañón por defecto
-            setButtonList([{ id: CANON, label: 'Cañón' }]);
+            setButtonList([]);
             setCurrentIndex(0);
             return;
         }
@@ -112,8 +110,7 @@ function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, co
 
     React.useEffect(() => {
         if (!buttonList || buttonList.length === 0) {
-            // Si el barco no tiene armas, dejamos el cañón por defecto
-            setAction({ id: CANON, label: 'Cañón' });
+            setAction(null);
             return;
         }
         const selectedWeapon = buttonList[(currentIndex % buttonList.length)];
@@ -123,10 +120,19 @@ function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, co
         
     }, [currentIndex, buttonList, notifyWeaponChange]);
 
+    if (!boat) {
+        return (
+            <div className="action-buttons-empty">
+                <p>Selecciona un barco para ver sus acciones</p>
+            </div>
+        );
+    }
+
     return (
         <div className="action-buttons">
 
-            <div className="attack-buttons">
+            {boat.armas && boat.armas.length > 0 && action && (
+                <div className="attack-buttons">
 
                 <div className="attack-display" >
 
@@ -164,6 +170,7 @@ function ActionButtons({ boat, onAttackClick, notifyWeaponChange, modoAtaque, co
                 </button>
 
             </div>
+            )}
 
             <div className="movement-buttons">
 

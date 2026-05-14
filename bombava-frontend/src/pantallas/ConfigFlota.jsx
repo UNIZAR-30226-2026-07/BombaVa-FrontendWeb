@@ -151,6 +151,10 @@ const ConfigFlota = () => {
     };
 
     const enviarFlota = async () => {
+        if (barcos.length == 0) {
+            notification.top("Debes colocar al menos un barco en la flota", 'error');
+            return;
+        }
         try {
             await crearYActivarDeck(barcos);
             notification.top("¡Flota guardada y activada!", 'success');

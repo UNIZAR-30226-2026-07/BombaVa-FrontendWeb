@@ -150,3 +150,19 @@
     height: 140px;
     object-fit: contain;
 }
+
+.action-buttons-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    width: 100%;
+}
+
+.action-buttons-empty p {
+    width: 90%;
+    font-size: 1.2em;
+    color: rgb(66, 32, 0);
+    font-weight: bold;
+    text-align: center;
+}
